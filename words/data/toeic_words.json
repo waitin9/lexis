@@ -1,0 +1,5809 @@
+[
+  {
+    "text": "abandon",
+    "difficulty": 2,
+    "source": "TOEIC",
+    "phonetic": "/əˈbæn.dən/",
+    "senses": [
+      {
+        "part_of_speech": "v",
+        "definition": "To give up or relinquish control of, to surrender or to give oneself over, or to yield to one's emotions.",
+        "translation": "放棄或放棄控制，投降或放棄自己，或屈服於自己的情緒。",
+        "order": 0,
+        "examples": []
+      },
+      {
+        "part_of_speech": "n",
+        "definition": "A yielding to natural impulses or inhibitions; freedom from artificial constraint, with loss of appreciation of consequences.",
+        "translation": "屈服於自然衝動或抑制；免於人為約束的自由，卻失去了對後果的認知。",
+        "order": 1,
+        "examples": []
+      }
+    ]
+  },
+  {
+    "text": "abroad",
+    "difficulty": 2,
+    "source": "TOEIC",
+    "phonetic": "/əˈbɹɔːd/",
+    "senses": [
+      {
+        "part_of_speech": "n",
+        "definition": "Countries or lands abroad.",
+        "translation": "國外的國家或土地。",
+        "order": 0,
+        "examples": []
+      },
+      {
+        "part_of_speech": "adv",
+        "definition": "Beyond the bounds of a country; in foreign countries.",
+        "translation": "超越國家界線；在國外。",
+        "order": 1,
+        "examples": []
+      },
+      {
+        "part_of_speech": "prep",
+        "definition": "Throughout, over.",
+        "translation": "全程，結束。",
+        "order": 2,
+        "examples": []
+      }
+    ]
+  },
+  {
+    "text": "absence",
+    "difficulty": 2,
+    "source": "TOEIC",
+    "phonetic": "/ˈæb.s(ə)n̩s/",
+    "senses": [
+      {
+        "part_of_speech": "n",
+        "definition": "A state of being away or withdrawn from a place or from companionship; the period of being away.",
+        "translation": "離開某個地方或遠離某個地方或遠離陪伴的狀態；離開的時期。",
+        "order": 0,
+        "examples": [
+          {
+            "sentence": "Absence makes the heart grow fonder.",
+            "translation": "缺席使心更親近。"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "text": "accelerate",
+    "difficulty": 2,
+    "source": "TOEIC",
+    "phonetic": "/æk.ˈsɛl.ə.ˌɹeɪt/",
+    "senses": [
+      {
+        "part_of_speech": "v",
+        "definition": "To cause to move faster; to quicken the motion of; to add to the speed of.",
+        "translation": "使移動得更快；加快…的運動；來增加速度。",
+        "order": 0,
+        "examples": []
+      },
+      {
+        "part_of_speech": "adj",
+        "definition": "Accelerated; quickened; hastened; hurried.",
+        "translation": "加速；加快了；趕緊;慌忙。",
+        "order": 1,
+        "examples": []
+      }
+    ]
+  },
+  {
+    "text": "access",
+    "difficulty": 2,
+    "source": "TOEIC",
+    "phonetic": "/ˈæksɛs/",
+    "senses": [
+      {
+        "part_of_speech": "n",
+        "definition": "A way or means of approaching or entering; an entrance; a passage.",
+        "translation": "接近或進入的方式或手段；一個入口；一段。",
+        "order": 0,
+        "examples": []
+      }
+    ]
+  },
+  {
+    "text": "accomplish",
+    "difficulty": 2,
+    "source": "TOEIC",
+    "phonetic": "/əˈkɐm.plɪʃ/",
+    "senses": [
+      {
+        "part_of_speech": "v",
+        "definition": "To finish successfully.",
+        "translation": "才能順利完成。",
+        "order": 0,
+        "examples": []
+      }
+    ]
+  },
+  {
+    "text": "accurate",
+    "difficulty": 2,
+    "source": "TOEIC",
+    "phonetic": "/ˈæk.jə.ɹɪt/",
+    "senses": [
+      {
+        "part_of_speech": "adj",
+        "definition": "Telling the truth or giving a true result; exact; not defective or faulty",
+        "translation": "說真話或給出真實結果；精確的;沒有缺陷或故障",
+        "order": 0,
+        "examples": [
+          {
+            "sentence": "accurate knowledge",
+            "translation": "準確的知識"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "text": "achieve",
+    "difficulty": 2,
+    "source": "TOEIC",
+    "phonetic": "/əˈtʃiːv/",
+    "senses": [
+      {
+        "part_of_speech": "v",
+        "definition": "To succeed in something, now especially in academic performance.",
+        "translation": "在某件事上取得成功，現在尤其是在學業成績方面。",
+        "order": 0,
+        "examples": []
+      }
+    ]
+  },
+  {
+    "text": "acknowledge",
+    "difficulty": 2,
+    "source": "TOEIC",
+    "phonetic": "/əkˈnɒ.lɪdʒ/",
+    "senses": [
+      {
+        "part_of_speech": "v",
+        "definition": "To admit the knowledge of; to recognize as a fact or truth; to declare one's belief in",
+        "translation": "承認知識；承認事實或真理；宣告自己的信仰",
+        "order": 0,
+        "examples": [
+          {
+            "sentence": "to acknowledge the being of a god",
+            "translation": "承認神的存在"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "text": "acquisition",
+    "difficulty": 2,
+    "source": "TOEIC",
+    "phonetic": "/æ.kwɪ.ˈzɪ.ʃən/",
+    "senses": [
+      {
+        "part_of_speech": "n",
+        "definition": "The act or process of acquiring.",
+        "translation": "獲取的行為或過程。",
+        "order": 0,
+        "examples": [
+          {
+            "sentence": "The acquisition of sports equipment can be fun in itself.",
+            "translation": "購買運動器材本身就很有趣。"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "text": "active",
+    "difficulty": 2,
+    "source": "TOEIC",
+    "phonetic": "/ˈæk.tɪv/",
+    "senses": [
+      {
+        "part_of_speech": "n",
+        "definition": "A person or thing that is acting or capable of acting.",
+        "translation": "正在行動或能夠行動的人或物。",
+        "order": 0,
+        "examples": []
+      },
+      {
+        "part_of_speech": "adj",
+        "definition": "Having the power or quality of acting; causing change; communicating action or motion; acting;—opposed to passive, that receives.",
+        "translation": "具有行動的能力或品質；引起變化；傳達動作或動作；行動；－與被動相反，即接收。",
+        "order": 1,
+        "examples": [
+          {
+            "sentence": "certain active principles",
+            "translation": "某些積極的原則"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "text": "adapt",
+    "difficulty": 2,
+    "source": "TOEIC",
+    "phonetic": "/əˈdæpt/",
+    "senses": [
+      {
+        "part_of_speech": "v",
+        "definition": "To make suitable; to make to correspond; to fit or suit",
+        "translation": "使適合；使對應；適合或適合",
+        "order": 0,
+        "examples": []
+      },
+      {
+        "part_of_speech": "adj",
+        "definition": "Adapted; fit; suited; suitable.",
+        "translation": "改編；合身;適合；合適的。",
+        "order": 1,
+        "examples": []
+      }
+    ]
+  },
+  {
+    "text": "adequate",
+    "difficulty": 2,
+    "source": "TOEIC",
+    "phonetic": "",
+    "senses": [
+      {
+        "part_of_speech": "v",
+        "definition": "To equalize; to make adequate.",
+        "translation": "使均衡;使足夠。",
+        "order": 0,
+        "examples": []
+      },
+      {
+        "part_of_speech": "adj",
+        "definition": "Equal to or fulfilling some requirement.",
+        "translation": "等於或滿足某些要求。",
+        "order": 1,
+        "examples": [
+          {
+            "sentence": "an adequate definition",
+            "translation": "充分的定義"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "text": "administration",
+    "difficulty": 2,
+    "source": "TOEIC",
+    "phonetic": "/ədˌmɪnəˈstɹeɪʃən/",
+    "senses": [
+      {
+        "part_of_speech": "n",
+        "definition": "The act of administering; government of public affairs; the service rendered, or duties assumed, in conducting affairs; the conducting of any office or employment; direction.",
+        "translation": "管理行為；公共事務政府；在處理事務時提供的服務或承擔的職責；進行任何辦公室或工作；方向。",
+        "order": 0,
+        "examples": []
+      }
+    ]
+  },
+  {
+    "text": "advance",
+    "difficulty": 2,
+    "source": "TOEIC",
+    "phonetic": "/ədˈvaːns/",
+    "senses": [
+      {
+        "part_of_speech": "n",
+        "definition": "A forward move; improvement or progression.",
+        "translation": "向前邁進；改善或進步。",
+        "order": 0,
+        "examples": [
+          {
+            "sentence": "an advance in health or knowledge",
+            "translation": "健康或知識的進步"
+          }
+        ]
+      },
+      {
+        "part_of_speech": "v",
+        "definition": "To promote or advantage.",
+        "translation": "促進或優勢。",
+        "order": 1,
+        "examples": []
+      },
+      {
+        "part_of_speech": "adj",
+        "definition": "Completed before necessary or a milestone event.",
+        "translation": "在必要事件或里程碑事件之前完成。",
+        "order": 2,
+        "examples": [
+          {
+            "sentence": "He made an advance payment on the prior shipment to show good faith.",
+            "translation": "他在先前的出貨中預付了貨款以示誠意。"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "text": "advertise",
+    "difficulty": 2,
+    "source": "TOEIC",
+    "phonetic": "/ˈadvə(ɹ)taɪz/",
+    "senses": [
+      {
+        "part_of_speech": "v",
+        "definition": "To give (especially public) notice of (something); to announce publicly.",
+        "translation": "給予（特別是公開）（某事）通知；來公開宣布。",
+        "order": 0,
+        "examples": []
+      }
+    ]
+  },
+  {
+    "text": "advise",
+    "difficulty": 2,
+    "source": "TOEIC",
+    "phonetic": "/ədˈvaɪz/",
+    "senses": [
+      {
+        "part_of_speech": "v",
+        "definition": "To give advice to; to offer an opinion to, as worthy or expedient to be followed.",
+        "translation": "提供建議；提出值得遵循或方便遵循的意見。",
+        "order": 0,
+        "examples": [
+          {
+            "sentence": "The dentist advised me to brush three times a day.",
+            "translation": "牙醫建議我每天刷牙3次。"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "text": "affect",
+    "difficulty": 2,
+    "source": "TOEIC",
+    "phonetic": "/əˈfɛkt/",
+    "senses": [
+      {
+        "part_of_speech": "v",
+        "definition": "To influence or alter.",
+        "translation": "影響或改變。",
+        "order": 0,
+        "examples": [
+          {
+            "sentence": "The experience affected me deeply.",
+            "translation": "這段經歷對我影響很深。"
+          }
+        ]
+      },
+      {
+        "part_of_speech": "v",
+        "definition": "To make a show of; to put on a pretense of; to feign; to assume. To make a false display of.",
+        "translation": "炫耀；假裝……佯裝；假設。進行虛假展示。",
+        "order": 1,
+        "examples": [
+          {
+            "sentence": "He managed to affect a smile despite feeling quite miserable.",
+            "translation": "儘管感覺很痛苦，但他還是勉強擠出了笑容。"
+          }
+        ]
+      },
+      {
+        "part_of_speech": "n",
+        "definition": "One's mood or inclination; mental state.",
+        "translation": "一個人的心情或傾向；精神狀態。",
+        "order": 2,
+        "examples": []
+      }
+    ]
+  },
+  {
+    "text": "agenda",
+    "difficulty": 2,
+    "source": "TOEIC",
+    "phonetic": "/əˈdʒɛn.də/",
+    "senses": [
+      {
+        "part_of_speech": "n",
+        "definition": "A temporally organized plan for matters to be attended to.",
+        "translation": "對要處理的事項臨時組織的計劃。",
+        "order": 0,
+        "examples": []
+      },
+      {
+        "part_of_speech": "n",
+        "definition": "A task which ought to be done.",
+        "translation": "一項應該完成的任務。",
+        "order": 1,
+        "examples": []
+      }
+    ]
+  },
+  {
+    "text": "aggressive",
+    "difficulty": 2,
+    "source": "TOEIC",
+    "phonetic": "/əˈɡɹɛs.ɪv/",
+    "senses": [
+      {
+        "part_of_speech": "adj",
+        "definition": "Characterized by aggression; unjustly attacking; prone to behave in a way that involves attacking or arguing.",
+        "translation": "具有攻擊性；不公正的攻擊；容易出現攻擊或爭論的行為方式。",
+        "order": 0,
+        "examples": [
+          {
+            "sentence": "an aggressive policy, war, person, nation",
+            "translation": "侵略性政策、戰爭、個人、國家"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "text": "agreement",
+    "difficulty": 2,
+    "source": "TOEIC",
+    "phonetic": "/əˈɡɹiːmənt/",
+    "senses": [
+      {
+        "part_of_speech": "n",
+        "definition": "An understanding between entities to follow a specific course of conduct.",
+        "translation": "實體之間達成共識以遵循特定的行為方針。",
+        "order": 0,
+        "examples": [
+          {
+            "sentence": "to enter an agreement;  the UK and US negotiators nearing agreement;  he nodded his agreement.",
+            "translation": "簽訂協議；  英國和美國談判代表接近達成協議；  他點頭表示同意。"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "text": "ahead",
+    "difficulty": 2,
+    "source": "TOEIC",
+    "phonetic": "/əˈhɛd/",
+    "senses": [
+      {
+        "part_of_speech": "adv",
+        "definition": "In or to the front; in advance; onward.",
+        "translation": "裡面或前面；提前;向前。",
+        "order": 0,
+        "examples": []
+      }
+    ]
+  },
+  {
+    "text": "alert",
+    "difficulty": 2,
+    "source": "TOEIC",
+    "phonetic": "/əˈlɜːt/",
+    "senses": [
+      {
+        "part_of_speech": "n",
+        "definition": "An alarm.",
+        "translation": "警報。",
+        "order": 0,
+        "examples": []
+      },
+      {
+        "part_of_speech": "adj",
+        "definition": "Attentive; awake; on guard.",
+        "translation": "細心;醒;警戒。",
+        "order": 1,
+        "examples": []
+      },
+      {
+        "part_of_speech": "v",
+        "definition": "To give warning to.",
+        "translation": "給予警告。",
+        "order": 2,
+        "examples": []
+      }
+    ]
+  },
+  {
+    "text": "allocate",
+    "difficulty": 2,
+    "source": "TOEIC",
+    "phonetic": "/ˈæl.ə.keɪt/",
+    "senses": [
+      {
+        "part_of_speech": "v",
+        "definition": "To set aside for a purpose.",
+        "translation": "為了某個目的而預留。",
+        "order": 0,
+        "examples": []
+      }
+    ]
+  },
+  {
+    "text": "allowance",
+    "difficulty": 2,
+    "source": "TOEIC",
+    "phonetic": "/əˈlaʊəns/",
+    "senses": [
+      {
+        "part_of_speech": "n",
+        "definition": "Permission; granting, conceding, or admitting",
+        "translation": "允許;給予、讓步或承認",
+        "order": 0,
+        "examples": []
+      },
+      {
+        "part_of_speech": "v",
+        "definition": "To put upon a fixed allowance (especially of provisions and drink).",
+        "translation": "給予固定的津貼（尤其是食物和飲料）。",
+        "order": 1,
+        "examples": [
+          {
+            "sentence": "The captain was obliged to allowance his crew.",
+            "translation": "船長必須允許他的船員。"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "text": "alternative",
+    "difficulty": 2,
+    "source": "TOEIC",
+    "phonetic": "/ɒl.ˈtɜː(ɹ).nə.tɪv/",
+    "senses": [
+      {
+        "part_of_speech": "n",
+        "definition": "A situation which allows a mutually exclusive choice between two or more possibilities; a choice between two or more possibilities.",
+        "translation": "允許在兩種或多種可能性之間進行相互排斥的選擇的情況；在兩種或多種可能性之間進行選擇。",
+        "order": 0,
+        "examples": []
+      },
+      {
+        "part_of_speech": "adj",
+        "definition": "Relating to a choice between two or more possibilities.",
+        "translation": "涉及兩種或多種可能性之間的選擇。",
+        "order": 1,
+        "examples": [
+          {
+            "sentence": "an alternative proposition",
+            "translation": "另一種提議"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "text": "annual",
+    "difficulty": 2,
+    "source": "TOEIC",
+    "phonetic": "/ˈæn.ju.əl/",
+    "senses": [
+      {
+        "part_of_speech": "n",
+        "definition": "An annual publication; a book, periodical, journal, report, comic book, yearbook, etc., which is published serially once a year, which may or may not be in addition to regular weekly or monthly publication.",
+        "translation": "年度出版品；每年連載一次的書籍、期刊、期刊、報告書、漫畫書、年鑑等，可以是也可以不是定期出版的週刊或月刊。",
+        "order": 0,
+        "examples": [
+          {
+            "sentence": "I read the magazine, but I usually don't purchase the annuals.",
+            "translation": "我讀雜誌，但通常不買年刊。"
+          }
+        ]
+      },
+      {
+        "part_of_speech": "adj",
+        "definition": "Happening once every year.",
+        "translation": "每年發生一次。",
+        "order": 1,
+        "examples": [
+          {
+            "sentence": "an annual general meeting;  an annual publication",
+            "translation": "年度股東大會；  年度出版物"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "text": "apologize",
+    "difficulty": 2,
+    "source": "TOEIC",
+    "phonetic": "/əˈpɒləd͡ʒaɪz/",
+    "senses": [
+      {
+        "part_of_speech": "v",
+        "definition": "(often followed by “for”) To make an apology or excuse; to acknowledge some fault or offense, with expression of regret for it, by way of amends",
+        "translation": "（通常後跟“for”）道歉或藉口；承認某些錯誤或冒犯，並對此表示遺憾，以彌補",
+        "order": 0,
+        "examples": [
+          {
+            "sentence": "My correspondent apologized for not answering my letter.",
+            "translation": "我的通訊員為沒有回覆我的信而道歉。"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "text": "appreciate",
+    "difficulty": 2,
+    "source": "TOEIC",
+    "phonetic": "/əˈpɹiː.si.eɪt/",
+    "senses": [
+      {
+        "part_of_speech": "v",
+        "definition": "To be grateful or thankful for.",
+        "translation": "表示感激或感謝。",
+        "order": 0,
+        "examples": [
+          {
+            "sentence": "I appreciate your efforts",
+            "translation": "我很欣賞你的努力"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "text": "approval",
+    "difficulty": 2,
+    "source": "TOEIC",
+    "phonetic": "/əˈpɹuːvəl/",
+    "senses": [
+      {
+        "part_of_speech": "n",
+        "definition": "An expression granting permission; an indication of agreement with a proposal; an acknowledgement that a person, thing or event meets requirements.",
+        "translation": "授予許可的表達方式；表示同意某項提案；承認一個人、事物或事件滿足要求。",
+        "order": 0,
+        "examples": [
+          {
+            "sentence": "I need to get an approval on this purchase order.",
+            "translation": "我需要獲得此採購訂單的批准。"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "text": "approximately",
+    "difficulty": 2,
+    "source": "TOEIC",
+    "phonetic": "/əˈpɹɒk.sɪ.mət.li/",
+    "senses": [
+      {
+        "part_of_speech": "adv",
+        "definition": "Imprecise but close to in quantity or amount.",
+        "translation": "不精確，但在數量或金額上接近。",
+        "order": 0,
+        "examples": [
+          {
+            "sentence": "...approximately 60 beats per minute.",
+            "translation": "....每分鐘約 60 次。"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "text": "arrangement",
+    "difficulty": 2,
+    "source": "TOEIC",
+    "phonetic": "/əˈɹeɪnd͡ʒmənt/",
+    "senses": [
+      {
+        "part_of_speech": "n",
+        "definition": "The act of arranging.",
+        "translation": "安排的行為。",
+        "order": 0,
+        "examples": []
+      }
+    ]
+  },
+  {
+    "text": "assess",
+    "difficulty": 2,
+    "source": "TOEIC",
+    "phonetic": "/əˈsɛs/",
+    "senses": [
+      {
+        "part_of_speech": "v",
+        "definition": "To determine, estimate or judge the value of; to evaluate",
+        "translation": "確定、估計或判斷…的價值；評估",
+        "order": 0,
+        "examples": [
+          {
+            "sentence": "He assessed the situation.",
+            "translation": "他評估了形勢。"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "text": "assignment",
+    "difficulty": 2,
+    "source": "TOEIC",
+    "phonetic": "",
+    "senses": [
+      {
+        "part_of_speech": "n",
+        "definition": "The act of assigning; the allocation of a job or a set of tasks.",
+        "translation": "分配行為；一項工作或一組任務的分配。",
+        "order": 0,
+        "examples": [
+          {
+            "sentence": "This flow chart represents the assignment of tasks in our committee.",
+            "translation": "此流程圖代表了我們委員會的任務分配。"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "text": "assistance",
+    "difficulty": 2,
+    "source": "TOEIC",
+    "phonetic": "/əˈsɪs.təns/",
+    "senses": [
+      {
+        "part_of_speech": "n",
+        "definition": "Aid; help; the act or result of assisting.",
+        "translation": "援助;幫助;協助的行為或結果。",
+        "order": 0,
+        "examples": []
+      }
+    ]
+  },
+  {
+    "text": "associate",
+    "difficulty": 2,
+    "source": "TOEIC",
+    "phonetic": "/əˈsəʊsi.ət/",
+    "senses": [
+      {
+        "part_of_speech": "n",
+        "definition": "A person united with another or others in an act, enterprise, or business; a partner.",
+        "translation": "在一項行為、事業或生意中與他人聯合的人；一個夥伴。",
+        "order": 0,
+        "examples": []
+      },
+      {
+        "part_of_speech": "v",
+        "definition": "To join in or form a league, union, or association.",
+        "translation": "加入或組成聯盟、工會或協會。",
+        "order": 1,
+        "examples": []
+      },
+      {
+        "part_of_speech": "adj",
+        "definition": "Joined with another or others and having lower status.",
+        "translation": "與他人聯合且地位較低。",
+        "order": 2,
+        "examples": [
+          {
+            "sentence": "The associate editor is someone who has some experience in editing but not sufficient experience to qualify for a senior post.",
+            "translation": "副編輯是指具有一定編輯經驗但不足以勝任高階職位的人。"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "text": "attain",
+    "difficulty": 2,
+    "source": "TOEIC",
+    "phonetic": "/əˈteɪn/",
+    "senses": [
+      {
+        "part_of_speech": "v",
+        "definition": "To gain (an object or desired result).",
+        "translation": "獲得（目標或期望的結果）。",
+        "order": 0,
+        "examples": [
+          {
+            "sentence": "To attain such a high level of proficiency requires hours of practice each day.",
+            "translation": "要達到如此高的熟練程度，需要每天數小時的練習。"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "text": "attempt",
+    "difficulty": 2,
+    "source": "TOEIC",
+    "phonetic": "/əˈtɛmpt/",
+    "senses": [
+      {
+        "part_of_speech": "n",
+        "definition": "The action of trying at something.",
+        "translation": "嘗試某事的動作。",
+        "order": 0,
+        "examples": [
+          {
+            "sentence": "It was worth the attempt.",
+            "translation": "這是值得嘗試的。"
+          }
+        ]
+      },
+      {
+        "part_of_speech": "v",
+        "definition": "To try.",
+        "translation": "去嘗試。",
+        "order": 1,
+        "examples": [
+          {
+            "sentence": "A group of 80 budding mountaineers attempted Kilimanjaro, but 30 of them didn't make it to the top.",
+            "translation": "一群 80 名初露頭角的登山者嘗試攀登乞力馬扎羅山，但其中 30 人未能登頂。"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "text": "attend",
+    "difficulty": 2,
+    "source": "TOEIC",
+    "phonetic": "/əˈtɛnd/",
+    "senses": [
+      {
+        "part_of_speech": "v",
+        "definition": "To listen to (something or someone); to pay attention to; regard; heed.",
+        "translation": "聽（某事或某人）；注意；看待;注意。",
+        "order": 0,
+        "examples": []
+      },
+      {
+        "part_of_speech": "v",
+        "definition": "To set on fire; kindle.",
+        "translation": "放火；點燃。",
+        "order": 1,
+        "examples": []
+      }
+    ]
+  },
+  {
+    "text": "attention",
+    "difficulty": 2,
+    "source": "TOEIC",
+    "phonetic": "/əˈtɛn.ʃən/",
+    "senses": [
+      {
+        "part_of_speech": "n",
+        "definition": "Mental focus.",
+        "translation": "精神集中。",
+        "order": 0,
+        "examples": [
+          {
+            "sentence": "Please direct your attention to the following words.",
+            "translation": "請大家注意以下幾句話。"
+          }
+        ]
+      },
+      {
+        "part_of_speech": "interjection",
+        "definition": "Used as a command to bring soldiers to the attention position.",
+        "translation": "用作命令讓士兵注意位置。",
+        "order": 1,
+        "examples": []
+      }
+    ]
+  },
+  {
+    "text": "attractive",
+    "difficulty": 2,
+    "source": "TOEIC",
+    "phonetic": "/əˈtɹæktɪv/",
+    "senses": [
+      {
+        "part_of_speech": "adj",
+        "definition": "Causing attraction; having the quality of attracting by inherent force.",
+        "translation": "引起吸引力；具有透過內在力量吸引的品質。",
+        "order": 0,
+        "examples": []
+      }
+    ]
+  },
+  {
+    "text": "authority",
+    "difficulty": 2,
+    "source": "TOEIC",
+    "phonetic": "/ɔːˈθɒɹəti/",
+    "senses": [
+      {
+        "part_of_speech": "n",
+        "definition": "The power to enforce rules or give orders.",
+        "translation": "執行規則或發出命令的權力。",
+        "order": 0,
+        "examples": [
+          {
+            "sentence": "I have the authority to penalise the staff in my department, but not the authority to sack them.",
+            "translation": "我有權處罰我部門的員工，但無權解僱他們。"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "text": "available",
+    "difficulty": 2,
+    "source": "TOEIC",
+    "phonetic": "/əˈveɪləb(ə)l/",
+    "senses": [
+      {
+        "part_of_speech": "adj",
+        "definition": "Such as one may avail oneself of; capable of being used for the accomplishment of a purpose.",
+        "translation": "諸如人們可以利用的；能夠用於實現某個目的。",
+        "order": 0,
+        "examples": [
+          {
+            "sentence": "We have an available candidate.",
+            "translation": "我們有一個可用的候選人。"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "text": "avoid",
+    "difficulty": 2,
+    "source": "TOEIC",
+    "phonetic": "/əˈvɔɪd/",
+    "senses": [
+      {
+        "part_of_speech": "v",
+        "definition": "To try not to meet or communicate with (a person); to shun",
+        "translation": "盡量不與（人）見面或交流；避開",
+        "order": 0,
+        "examples": []
+      }
+    ]
+  },
+  {
+    "text": "background",
+    "difficulty": 2,
+    "source": "TOEIC",
+    "phonetic": "/ˈbæk.ɡɹaʊnd/",
+    "senses": [
+      {
+        "part_of_speech": "n",
+        "definition": "One's social heritage, or previous life; what one did in the past.",
+        "translation": "一個人的社會遺產，或前世；一個人過去做過什麼。",
+        "order": 0,
+        "examples": [
+          {
+            "sentence": "The lawyer had a background in computer science.",
+            "translation": "該律師擁有計算機科學背景。"
+          }
+        ]
+      },
+      {
+        "part_of_speech": "v",
+        "definition": "To put in a position that is not prominent.",
+        "translation": "放在不顯眼的位置。",
+        "order": 1,
+        "examples": []
+      },
+      {
+        "part_of_speech": "adj",
+        "definition": "Less important or less noticeable in a scene or system.",
+        "translation": "在場景或系統中不太重要或不太引人注目。",
+        "order": 2,
+        "examples": [
+          {
+            "sentence": "The antivirus program runs on a background thread.",
+            "translation": "防毒程式在後台執行緒上運行。"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "text": "balance",
+    "difficulty": 2,
+    "source": "TOEIC",
+    "phonetic": "/ˈbæləns/",
+    "senses": [
+      {
+        "part_of_speech": "n",
+        "definition": "A state in which opposing forces harmonise; equilibrium.",
+        "translation": "對立力量和諧的狀態；平衡。",
+        "order": 0,
+        "examples": []
+      },
+      {
+        "part_of_speech": "v",
+        "definition": "To bring (items) to an equipoise, as the scales of a balance by adjusting the weights.",
+        "translation": "透過調整重量使（物品）達到平衡，就像天平的天平一樣。",
+        "order": 1,
+        "examples": []
+      }
+    ]
+  },
+  {
+    "text": "bargain",
+    "difficulty": 2,
+    "source": "TOEIC",
+    "phonetic": "/-ɡɪn/",
+    "senses": [
+      {
+        "part_of_speech": "n",
+        "definition": "An agreement between parties concerning the sale of property; or a contract by which one party binds himself to transfer the right to some property for a consideration, and the other party binds himself to receive the property and pay the consideration.",
+        "translation": "各方之間關於財產出售的協議；或一方當事人有義務以對價轉讓某些財產的權利，而另一方有義務接受該財產並支付對價的合約。",
+        "order": 0,
+        "examples": []
+      },
+      {
+        "part_of_speech": "v",
+        "definition": "To make a bargain; to make a deal or contract for the exchange of property or services; to negotiate",
+        "translation": "討價還價；達成財產或服務交換的交易或合約；談判",
+        "order": 1,
+        "examples": [
+          {
+            "sentence": "They had to bargain for a few minutes to get a decent price for the rug.",
+            "translation": "他們不得不討價還價幾分鐘才能為地毯拿到一個合適的價格。"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "text": "beneficial",
+    "difficulty": 2,
+    "source": "TOEIC",
+    "phonetic": "/ˌbɛnəˈfɪʃəl/",
+    "senses": [
+      {
+        "part_of_speech": "n",
+        "definition": "Something that is beneficial.",
+        "translation": "有益的東西。",
+        "order": 0,
+        "examples": []
+      },
+      {
+        "part_of_speech": "adj",
+        "definition": "Helpful or good to something or someone.",
+        "translation": "對某事或某人有幫助或有好處。",
+        "order": 1,
+        "examples": [
+          {
+            "sentence": "Recycling and reusing garbage can be beneficial to the environment.",
+            "translation": "回收和再利用垃圾對環境有益。"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "text": "benefit",
+    "difficulty": 2,
+    "source": "TOEIC",
+    "phonetic": "/ˈbɛn.ɪ.fɪt/",
+    "senses": [
+      {
+        "part_of_speech": "n",
+        "definition": "An advantage; help or aid from something.",
+        "translation": "一個優勢；來自某事的幫助或幫助。",
+        "order": 0,
+        "examples": [
+          {
+            "sentence": "It was for her benefit.   His benefit was free beer.",
+            "translation": "這是為了她的利益。   他的好處是免費啤酒。"
+          }
+        ]
+      },
+      {
+        "part_of_speech": "v",
+        "definition": "To be or to provide a benefit to.",
+        "translation": "成為或提供利益。",
+        "order": 1,
+        "examples": []
+      }
+    ]
+  },
+  {
+    "text": "bonus",
+    "difficulty": 2,
+    "source": "TOEIC",
+    "phonetic": "/ˈbəʊ.nəs/",
+    "senses": [
+      {
+        "part_of_speech": "n",
+        "definition": "Something extra that is good; an added benefit.",
+        "translation": "額外的東西是好的；一個額外的好處。",
+        "order": 0,
+        "examples": []
+      },
+      {
+        "part_of_speech": "v",
+        "definition": "To pay a bonus, premium",
+        "translation": "支付獎金、保費",
+        "order": 1,
+        "examples": []
+      }
+    ]
+  },
+  {
+    "text": "boundary",
+    "difficulty": 2,
+    "source": "TOEIC",
+    "phonetic": "/ˈbaʊndɹi/",
+    "senses": [
+      {
+        "part_of_speech": "n",
+        "definition": "The dividing line or location between two areas.",
+        "translation": "兩個區域之間的分界線或位置。",
+        "order": 0,
+        "examples": []
+      }
+    ]
+  },
+  {
+    "text": "branch",
+    "difficulty": 2,
+    "source": "TOEIC",
+    "phonetic": "/bɹæntʃ/",
+    "senses": [
+      {
+        "part_of_speech": "n",
+        "definition": "The woody part of a tree arising from the trunk and usually dividing.",
+        "translation": "樹木的木質部分，從樹幹長出，通常會分裂。",
+        "order": 0,
+        "examples": []
+      },
+      {
+        "part_of_speech": "v",
+        "definition": "To arise from the trunk or a larger branch of a tree.",
+        "translation": "從樹幹或較大的樹枝上產生。",
+        "order": 1,
+        "examples": []
+      }
+    ]
+  },
+  {
+    "text": "budget",
+    "difficulty": 2,
+    "source": "TOEIC",
+    "phonetic": "/ˈbʌdʒ.ɪt/",
+    "senses": [
+      {
+        "part_of_speech": "n",
+        "definition": "The amount of money or resources earmarked for a particular institution, activity or time-frame.",
+        "translation": "指定用於特定機構、活動或時間範圍的資金或資源數量。",
+        "order": 0,
+        "examples": []
+      },
+      {
+        "part_of_speech": "v",
+        "definition": "To construct or draw up a budget.",
+        "translation": "制定或製定預算。",
+        "order": 1,
+        "examples": [
+          {
+            "sentence": "Budgeting is even harder in times of recession",
+            "translation": "在經濟衰退時期制定預算更加困難"
+          }
+        ]
+      },
+      {
+        "part_of_speech": "adj",
+        "definition": "Of or relating to a budget.",
+        "translation": "屬於預算或與預算有關。",
+        "order": 2,
+        "examples": []
+      }
+    ]
+  },
+  {
+    "text": "capacity",
+    "difficulty": 2,
+    "source": "TOEIC",
+    "phonetic": "/kəˈpæsɪti/",
+    "senses": [
+      {
+        "part_of_speech": "n",
+        "definition": "The ability to hold, receive or absorb",
+        "translation": "持有、接收或吸收的能力",
+        "order": 0,
+        "examples": []
+      },
+      {
+        "part_of_speech": "adj",
+        "definition": "Filling the allotted space.",
+        "translation": "填充分配的空間。",
+        "order": 1,
+        "examples": [
+          {
+            "sentence": "There will be a capacity crowd at Busch stadium for the sixth game.",
+            "translation": "第六場比賽布希體育場將擠滿觀眾。"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "text": "career",
+    "difficulty": 2,
+    "source": "TOEIC",
+    "phonetic": "/kəˈɹɪə/",
+    "senses": [
+      {
+        "part_of_speech": "n",
+        "definition": "One's calling in life; a person's occupation; one's profession.",
+        "translation": "一個人在生命中的召喚；一個人的職業；一個人的職業。",
+        "order": 0,
+        "examples": []
+      },
+      {
+        "part_of_speech": "v",
+        "definition": "To move rapidly straight ahead, especially in an uncontrolled way.",
+        "translation": "快速筆直向前移動，尤指以不受控制的方式。",
+        "order": 1,
+        "examples": [
+          {
+            "sentence": "The car careered down the road, missed the curve, and went through a hedge.",
+            "translation": "汽車沿著道路猛衝，錯過了彎道，並穿過了樹籬。"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "text": "caution",
+    "difficulty": 2,
+    "source": "TOEIC",
+    "phonetic": "/ˈkɔːʃ(ə)n/",
+    "senses": [
+      {
+        "part_of_speech": "n",
+        "definition": "Precept or warning against evil or danger of any kind; exhortation to wariness; advice; injunction; prudence in regard to danger; provident care",
+        "translation": "針對任何形式的邪惡或危險的戒律或警告；勸告保持警惕；建議;禁令；對危險保持謹慎態度；公積金護理",
+        "order": 0,
+        "examples": []
+      },
+      {
+        "part_of_speech": "v",
+        "definition": "To warn; to alert, advise that caution is warranted.",
+        "translation": "警告；提醒，建議謹慎行事。",
+        "order": 1,
+        "examples": []
+      }
+    ]
+  },
+  {
+    "text": "certificate",
+    "difficulty": 2,
+    "source": "TOEIC",
+    "phonetic": "",
+    "senses": [
+      {
+        "part_of_speech": "n",
+        "definition": "A document containing a certified statement.",
+        "translation": "包含經過認證的聲明的文件。",
+        "order": 0,
+        "examples": []
+      },
+      {
+        "part_of_speech": "v",
+        "definition": "To supply with a certificate, especially following certification",
+        "translation": "提供證書，特別是在認證之後",
+        "order": 1,
+        "examples": []
+      }
+    ]
+  },
+  {
+    "text": "challenge",
+    "difficulty": 2,
+    "source": "TOEIC",
+    "phonetic": "/ˈtʃæl.əndʒ/",
+    "senses": [
+      {
+        "part_of_speech": "n",
+        "definition": "A confrontation; a dare.",
+        "translation": "對抗；一個敢。",
+        "order": 0,
+        "examples": []
+      },
+      {
+        "part_of_speech": "v",
+        "definition": "To invite (someone) to take part in a competition.",
+        "translation": "邀請（某人）參加比賽。",
+        "order": 1,
+        "examples": [
+          {
+            "sentence": "We challenged the boys next door to a game of football.",
+            "translation": "我們向隔壁的男孩們發起了一場足球比賽。"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "text": "charity",
+    "difficulty": 2,
+    "source": "TOEIC",
+    "phonetic": "/ˈtʃæɹɪti/",
+    "senses": [
+      {
+        "part_of_speech": "n",
+        "definition": "An organization, the objective of which is to carry out a charitable purpose.",
+        "translation": "一個組織，其目標是實現慈善目的。",
+        "order": 0,
+        "examples": []
+      }
+    ]
+  },
+  {
+    "text": "circumstance",
+    "difficulty": 2,
+    "source": "TOEIC",
+    "phonetic": "/-æns/",
+    "senses": [
+      {
+        "part_of_speech": "n",
+        "definition": "That which attends, or relates to, or in some way affects, a fact or event; an attendant thing or state of things.",
+        "translation": "涉及、涉及、或以某種方式影響事實或事件的事物；伴隨的事物或事物的狀態。",
+        "order": 0,
+        "examples": []
+      },
+      {
+        "part_of_speech": "v",
+        "definition": "To place in a particular situation, especially with regard to money or other resources.",
+        "translation": "置於特定的情況下，尤其是在金錢或其他資源方面。",
+        "order": 1,
+        "examples": []
+      }
+    ]
+  },
+  {
+    "text": "clarify",
+    "difficulty": 2,
+    "source": "TOEIC",
+    "phonetic": "/ˈklæɹɪfaɪ/",
+    "senses": [
+      {
+        "part_of_speech": "v",
+        "definition": "(of liquids, such as wine or syrup) To make clear or bright by freeing from feculent matter",
+        "translation": "（液體，如酒或糖漿）除去不潔物質，使澄清或明亮",
+        "order": 0,
+        "examples": []
+      }
+    ]
+  },
+  {
+    "text": "client",
+    "difficulty": 2,
+    "source": "TOEIC",
+    "phonetic": "/ˈklʌɪənt/",
+    "senses": [
+      {
+        "part_of_speech": "n",
+        "definition": "A customer, a buyer or receiver of goods or services.",
+        "translation": "顧客、商品或服務的購買者或接收者。",
+        "order": 0,
+        "examples": []
+      }
+    ]
+  },
+  {
+    "text": "commitment",
+    "difficulty": 2,
+    "source": "TOEIC",
+    "phonetic": "",
+    "senses": [
+      {
+        "part_of_speech": "n",
+        "definition": "The act or an instance of committing, putting in charge, keeping, or trust, especially:",
+        "translation": "承諾、負責、保留或信任的行為或實例，特別是：",
+        "order": 0,
+        "examples": []
+      }
+    ]
+  },
+  {
+    "text": "communicate",
+    "difficulty": 2,
+    "source": "TOEIC",
+    "phonetic": "/kəˈmjuːnɪkeɪt/",
+    "senses": [
+      {
+        "part_of_speech": "v",
+        "definition": "To impart",
+        "translation": "傳授",
+        "order": 0,
+        "examples": []
+      }
+    ]
+  },
+  {
+    "text": "community",
+    "difficulty": 2,
+    "source": "TOEIC",
+    "phonetic": "/k(ə)ˈmjunəti/",
+    "senses": [
+      {
+        "part_of_speech": "n",
+        "definition": "A group sharing a common understanding, and often the same language, law, manners, and/or tradition.",
+        "translation": "具有共同理解的群體，通常具有相同的語言、法律、禮儀和/或傳統。",
+        "order": 0,
+        "examples": []
+      }
+    ]
+  },
+  {
+    "text": "compensation",
+    "difficulty": 2,
+    "source": "TOEIC",
+    "phonetic": "/ˌkɒmpɛnˈseɪʃən/",
+    "senses": [
+      {
+        "part_of_speech": "n",
+        "definition": "The act or principle of compensating.",
+        "translation": "補償的行為或原則。",
+        "order": 0,
+        "examples": []
+      }
+    ]
+  },
+  {
+    "text": "complex",
+    "difficulty": 2,
+    "source": "TOEIC",
+    "phonetic": "",
+    "senses": [
+      {
+        "part_of_speech": "n",
+        "definition": "A network of interconnected systems.",
+        "translation": "互連繫統的網路。",
+        "order": 0,
+        "examples": []
+      },
+      {
+        "part_of_speech": "v",
+        "definition": "To form a complex with another substance",
+        "translation": "與另一種物質形成複合物",
+        "order": 1,
+        "examples": []
+      },
+      {
+        "part_of_speech": "adj",
+        "definition": "Made up of multiple parts; composite; not simple.",
+        "translation": "由多個部分組成；合成的;不簡單。",
+        "order": 2,
+        "examples": []
+      }
+    ]
+  },
+  {
+    "text": "concentrate",
+    "difficulty": 2,
+    "source": "TOEIC",
+    "phonetic": "/ˈkɒn.sən.tɹeɪt/",
+    "senses": [
+      {
+        "part_of_speech": "n",
+        "definition": "A substance that is in a condensed form.",
+        "translation": "一種濃縮形式的物質。",
+        "order": 0,
+        "examples": []
+      },
+      {
+        "part_of_speech": "v",
+        "definition": "To bring to, or direct toward, a common center; to unite more closely; to gather into one body, mass, or force.",
+        "translation": "帶來或直接走向一個共同中心；更緊密地團結起來；聚集成一個身體、質量或力量。",
+        "order": 1,
+        "examples": [
+          {
+            "sentence": "to concentrate rays of light into a focus",
+            "translation": "將光線集中到一個焦點"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "text": "conclusion",
+    "difficulty": 2,
+    "source": "TOEIC",
+    "phonetic": "/kənˈkluːʒən/",
+    "senses": [
+      {
+        "part_of_speech": "n",
+        "definition": "The end, finish, close or last part of something.",
+        "translation": "某事的結束、結束、結束或最後部分。",
+        "order": 0,
+        "examples": []
+      }
+    ]
+  },
+  {
+    "text": "confirm",
+    "difficulty": 2,
+    "source": "TOEIC",
+    "phonetic": "/kənˈfɜːm/",
+    "senses": [
+      {
+        "part_of_speech": "v",
+        "definition": "To strengthen; to make firm or resolute.",
+        "translation": "加強；使堅定或堅決。",
+        "order": 0,
+        "examples": []
+      }
+    ]
+  },
+  {
+    "text": "consequence",
+    "difficulty": 2,
+    "source": "TOEIC",
+    "phonetic": "/ˈkɒnsɪkwɛns/",
+    "senses": [
+      {
+        "part_of_speech": "n",
+        "definition": "That which follows something on which it depends; that which is produced by a cause.",
+        "translation": "跟隨其所依賴的事物而來的事物；由因而產生的事物。",
+        "order": 0,
+        "examples": []
+      },
+      {
+        "part_of_speech": "v",
+        "definition": "To threaten or punish (a child, etc.) with specific consequences for misbehaviour.",
+        "translation": "威脅或懲罰（兒童等），並對不當行為造成特定後果。",
+        "order": 1,
+        "examples": []
+      }
+    ]
+  },
+  {
+    "text": "consider",
+    "difficulty": 2,
+    "source": "TOEIC",
+    "phonetic": "/kənˈsɪdə/",
+    "senses": [
+      {
+        "part_of_speech": "v",
+        "definition": "To think about seriously.",
+        "translation": "要認真思考一下。",
+        "order": 0,
+        "examples": [
+          {
+            "sentence": "Consider that we’ve had three major events and the year has hardly begun.",
+            "translation": "考慮一下我們已經發生了三件重大事件，而這一年才剛開始。"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "text": "consult",
+    "difficulty": 2,
+    "source": "TOEIC",
+    "phonetic": "",
+    "senses": [
+      {
+        "part_of_speech": "n",
+        "definition": "The act of consulting or deliberating; consultation",
+        "translation": "諮詢或審議的行為；諮詢",
+        "order": 0,
+        "examples": []
+      },
+      {
+        "part_of_speech": "v",
+        "definition": "To seek the opinion or advice of another; to take counsel; to deliberate together; to confer.",
+        "translation": "尋求他人的意見或建議；聽取建議；共同商議；商議。",
+        "order": 1,
+        "examples": []
+      }
+    ]
+  },
+  {
+    "text": "contact",
+    "difficulty": 2,
+    "source": "TOEIC",
+    "phonetic": "",
+    "senses": [
+      {
+        "part_of_speech": "n",
+        "definition": "The act of touching physically; being in close association.",
+        "translation": "身體接觸的行為；密切聯繫。",
+        "order": 0,
+        "examples": []
+      },
+      {
+        "part_of_speech": "v",
+        "definition": "To touch; to come into physical contact with.",
+        "translation": "觸摸；進行身體接觸。",
+        "order": 1,
+        "examples": [
+          {
+            "sentence": "The side of the car contacted the pedestrian.",
+            "translation": "汽車的側面接觸到了行人。"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "text": "contribute",
+    "difficulty": 2,
+    "source": "TOEIC",
+    "phonetic": "/kənˈt(ʃ)ɹɪb.juːt/",
+    "senses": [
+      {
+        "part_of_speech": "v",
+        "definition": "To give something that is or becomes part of a larger whole.",
+        "translation": "給予屬於或成為更大整體一部分的東西。",
+        "order": 0,
+        "examples": [
+          {
+            "sentence": "to contribute articles to a journal",
+            "translation": "向期刊投稿"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "text": "control",
+    "difficulty": 2,
+    "source": "TOEIC",
+    "phonetic": "/kənˈtɹəʊl/",
+    "senses": [
+      {
+        "part_of_speech": "n",
+        "definition": "Influence or authority over something.",
+        "translation": "對某事的影響或權威。",
+        "order": 0,
+        "examples": [
+          {
+            "sentence": "The government has complete control over the situation.",
+            "translation": "政府完全控制局勢。"
+          }
+        ]
+      },
+      {
+        "part_of_speech": "v",
+        "definition": "To exercise influence over; to suggest or dictate the behavior of.",
+        "translation": "施加影響；建議或指示…的行為。",
+        "order": 1,
+        "examples": [
+          {
+            "sentence": "With a simple remote, he could control the toy truck.",
+            "translation": "透過一個簡單的遙控器，他就可以控制玩具卡車。"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "text": "convenient",
+    "difficulty": 2,
+    "source": "TOEIC",
+    "phonetic": "/kənˈviːniənt/",
+    "senses": [
+      {
+        "part_of_speech": "adj",
+        "definition": "Serving to reduce a difficulty, or accessible with minimum difficulty; expedient.",
+        "translation": "用於降低難度，或以最小的難度進行訪問；權宜。",
+        "order": 0,
+        "examples": [
+          {
+            "sentence": "Fast food might be convenient, but it's also very unhealthy.",
+            "translation": "快餐可能很方便，但也很不健康。"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "text": "convince",
+    "difficulty": 2,
+    "source": "TOEIC",
+    "phonetic": "/kənˈvɪns/",
+    "senses": [
+      {
+        "part_of_speech": "v",
+        "definition": "To make someone believe, or feel sure about something, especially by using logic, argument or evidence.",
+        "translation": "讓某人相信或確信某事，尤其是透過使用邏輯、論證或證據。",
+        "order": 0,
+        "examples": [
+          {
+            "sentence": "I wouldn't have or do something, unless I'm convinced that it's good.",
+            "translation": "我不會做某事，除非我確信它是好的。"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "text": "cooperate",
+    "difficulty": 2,
+    "source": "TOEIC",
+    "phonetic": "/koʊˈɒpəɹeɪt/",
+    "senses": [
+      {
+        "part_of_speech": "v",
+        "definition": "To work or act together, especially for a common purpose or benefit.",
+        "translation": "一起工作或行動，尤其是為了共同的目的或利益。",
+        "order": 0,
+        "examples": []
+      }
+    ]
+  },
+  {
+    "text": "corporate",
+    "difficulty": 2,
+    "source": "TOEIC",
+    "phonetic": "/ˈkɔːp(ə)ɹət/",
+    "senses": [
+      {
+        "part_of_speech": "n",
+        "definition": "A bond issued by a corporation.",
+        "translation": "公司發行的債券。",
+        "order": 0,
+        "examples": []
+      },
+      {
+        "part_of_speech": "v",
+        "definition": "To incorporate.",
+        "translation": "合併。",
+        "order": 1,
+        "examples": []
+      },
+      {
+        "part_of_speech": "adj",
+        "definition": "Of or relating to a corporation.",
+        "translation": "屬於公司或與公司有關的。",
+        "order": 2,
+        "examples": []
+      }
+    ]
+  },
+  {
+    "text": "cost",
+    "difficulty": 2,
+    "source": "TOEIC",
+    "phonetic": "/ˈkɑst/",
+    "senses": [
+      {
+        "part_of_speech": "v",
+        "definition": "To incur a charge of; to require payment of a (specified) price.",
+        "translation": "收取費用；要求支付（指定的）價格。",
+        "order": 0,
+        "examples": [
+          {
+            "sentence": "It will cost you a lot of money to take a trip around the world.",
+            "translation": "環遊世界一趟要花很多錢。"
+          }
+        ]
+      },
+      {
+        "part_of_speech": "n",
+        "definition": "Amount of money, time, etc. that is required or used.",
+        "translation": "需要或使用的金錢、時間等數量。",
+        "order": 1,
+        "examples": [
+          {
+            "sentence": "The average cost of a new house is twice as much as it was 20 years ago.",
+            "translation": "新房的平均成本是 20 年前的兩倍。"
+          }
+        ]
+      },
+      {
+        "part_of_speech": "n",
+        "definition": "Manner; way; means; available course; contrivance.",
+        "translation": "方式;方式;方法;可用課程；發明創造。",
+        "order": 2,
+        "examples": []
+      },
+      {
+        "part_of_speech": "n",
+        "definition": "A rib; a side.",
+        "translation": "一根肋骨；一側。",
+        "order": 3,
+        "examples": []
+      }
+    ]
+  },
+  {
+    "text": "creative",
+    "difficulty": 2,
+    "source": "TOEIC",
+    "phonetic": "/kɹiˈeɪtɪv/",
+    "senses": [
+      {
+        "part_of_speech": "n",
+        "definition": "A person directly involved in a creative marketing process.",
+        "translation": "直接參與創意行銷過程的人。",
+        "order": 0,
+        "examples": [
+          {
+            "sentence": "He is a visionary creative.",
+            "translation": "他是一位富有遠見的創意人士。"
+          }
+        ]
+      },
+      {
+        "part_of_speech": "adj",
+        "definition": "Tending to create things, or having the ability to create; often, excellently, in a novel fashion, or any or all of these.",
+        "translation": "傾向於創造事物，或具有創造能力；通常，出色地，以一種新穎的方式，或其中任何一個或全部。",
+        "order": 1,
+        "examples": [
+          {
+            "sentence": "a creative dramatist who avoids cliche",
+            "translation": "一位避免陳腔濫調的創意劇作家"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "text": "customer",
+    "difficulty": 2,
+    "source": "TOEIC",
+    "phonetic": "/ˈkʌstəmə/",
+    "senses": [
+      {
+        "part_of_speech": "n",
+        "definition": "A patron, a client; one who purchases or receives a product or service from a business or merchant, or intends to do so.",
+        "translation": "贊助人，客戶；從企業或商家購買或接收產品或服務或打算這樣做的人。",
+        "order": 0,
+        "examples": [
+          {
+            "sentence": "Every person who passes by is a potential customer.",
+            "translation": "每個路過的人都是潛在客戶。"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "text": "deadline",
+    "difficulty": 2,
+    "source": "TOEIC",
+    "phonetic": "/ˈdɛdˌlaɪn/",
+    "senses": [
+      {
+        "part_of_speech": "n",
+        "definition": "A time limit in the form of a date on or before which something must be completed.",
+        "translation": "日期形式的時間限制，必須在該日期或之前完成某項工作。",
+        "order": 0,
+        "examples": [
+          {
+            "sentence": "I must make this deadline or my boss will kill me!",
+            "translation": "我必須在最後期限前完成，否則我的老闆會殺了我！"
+          }
+        ]
+      },
+      {
+        "part_of_speech": "v",
+        "definition": "To render an item non-mission-capable; to ground an aircraft, etc.",
+        "translation": "使物品無法執行任務；使飛機停飛等",
+        "order": 1,
+        "examples": []
+      }
+    ]
+  },
+  {
+    "text": "decrease",
+    "difficulty": 2,
+    "source": "TOEIC",
+    "phonetic": "",
+    "senses": [
+      {
+        "part_of_speech": "n",
+        "definition": "An amount by which a quantity is decreased.",
+        "translation": "數量減少的量。",
+        "order": 0,
+        "examples": [
+          {
+            "sentence": "One research team has recorded Baishui’s decrease at about 27 meters per year over the last 10 years.",
+            "translation": "一個研究小組記錄，在過去 10 年裡，白水的水位每年下降約 27 公尺。"
+          }
+        ]
+      },
+      {
+        "part_of_speech": "v",
+        "definition": "Of a quantity, to become smaller.",
+        "translation": "量變小。",
+        "order": 1,
+        "examples": []
+      }
+    ]
+  },
+  {
+    "text": "demonstrate",
+    "difficulty": 2,
+    "source": "TOEIC",
+    "phonetic": "/ˈdɛmənstɹeɪt/",
+    "senses": [
+      {
+        "part_of_speech": "v",
+        "definition": "To show how to use (something).",
+        "translation": "展示如何使用（某物）。",
+        "order": 0,
+        "examples": [
+          {
+            "sentence": "Can you demonstrate the new tools for us?",
+            "translation": "您能為我們示範一下新工具嗎？"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "text": "department",
+    "difficulty": 2,
+    "source": "TOEIC",
+    "phonetic": "/dɪˈpɑːtm(ə)nt/",
+    "senses": [
+      {
+        "part_of_speech": "n",
+        "definition": "A part, portion, or subdivision.",
+        "translation": "一部分、部分或細分部分。",
+        "order": 0,
+        "examples": []
+      }
+    ]
+  },
+  {
+    "text": "deserve",
+    "difficulty": 2,
+    "source": "TOEIC",
+    "phonetic": "/dɪˈzɜːv/",
+    "senses": [
+      {
+        "part_of_speech": "v",
+        "definition": "To be entitled to, as a result of past actions; to be worthy to have.",
+        "translation": "由於過去的行為而有權獲得；值得擁有。",
+        "order": 0,
+        "examples": [
+          {
+            "sentence": "After playing so well, the team really deserved their win.",
+            "translation": "在打得如此出色之後，球隊確實配得上這場勝利。"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "text": "determine",
+    "difficulty": 2,
+    "source": "TOEIC",
+    "phonetic": "/dɪˈtɜːmɪn/",
+    "senses": [
+      {
+        "part_of_speech": "v",
+        "definition": "To set the boundaries or limits of.",
+        "translation": "設定邊界或界限。",
+        "order": 0,
+        "examples": []
+      }
+    ]
+  },
+  {
+    "text": "develop",
+    "difficulty": 2,
+    "source": "TOEIC",
+    "phonetic": "/dɛˈvɛ.ləp/",
+    "senses": [
+      {
+        "part_of_speech": "v",
+        "definition": "To change with a specific direction, progress.",
+        "translation": "改變有一個特定的方向，進步。",
+        "order": 0,
+        "examples": [
+          {
+            "sentence": "Let's see how things develop and then make our decision.",
+            "translation": "讓我們看看事情如何發展，然後再做決定。"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "text": "difference",
+    "difficulty": 2,
+    "source": "TOEIC",
+    "phonetic": "/ˈdɪfəɹən(t)s/",
+    "senses": [
+      {
+        "part_of_speech": "n",
+        "definition": "The quality of being different.",
+        "translation": "與眾不同的品質。",
+        "order": 0,
+        "examples": [
+          {
+            "sentence": "You need to learn to be more tolerant of difference.",
+            "translation": "你需要學會更寬容差異。"
+          }
+        ]
+      },
+      {
+        "part_of_speech": "v",
+        "definition": "To distinguish or differentiate.",
+        "translation": "區分或區分。",
+        "order": 1,
+        "examples": []
+      }
+    ]
+  },
+  {
+    "text": "directly",
+    "difficulty": 2,
+    "source": "TOEIC",
+    "phonetic": "/daɪˈɹɛk(t)li/",
+    "senses": [
+      {
+        "part_of_speech": "adv",
+        "definition": "In a direct manner; in a straight line or course.",
+        "translation": "以直接的方式；沿直線或路線。",
+        "order": 0,
+        "examples": [
+          {
+            "sentence": "He drove directly to the office, and didn't stop off at the petrol station.",
+            "translation": "他直接開車去辦公室，沒有在加油站停車。"
+          }
+        ]
+      },
+      {
+        "part_of_speech": "conj",
+        "definition": "As soon as; immediately.",
+        "translation": "立刻;立即地。",
+        "order": 1,
+        "examples": []
+      }
+    ]
+  },
+  {
+    "text": "discipline",
+    "difficulty": 2,
+    "source": "TOEIC",
+    "phonetic": "/ˈdɪ.sə.plɪn/",
+    "senses": [
+      {
+        "part_of_speech": "n",
+        "definition": "A controlled behaviour; self-control.",
+        "translation": "受控的行為；自我控制。",
+        "order": 0,
+        "examples": []
+      },
+      {
+        "part_of_speech": "v",
+        "definition": "To train someone by instruction and practice.",
+        "translation": "透過指導和實踐來訓練某人。",
+        "order": 1,
+        "examples": []
+      }
+    ]
+  },
+  {
+    "text": "discuss",
+    "difficulty": 2,
+    "source": "TOEIC",
+    "phonetic": "/dɪsˈkʊs/",
+    "senses": [
+      {
+        "part_of_speech": "v",
+        "definition": "To converse or debate concerning a particular topic.",
+        "translation": "就特定主題進行交談或辯論。",
+        "order": 0,
+        "examples": [
+          {
+            "sentence": "I don't wish to discuss this further. Let's talk about something else.",
+            "translation": "我不想進一步討論這個問題。我們來談談別的事情吧。"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "text": "distribute",
+    "difficulty": 2,
+    "source": "TOEIC",
+    "phonetic": "/dɨˈstɹɪbjuːt/",
+    "senses": [
+      {
+        "part_of_speech": "v",
+        "definition": "To divide into portions and dispense.",
+        "translation": "分成幾份並分配。",
+        "order": 0,
+        "examples": [
+          {
+            "sentence": "He distributed the bread amongst his followers.",
+            "translation": "他將麵包分發給他的追隨者。"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "text": "document",
+    "difficulty": 2,
+    "source": "TOEIC",
+    "phonetic": "/ˈdɒkjʊmənt/",
+    "senses": [
+      {
+        "part_of_speech": "n",
+        "definition": "An original or official paper used as the basis, proof, or support of anything else, including any writing, book, or other instrument conveying information pertinent to such proof or support.",
+        "translation": "用作其他任何事物的基礎、證明或支持的原始或官方文件，包括傳達與此類證明或支持相關的訊息的任何文字、書籍或其他工具。",
+        "order": 0,
+        "examples": []
+      },
+      {
+        "part_of_speech": "v",
+        "definition": "To record in documents.",
+        "translation": "記錄在文件中。",
+        "order": 1,
+        "examples": [
+          {
+            "sentence": "He documented each step of the process as he did it, which was good when the investigation occurred.",
+            "translation": "他記錄了整個過程的每一步，這在調查發生時是很好的。"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "text": "duration",
+    "difficulty": 2,
+    "source": "TOEIC",
+    "phonetic": "/djʊˈɹeɪʃn̩/",
+    "senses": [
+      {
+        "part_of_speech": "n",
+        "definition": "An amount of time or a particular time interval.",
+        "translation": "一段時間或特定的時間間隔。",
+        "order": 0,
+        "examples": []
+      }
+    ]
+  },
+  {
+    "text": "economic",
+    "difficulty": 2,
+    "source": "TOEIC",
+    "phonetic": "/ˌiːkəˈnɒmɪk/",
+    "senses": [
+      {
+        "part_of_speech": "adj",
+        "definition": "Pertaining to an economy.",
+        "translation": "與經濟有關。",
+        "order": 0,
+        "examples": []
+      }
+    ]
+  },
+  {
+    "text": "effective",
+    "difficulty": 2,
+    "source": "TOEIC",
+    "phonetic": "/əˈfɛktɪv/",
+    "senses": [
+      {
+        "part_of_speech": "n",
+        "definition": "A soldier fit for duty",
+        "translation": "適合執行任務的士兵",
+        "order": 0,
+        "examples": []
+      },
+      {
+        "part_of_speech": "adj",
+        "definition": "Having the power to produce a required effect or effects.",
+        "translation": "具有產生所需效果的能力。",
+        "order": 1,
+        "examples": [
+          {
+            "sentence": "The pill is an effective method of birth control.",
+            "translation": "避孕藥是一種有效的避孕方法。"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "text": "element",
+    "difficulty": 2,
+    "source": "TOEIC",
+    "phonetic": "/ˈɛlɪmənt/",
+    "senses": [
+      {
+        "part_of_speech": "n",
+        "definition": "One of the simplest or essential parts or principles of which anything consists, or upon which the constitution or fundamental powers of anything are based.",
+        "translation": "任何事物組成的最簡單或基本的部分或原則之一，或任何事物的憲法或基本權力所基於的。",
+        "order": 0,
+        "examples": [
+          {
+            "sentence": "Letters are the elements of written language.",
+            "translation": "字母是書寫語言的元素。"
+          }
+        ]
+      },
+      {
+        "part_of_speech": "v",
+        "definition": "To compound of elements.",
+        "translation": "為元素的化合物。",
+        "order": 1,
+        "examples": []
+      }
+    ]
+  },
+  {
+    "text": "emerge",
+    "difficulty": 2,
+    "source": "TOEIC",
+    "phonetic": "/iˈmɜːd͡ʒ/",
+    "senses": [
+      {
+        "part_of_speech": "v",
+        "definition": "To come into view.",
+        "translation": "進入視野。",
+        "order": 0,
+        "examples": []
+      }
+    ]
+  },
+  {
+    "text": "enable",
+    "difficulty": 2,
+    "source": "TOEIC",
+    "phonetic": "/ɪˈneɪbəl/",
+    "senses": [
+      {
+        "part_of_speech": "v",
+        "definition": "To make somebody able (to do, or to be, something); to give sufficient ability or power to do or to be; to give strength or ability to.",
+        "translation": "使某人能夠（做某事或成為某事）；給予足夠的能力或權力去做或成為；給予力量或能力。",
+        "order": 0,
+        "examples": []
+      }
+    ]
+  },
+  {
+    "text": "encourage",
+    "difficulty": 2,
+    "source": "TOEIC",
+    "phonetic": "/ɪnˈkʌɹɪdʒ/",
+    "senses": [
+      {
+        "part_of_speech": "v",
+        "definition": "To mentally support; to motivate, give courage, hope or spirit.",
+        "translation": "精神上的支持；激勵、給予勇氣、希望或精神。",
+        "order": 0,
+        "examples": [
+          {
+            "sentence": "I encouraged him during his race.",
+            "translation": "我在比賽期間鼓勵他。"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "text": "environment",
+    "difficulty": 2,
+    "source": "TOEIC",
+    "phonetic": "/-mɪnt/",
+    "senses": [
+      {
+        "part_of_speech": "n",
+        "definition": "The surroundings of, and influences on, a particular item of interest.",
+        "translation": "特定感興趣項目的周圍環境及其影響。",
+        "order": 0,
+        "examples": []
+      }
+    ]
+  },
+  {
+    "text": "equal",
+    "difficulty": 2,
+    "source": "TOEIC",
+    "phonetic": "/ˈiːkwəl/",
+    "senses": [
+      {
+        "part_of_speech": "n",
+        "definition": "A person or thing of equal status to others.",
+        "translation": "與他人具有同等地位的人或物。",
+        "order": 0,
+        "examples": [
+          {
+            "sentence": "This beer has no equal.",
+            "translation": "這種啤酒無與倫比。"
+          }
+        ]
+      },
+      {
+        "part_of_speech": "v",
+        "definition": "To be equal to, to have the same value as; to correspond to.",
+        "translation": "等於，具有相同的值；對應.",
+        "order": 1,
+        "examples": [
+          {
+            "sentence": "Two plus two equals four.",
+            "translation": "二加二等於四。"
+          }
+        ]
+      },
+      {
+        "part_of_speech": "adj",
+        "definition": "The same in all respects.",
+        "translation": "各方面都一樣。",
+        "order": 2,
+        "examples": [
+          {
+            "sentence": "All men are created equal.",
+            "translation": "人人生而平等。"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "text": "essential",
+    "difficulty": 2,
+    "source": "TOEIC",
+    "phonetic": "/ɪˈsɛn.ʃəl/",
+    "senses": [
+      {
+        "part_of_speech": "n",
+        "definition": "A necessary ingredient.",
+        "translation": "必要的成分。",
+        "order": 0,
+        "examples": []
+      },
+      {
+        "part_of_speech": "adj",
+        "definition": "Necessary.",
+        "translation": "必要的。",
+        "order": 1,
+        "examples": []
+      }
+    ]
+  },
+  {
+    "text": "estimate",
+    "difficulty": 2,
+    "source": "TOEIC",
+    "phonetic": "/ˈɛstɨmɨt/",
+    "senses": [
+      {
+        "part_of_speech": "n",
+        "definition": "A rough calculation or assessment of the value, size, or cost of something.",
+        "translation": "對某物的價值、大小或成本的粗略計算或評估。",
+        "order": 0,
+        "examples": []
+      },
+      {
+        "part_of_speech": "v",
+        "definition": "To calculate roughly, often from imperfect data.",
+        "translation": "通常根據不完美的數據進行粗略計算。",
+        "order": 1,
+        "examples": []
+      }
+    ]
+  },
+  {
+    "text": "evidence",
+    "difficulty": 2,
+    "source": "TOEIC",
+    "phonetic": "[ˈɛvəɾəns]",
+    "senses": [
+      {
+        "part_of_speech": "n",
+        "definition": "Facts or observations presented in support of an assertion.",
+        "translation": "支持主張的事實或觀察結果。",
+        "order": 0,
+        "examples": [
+          {
+            "sentence": "There is no evidence that anyone was here earlier.",
+            "translation": "沒有證據表明有人早些時候來過這裡。"
+          }
+        ]
+      },
+      {
+        "part_of_speech": "v",
+        "definition": "To provide evidence for, or suggest the truth of.",
+        "translation": "提供證據或表明事實的真相。",
+        "order": 1,
+        "examples": [
+          {
+            "sentence": "She was furious, as evidenced by her slamming the door.",
+            "translation": "她很生氣，關上門就證明了這一點。"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "text": "examine",
+    "difficulty": 2,
+    "source": "TOEIC",
+    "phonetic": "/ɪɡˈzæmɪn/",
+    "senses": [
+      {
+        "part_of_speech": "v",
+        "definition": "To observe or inspect carefully or critically",
+        "translation": "仔細或批判性地觀察或檢查",
+        "order": 0,
+        "examples": [
+          {
+            "sentence": "He examined the crime scene for clues.",
+            "translation": "他檢查了犯罪現場尋找線索。"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "text": "executive",
+    "difficulty": 2,
+    "source": "TOEIC",
+    "phonetic": "/ɛɡˈzɛkjʊtɪv/",
+    "senses": [
+      {
+        "part_of_speech": "n",
+        "definition": "A chief officer or administrator, especially one who can make significant decisions on their own authority.",
+        "translation": "首席官員或行政人員，尤其是能夠憑自己的權力做出重大決定的人。",
+        "order": 0,
+        "examples": []
+      },
+      {
+        "part_of_speech": "adj",
+        "definition": "Designed or fitted for execution, or carrying into effect.",
+        "translation": "為執行或實施而設計或安裝。",
+        "order": 1,
+        "examples": []
+      }
+    ]
+  },
+  {
+    "text": "expand",
+    "difficulty": 2,
+    "source": "TOEIC",
+    "phonetic": "/ɛkˈspænd/",
+    "senses": [
+      {
+        "part_of_speech": "v",
+        "definition": "To change (something) from a smaller form and/or size to a larger one; to spread out or lay open.",
+        "translation": "將（某物）從較小的形式和/或尺寸更改為較大的形式和/或尺寸；展開或攤開。",
+        "order": 0,
+        "examples": [
+          {
+            "sentence": "You can expand this compact umbrella to cover a large table.",
+            "translation": "您可以將這把緊湊的雨傘展開以覆蓋一張大桌子。"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "text": "expectation",
+    "difficulty": 2,
+    "source": "TOEIC",
+    "phonetic": "/ɛkspɛkˈteɪʃən/",
+    "senses": [
+      {
+        "part_of_speech": "n",
+        "definition": "The act or state of expecting or looking forward to an event as about to happen.",
+        "translation": "期待或盼望某件事即將發生的行為或狀態。",
+        "order": 0,
+        "examples": []
+      }
+    ]
+  },
+  {
+    "text": "explain",
+    "difficulty": 2,
+    "source": "TOEIC",
+    "phonetic": "/ɛkˈspleɪn/",
+    "senses": [
+      {
+        "part_of_speech": "v",
+        "definition": "To make plain, manifest, or intelligible; to clear of obscurity; to illustrate the meaning of.",
+        "translation": "使明白、明顯或易於理解；消除晦澀難懂；來說明其意義。",
+        "order": 0,
+        "examples": [
+          {
+            "sentence": "To explain a chapter of the Bible.",
+            "translation": "解釋聖經的一章。"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "text": "explore",
+    "difficulty": 2,
+    "source": "TOEIC",
+    "phonetic": "/ɪkˈsplɔː/",
+    "senses": [
+      {
+        "part_of_speech": "n",
+        "definition": "An exploration; a tour of a place to see what it is like.",
+        "translation": "一次探索；遊覽一個地方，看看它是什麼樣的。",
+        "order": 0,
+        "examples": []
+      },
+      {
+        "part_of_speech": "v",
+        "definition": "To seek for something or after someone.",
+        "translation": "尋找某事或追隨某人。",
+        "order": 1,
+        "examples": []
+      }
+    ]
+  },
+  {
+    "text": "extend",
+    "difficulty": 2,
+    "source": "TOEIC",
+    "phonetic": "/ɛkˈstɛnd/",
+    "senses": [
+      {
+        "part_of_speech": "v",
+        "definition": "To increase in extent.",
+        "translation": "以增加程度。",
+        "order": 0,
+        "examples": []
+      }
+    ]
+  },
+  {
+    "text": "external",
+    "difficulty": 2,
+    "source": "TOEIC",
+    "phonetic": "/əksˈtɜːnəl/",
+    "senses": [
+      {
+        "part_of_speech": "n",
+        "definition": "(chiefly in the plural) The exterior; outward features or appearances.",
+        "translation": "（主要是複數）外部；外在特徵或外觀。",
+        "order": 0,
+        "examples": []
+      },
+      {
+        "part_of_speech": "adj",
+        "definition": "Outside of something; on the exterior.",
+        "translation": "在某物之外；在外部。",
+        "order": 1,
+        "examples": [
+          {
+            "sentence": "This building has some external pipework.",
+            "translation": "建築物有一些外部管道。"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "text": "factor",
+    "difficulty": 2,
+    "source": "TOEIC",
+    "phonetic": "/ˈfæktə/",
+    "senses": [
+      {
+        "part_of_speech": "n",
+        "definition": "A doer, maker; a person who does things for another person or organization.",
+        "translation": "實幹家、創造者；為另一個人或組織做事的人。",
+        "order": 0,
+        "examples": [
+          {
+            "sentence": "The factor of the trading post bought the furs.",
+            "translation": "貿易站的因素購買了毛皮。"
+          }
+        ]
+      },
+      {
+        "part_of_speech": "v",
+        "definition": "To find all the factors of (a number or other mathematical object) (the objects that divide it evenly).",
+        "translation": "找出（一個數字或其他數學物件）的所有因數（將其整除的物件）。",
+        "order": 1,
+        "examples": []
+      }
+    ]
+  },
+  {
+    "text": "failure",
+    "difficulty": 2,
+    "source": "TOEIC",
+    "phonetic": "/ˈfeɪl.jɚ/",
+    "senses": [
+      {
+        "part_of_speech": "n",
+        "definition": "State or condition of not meeting a desirable or intended objective, opposite of success.",
+        "translation": "未達到理想或預期目標的狀態或狀況，與成功相反。",
+        "order": 0,
+        "examples": []
+      }
+    ]
+  },
+  {
+    "text": "finance",
+    "difficulty": 2,
+    "source": "TOEIC",
+    "phonetic": "/faɪˈnæns/",
+    "senses": [
+      {
+        "part_of_speech": "n",
+        "definition": "The management of money and other assets.",
+        "translation": "金錢和其他資產的管理。",
+        "order": 0,
+        "examples": []
+      },
+      {
+        "part_of_speech": "v",
+        "definition": "To conduct, or procure money for, financial operations; manage finances.",
+        "translation": "進行金融業務或為金融業務籌集資金；理財。",
+        "order": 1,
+        "examples": []
+      }
+    ]
+  },
+  {
+    "text": "focus",
+    "difficulty": 2,
+    "source": "TOEIC",
+    "phonetic": "/ˈfəʊ.kəs/",
+    "senses": [
+      {
+        "part_of_speech": "n",
+        "definition": "A point at which reflected or refracted rays of light converge.",
+        "translation": "反射或折射光線會聚的點。",
+        "order": 0,
+        "examples": [
+          {
+            "sentence": "The heat of sunlight at the focus of a magnifying glass can easily set dry leaves on fire.",
+            "translation": "放大鏡焦點處的陽光熱量很容易使乾樹葉著火。"
+          }
+        ]
+      },
+      {
+        "part_of_speech": "v",
+        "definition": "(followed by on or upon) To concentrate one's attention.",
+        "translation": "（後面跟在或之上）集中註意力。",
+        "order": 1,
+        "examples": [
+          {
+            "sentence": "I have to focus on my work.",
+            "translation": "我必須專注於我的工作。"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "text": "follow",
+    "difficulty": 2,
+    "source": "TOEIC",
+    "phonetic": "/ˈfɒləʊ/",
+    "senses": [
+      {
+        "part_of_speech": "n",
+        "definition": "(sometimes attributive) In billiards and similar games, a stroke causing a ball to follow another ball after hitting it.",
+        "translation": "（有時是定語）在台球和類似遊戲中，擊球使一個球在擊中另一個球後跟隨另一個球。",
+        "order": 0,
+        "examples": [
+          {
+            "sentence": "a follow shot",
+            "translation": "跟拍"
+          }
+        ]
+      },
+      {
+        "part_of_speech": "v",
+        "definition": "To go after; to pursue; to move behind in the same path or direction.",
+        "translation": "去追尋；追求；沿著相同的路徑或方向向後移動。",
+        "order": 1,
+        "examples": [
+          {
+            "sentence": "Follow that car!",
+            "translation": "跟著那輛車！"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "text": "formal",
+    "difficulty": 2,
+    "source": "TOEIC",
+    "phonetic": "/ˈfɔːməl/",
+    "senses": [
+      {
+        "part_of_speech": "n",
+        "definition": "Formalin.",
+        "translation": "福馬林。",
+        "order": 0,
+        "examples": []
+      },
+      {
+        "part_of_speech": "adj",
+        "definition": "Being in accord with established forms.",
+        "translation": "符合既定形式。",
+        "order": 1,
+        "examples": [
+          {
+            "sentence": "She spoke formal English, without any dialect.",
+            "translation": "她說的是正式英語，沒有任何方言。"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "text": "foundation",
+    "difficulty": 2,
+    "source": "TOEIC",
+    "phonetic": "/faʊnˈdeɪʃən/",
+    "senses": [
+      {
+        "part_of_speech": "n",
+        "definition": "The act of founding, fixing, establishing, or beginning to erect.",
+        "translation": "建立、固定、建立或開始建立的行為。",
+        "order": 0,
+        "examples": [
+          {
+            "sentence": "The foundation of his institute has been wrought with difficulty.",
+            "translation": "他的研究所的建立是艱難的。"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "text": "function",
+    "difficulty": 2,
+    "source": "TOEIC",
+    "phonetic": "/ˈfʌŋ(k)ʃən/",
+    "senses": [
+      {
+        "part_of_speech": "n",
+        "definition": "What something does or is used for.",
+        "translation": "某物的作用或用途。",
+        "order": 0,
+        "examples": []
+      },
+      {
+        "part_of_speech": "v",
+        "definition": "To have a function.",
+        "translation": "要有一個功能。",
+        "order": 1,
+        "examples": []
+      }
+    ]
+  },
+  {
+    "text": "guarantee",
+    "difficulty": 2,
+    "source": "TOEIC",
+    "phonetic": "/ˌɡæɹənˈtiː/",
+    "senses": [
+      {
+        "part_of_speech": "n",
+        "definition": "Anything that assures a certain outcome.",
+        "translation": "任何能保證一定結果的事。",
+        "order": 0,
+        "examples": [
+          {
+            "sentence": "Can you give me a guarantee that he will be fit for the match?",
+            "translation": "你能向我保證他能夠參加比賽嗎？"
+          }
+        ]
+      },
+      {
+        "part_of_speech": "v",
+        "definition": "To give an assurance that something will be done right.",
+        "translation": "保證某事將會正確完成。",
+        "order": 1,
+        "examples": []
+      }
+    ]
+  },
+  {
+    "text": "guidance",
+    "difficulty": 2,
+    "source": "TOEIC",
+    "phonetic": "/ˈɡaɪdəns/",
+    "senses": [
+      {
+        "part_of_speech": "n",
+        "definition": "The act or process of guiding.",
+        "translation": "指導的行為或過程。",
+        "order": 0,
+        "examples": []
+      }
+    ]
+  },
+  {
+    "text": "hire",
+    "difficulty": 2,
+    "source": "TOEIC",
+    "phonetic": "/haɪə/",
+    "senses": [
+      {
+        "part_of_speech": "n",
+        "definition": "Payment for the temporary use of something.",
+        "translation": "臨時使用某物的付款。",
+        "order": 0,
+        "examples": [
+          {
+            "sentence": "The sign offered pedalos on hire.",
+            "translation": "標誌上提供腳踏船出租服務。"
+          }
+        ]
+      },
+      {
+        "part_of_speech": "v",
+        "definition": "To obtain the services of in return for fixed payment.",
+        "translation": "獲得服務以換取固定付款。",
+        "order": 1,
+        "examples": [
+          {
+            "sentence": "We hired a car for two weeks because ours had broken down.",
+            "translation": "我們租了一輛車兩週，因為我們的車壞了。"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "text": "impact",
+    "difficulty": 2,
+    "source": "TOEIC",
+    "phonetic": "",
+    "senses": [
+      {
+        "part_of_speech": "n",
+        "definition": "The striking of one body against another; collision.",
+        "translation": "一個身體撞擊另一個身體；碰撞。",
+        "order": 0,
+        "examples": []
+      },
+      {
+        "part_of_speech": "v",
+        "definition": "To collide or strike, the act of impinging.",
+        "translation": "碰撞或撞擊，撞擊的行為。",
+        "order": 1,
+        "examples": [
+          {
+            "sentence": "When the hammer impacts the nail, it bends.",
+            "translation": "當錘子撞擊釘子時，釘子就會彎曲。"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "text": "improve",
+    "difficulty": 2,
+    "source": "TOEIC",
+    "phonetic": "/ɪmˈpɹuːv/",
+    "senses": [
+      {
+        "part_of_speech": "v",
+        "definition": "To make (something) better; to increase the value or productivity (of something).",
+        "translation": "使（某事）變得更好；增加（某物）的價值或生產力。",
+        "order": 0,
+        "examples": [
+          {
+            "sentence": "Buying more servers would improve performance.",
+            "translation": "購買更多伺服器可以提高效能。"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "text": "include",
+    "difficulty": 2,
+    "source": "TOEIC",
+    "phonetic": "/ɪnˈkluːd/",
+    "senses": [
+      {
+        "part_of_speech": "n",
+        "definition": "A piece of source code or other content that is dynamically retrieved for inclusion in another item.",
+        "translation": "動態檢索以包含在另一個專案中的一段原始程式碼或其他內容。",
+        "order": 0,
+        "examples": []
+      },
+      {
+        "part_of_speech": "v",
+        "definition": "To bring into a group, class, set, or total as a (new) part or member.",
+        "translation": "作為（新）部分或成員帶入小組、班級、集合或全體。",
+        "order": 1,
+        "examples": [
+          {
+            "sentence": "I will purchase the vacation package if you will include car rental.",
+            "translation": "如果您包含汽車租賃，我將購買度假套餐。"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "text": "increase",
+    "difficulty": 2,
+    "source": "TOEIC",
+    "phonetic": "",
+    "senses": [
+      {
+        "part_of_speech": "n",
+        "definition": "An amount by which a quantity is increased.",
+        "translation": "數量增加的金額。",
+        "order": 0,
+        "examples": []
+      },
+      {
+        "part_of_speech": "v",
+        "definition": "(of a quantity, etc.) To become larger or greater.",
+        "translation": "（數量等）變得更大或更大。",
+        "order": 1,
+        "examples": [
+          {
+            "sentence": "His rage only increased when I told him of the lost money.",
+            "translation": "當我告訴他錢丟了的事時，他的怒火只增不減。"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "text": "indicate",
+    "difficulty": 2,
+    "source": "TOEIC",
+    "phonetic": "/ˈɪndɪkeɪt/",
+    "senses": [
+      {
+        "part_of_speech": "v",
+        "definition": "To point out; to discover; to direct to a knowledge of; to show; to make known.",
+        "translation": "指出；發現；直接了解…的知識；展示；使人知道。",
+        "order": 0,
+        "examples": [
+          {
+            "sentence": "The guard blew his whistle to indicate imminent departure.",
+            "translation": "警衛吹響了哨子，示意即將離開。"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "text": "individual",
+    "difficulty": 2,
+    "source": "TOEIC",
+    "phonetic": "/ˌɘndɘˈvɘd͡ʒɘl/",
+    "senses": [
+      {
+        "part_of_speech": "n",
+        "definition": "A person considered alone, rather than as belonging to a group of people.",
+        "translation": "一個人被認為是孤獨的，而不是屬於一群人。",
+        "order": 0,
+        "examples": [
+          {
+            "sentence": "He is an unusual individual.",
+            "translation": "他是一個不尋常的人。"
+          }
+        ]
+      },
+      {
+        "part_of_speech": "adj",
+        "definition": "Relating to a single person or thing as opposed to more than one.",
+        "translation": "與一個人或一件事有關，而不是多個人或事。",
+        "order": 1,
+        "examples": [
+          {
+            "sentence": "As we can't print them all together, the individual pages will have to be printed one by one.",
+            "translation": "由於我們無法將它們全部列印在一起，因此必須一頁一頁地列印各個頁面。"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "text": "inform",
+    "difficulty": 2,
+    "source": "TOEIC",
+    "phonetic": "/ɪnˈfɔːm/",
+    "senses": [
+      {
+        "part_of_speech": "v",
+        "definition": "To instruct, train (usually in matters of knowledge).",
+        "translation": "指導、培訓（通常是知識方面的）。",
+        "order": 0,
+        "examples": []
+      },
+      {
+        "part_of_speech": "adj",
+        "definition": "Without regular form; shapeless; ugly; deformed.",
+        "translation": "無規則形式；無形的；醜陋的;變形了。",
+        "order": 1,
+        "examples": []
+      }
+    ]
+  },
+  {
+    "text": "innovation",
+    "difficulty": 2,
+    "source": "TOEIC",
+    "phonetic": "/ˌɪnəˈveɪʃən/",
+    "senses": [
+      {
+        "part_of_speech": "n",
+        "definition": "The act of innovating; the introduction of something new, in customs, rites, etc.",
+        "translation": "創新行為；在風俗、儀式等方面引進新事物",
+        "order": 0,
+        "examples": []
+      }
+    ]
+  },
+  {
+    "text": "input",
+    "difficulty": 2,
+    "source": "TOEIC",
+    "phonetic": "/ˈɪnpʊt/",
+    "senses": [
+      {
+        "part_of_speech": "n",
+        "definition": "The act or process of putting in; infusion.",
+        "translation": "投入的行為或過程；輸液。",
+        "order": 0,
+        "examples": []
+      },
+      {
+        "part_of_speech": "v",
+        "definition": "To put in; put on.",
+        "translation": "放入；穿。",
+        "order": 1,
+        "examples": []
+      }
+    ]
+  },
+  {
+    "text": "investment",
+    "difficulty": 2,
+    "source": "TOEIC",
+    "phonetic": "/ɪnˈvɛsmənt/",
+    "senses": [
+      {
+        "part_of_speech": "n",
+        "definition": "The act of investing, or state of being invested.",
+        "translation": "投資行為或被投資狀態。",
+        "order": 0,
+        "examples": [
+          {
+            "sentence": "Giving your children a good education is a wise long-term investment.",
+            "translation": "為孩子提供良好的教育是一項明智的長期投資。"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "text": "involve",
+    "difficulty": 2,
+    "source": "TOEIC",
+    "phonetic": "/ɪnˈvɒlv/",
+    "senses": [
+      {
+        "part_of_speech": "v",
+        "definition": "To roll or fold up; to wind round; to entwine.",
+        "translation": "捲起或折疊起來；繞圈；纏繞。",
+        "order": 0,
+        "examples": []
+      }
+    ]
+  },
+  {
+    "text": "issue",
+    "difficulty": 2,
+    "source": "TOEIC",
+    "phonetic": "/ˈɪsjuː/",
+    "senses": [
+      {
+        "part_of_speech": "n",
+        "definition": "The action or an instance of flowing or coming out, an outflow, particularly:",
+        "translation": "流動或出來、流出的動作或實例，特別是：",
+        "order": 0,
+        "examples": []
+      },
+      {
+        "part_of_speech": "v",
+        "definition": "To flow out, to proceed from, to come out or from.",
+        "translation": "流出、出發、出來或從。",
+        "order": 1,
+        "examples": [
+          {
+            "sentence": "The rents issuing from the land permitted him to live as a man of independent means.",
+            "translation": "土地發出的租金使他能夠過著獨立生活。"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "text": "justify",
+    "difficulty": 2,
+    "source": "TOEIC",
+    "phonetic": "/ˈdʒʌstɪfaɪ/",
+    "senses": [
+      {
+        "part_of_speech": "v",
+        "definition": "To provide an acceptable explanation for.",
+        "translation": "提供一個可以接受的解釋。",
+        "order": 0,
+        "examples": [
+          {
+            "sentence": "How can you justify spending so much money on clothes?",
+            "translation": "你怎麼能證明花這麼多錢買衣服是合理的呢？"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "text": "knowledge",
+    "difficulty": 2,
+    "source": "TOEIC",
+    "phonetic": "/ˈnɒlɪdʒ/",
+    "senses": [
+      {
+        "part_of_speech": "n",
+        "definition": "The fact of knowing about something; general understanding or familiarity with a subject, place, situation etc.",
+        "translation": "了解某事的事實；對主題、地點、情況等的一般理解或熟悉。",
+        "order": 0,
+        "examples": [
+          {
+            "sentence": "His knowledge of Iceland was limited to what he'd seen on the Travel Channel.",
+            "translation": "他對冰島的了解僅限於在旅遊頻道上看到的內容。"
+          }
+        ]
+      },
+      {
+        "part_of_speech": "v",
+        "definition": "To confess as true; to acknowledge.",
+        "translation": "承認是真的；承認。",
+        "order": 1,
+        "examples": []
+      }
+    ]
+  },
+  {
+    "text": "label",
+    "difficulty": 2,
+    "source": "TOEIC",
+    "phonetic": "/ˈleɪbəl/",
+    "senses": [
+      {
+        "part_of_speech": "n",
+        "definition": "A small ticket or sign giving information about something to which it is attached or intended to be attached.",
+        "translation": "一種小票或標誌，提供有關其所附著或打算附著的物品的資訊。",
+        "order": 0,
+        "examples": [
+          {
+            "sentence": "Although the label priced this poster at three pounds, I got it for two.",
+            "translation": "雖然這張海報的標籤標價為三英鎊，但我卻花了兩英鎊買了它。"
+          }
+        ]
+      },
+      {
+        "part_of_speech": "v",
+        "definition": "To put a label (a ticket or sign) on (something).",
+        "translation": "在（某物）上貼上標籤（票據或標誌）。",
+        "order": 1,
+        "examples": [
+          {
+            "sentence": "The shop assistant labeled all the products in the shop.",
+            "translation": "店員給店裡所有的產品貼上了標籤。"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "text": "leadership",
+    "difficulty": 2,
+    "source": "TOEIC",
+    "phonetic": "/ˈliːdəʃɪp/",
+    "senses": [
+      {
+        "part_of_speech": "n",
+        "definition": "The capacity of someone to lead others.",
+        "translation": "某人領導他人的能力。",
+        "order": 0,
+        "examples": []
+      }
+    ]
+  },
+  {
+    "text": "liability",
+    "difficulty": 2,
+    "source": "TOEIC",
+    "phonetic": "/laɪəˈbɪlɪti/",
+    "senses": [
+      {
+        "part_of_speech": "n",
+        "definition": "An obligation, debt or responsibility owed to someone.",
+        "translation": "對某人負有的義務、債務或責任。",
+        "order": 0,
+        "examples": []
+      }
+    ]
+  },
+  {
+    "text": "limit",
+    "difficulty": 2,
+    "source": "TOEIC",
+    "phonetic": "/ˈlɪmt/",
+    "senses": [
+      {
+        "part_of_speech": "n",
+        "definition": "A restriction; a bound beyond which one may not go.",
+        "translation": "限制；一個人不能超越的界限。",
+        "order": 0,
+        "examples": [
+          {
+            "sentence": "There are several existing limits to executive power.",
+            "translation": "行政權力存在一些現有的限制。"
+          }
+        ]
+      },
+      {
+        "part_of_speech": "adj",
+        "definition": "Being a fixed limit game.",
+        "translation": "是一個固定限額遊戲。",
+        "order": 1,
+        "examples": []
+      },
+      {
+        "part_of_speech": "v",
+        "definition": "To restrict; not to allow to go beyond a certain bound, to set boundaries.",
+        "translation": "限制；不准超越一定的界限，設定界限。",
+        "order": 2,
+        "examples": [
+          {
+            "sentence": "I'm limiting myself to two drinks tonight.",
+            "translation": "今晚我限制自己喝兩杯。"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "text": "maintain",
+    "difficulty": 2,
+    "source": "TOEIC",
+    "phonetic": "/meɪnˈteɪn/",
+    "senses": [
+      {
+        "part_of_speech": "v",
+        "definition": "To support (someone), to back up or assist (someone) in an action.",
+        "translation": "支持（某人）、支持或協助（某人）採取行動。",
+        "order": 0,
+        "examples": []
+      }
+    ]
+  },
+  {
+    "text": "manage",
+    "difficulty": 2,
+    "source": "TOEIC",
+    "phonetic": "/ˈmænɪdʒ/",
+    "senses": [
+      {
+        "part_of_speech": "n",
+        "definition": "The act of managing or controlling something.",
+        "translation": "管理或控制某事物的行為。",
+        "order": 0,
+        "examples": []
+      },
+      {
+        "part_of_speech": "v",
+        "definition": "To direct or be in charge of.",
+        "translation": "指導或負責。",
+        "order": 1,
+        "examples": []
+      }
+    ]
+  },
+  {
+    "text": "market",
+    "difficulty": 2,
+    "source": "TOEIC",
+    "phonetic": "/ˈmɑːkɪt/",
+    "senses": [
+      {
+        "part_of_speech": "n",
+        "definition": "A gathering of people for the purchase and sale of merchandise at a set time, often periodic.",
+        "translation": "人們在規定的時間（通常是週期性的）聚集在一起購買和銷售商品。",
+        "order": 0,
+        "examples": [
+          {
+            "sentence": "The privilege to hold a weekly market was invaluable for any feudal era burgh.",
+            "translation": "對於任何封建時代的城鎮來說，每週舉辦一次市集的特權都是無價的。"
+          }
+        ]
+      },
+      {
+        "part_of_speech": "v",
+        "definition": "To make (products or services) available for sale and promote them.",
+        "translation": "使（產品或服務）可供銷售並進行推廣。",
+        "order": 1,
+        "examples": [
+          {
+            "sentence": "We plan to market an ecology model by next quarter.",
+            "translation": "我們計劃在下個季度之前推出生態模型。"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "text": "measure",
+    "difficulty": 2,
+    "source": "TOEIC",
+    "phonetic": "/ˈmɛʒə/",
+    "senses": [
+      {
+        "part_of_speech": "n",
+        "definition": "A prescribed quantity or extent.",
+        "translation": "規定的數量或範圍。",
+        "order": 0,
+        "examples": []
+      },
+      {
+        "part_of_speech": "v",
+        "definition": "To ascertain the quantity of a unit of material via calculated comparison with respect to a standard.",
+        "translation": "透過與標準的計算比較來確定單位材料的數量。",
+        "order": 1,
+        "examples": [
+          {
+            "sentence": "We measured the temperature with a thermometer.   You should measure the angle with a spirit level.",
+            "translation": "我們用溫度計測量了溫度。   您應該用水平儀測量角度。"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "text": "method",
+    "difficulty": 2,
+    "source": "TOEIC",
+    "phonetic": "/ˈmɛθəd/",
+    "senses": [
+      {
+        "part_of_speech": "n",
+        "definition": "A process by which a task is completed; a way of doing something (followed by the adposition of, to or for before the purpose of the process):",
+        "translation": "完成任務的過程；做某事的一種方式（在過程的目的之前附加、到或為了）：",
+        "order": 0,
+        "examples": [
+          {
+            "sentence": "If one method doesn't work, you should ask a friend to help you.",
+            "translation": "如果一種方法不起作用，你應該請朋友來幫助你。"
+          }
+        ]
+      },
+      {
+        "part_of_speech": "v",
+        "definition": "To apply a method",
+        "translation": "應用方法",
+        "order": 1,
+        "examples": []
+      },
+      {
+        "part_of_speech": "n",
+        "definition": "A trick where the boarder grabs the heel edge of the board with their back hand, between their feet, and then pulls the board towards their back, while arching their back and bending knees.",
+        "translation": "一種技巧，滑板者用後手在雙腳之間抓住板子的後跟邊緣，然後將板子拉向背部，同時拱起背部並彎曲膝蓋。",
+        "order": 2,
+        "examples": []
+      }
+    ]
+  },
+  {
+    "text": "minimum",
+    "difficulty": 2,
+    "source": "TOEIC",
+    "phonetic": "/ˈmɪn.ɪ.məm/",
+    "senses": [
+      {
+        "part_of_speech": "n",
+        "definition": "The lowest limit.",
+        "translation": "最低限度。",
+        "order": 0,
+        "examples": [
+          {
+            "sentence": "We need a minimum of three staff members on duty at all time.",
+            "translation": "我們始終需要至少三名工作人員值班。"
+          }
+        ]
+      },
+      {
+        "part_of_speech": "adj",
+        "definition": "To the lowest degree.",
+        "translation": "到最低程度。",
+        "order": 1,
+        "examples": []
+      }
+    ]
+  },
+  {
+    "text": "moderate",
+    "difficulty": 2,
+    "source": "TOEIC",
+    "phonetic": "/ˈmɑdəɹeɪt/",
+    "senses": [
+      {
+        "part_of_speech": "n",
+        "definition": "One who holds an intermediate position between extremes, as in politics.",
+        "translation": "一個處於極端之間的中間立場的人，例如在政治領域。",
+        "order": 0,
+        "examples": [
+          {
+            "sentence": "The moderates are the natural advocates of ecumenism against the fanatics of their churches.",
+            "translation": "溫和派是普世主義的天然倡導者，反對教會的狂熱分子。"
+          }
+        ]
+      },
+      {
+        "part_of_speech": "v",
+        "definition": "To reduce the excessiveness of (something)",
+        "translation": "減少（某事）的過度",
+        "order": 1,
+        "examples": [
+          {
+            "sentence": "to moderate rage, action, desires, etc.",
+            "translation": "控制憤怒、行動、慾望等。"
+          }
+        ]
+      },
+      {
+        "part_of_speech": "adj",
+        "definition": "Not excessive; acting in moderation",
+        "translation": "不過度；適度行事",
+        "order": 2,
+        "examples": [
+          {
+            "sentence": "a moderate Calvinist",
+            "translation": "溫和的加爾文主義者"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "text": "monitor",
+    "difficulty": 2,
+    "source": "TOEIC",
+    "phonetic": "/ˈmɒnɨtə/",
+    "senses": [
+      {
+        "part_of_speech": "n",
+        "definition": "Someone who watches over something; a person in charge of something or someone.",
+        "translation": "監視某事的人；負責某事或某人的人。",
+        "order": 0,
+        "examples": [
+          {
+            "sentence": "The camp monitors look after the children during the night, when the teachers are asleep.",
+            "translation": "夜間，當老師們睡覺時，營地的監護人會照顧孩子。"
+          }
+        ]
+      },
+      {
+        "part_of_speech": "v",
+        "definition": "To watch over; to guard.",
+        "translation": "監視；去守護。",
+        "order": 1,
+        "examples": []
+      }
+    ]
+  },
+  {
+    "text": "motivate",
+    "difficulty": 2,
+    "source": "TOEIC",
+    "phonetic": "/ˈməʊtɪveɪt/",
+    "senses": [
+      {
+        "part_of_speech": "v",
+        "definition": "To provide someone with an incentive to do something; to encourage.",
+        "translation": "為某人提供做某事的動力；鼓勵。",
+        "order": 0,
+        "examples": [
+          {
+            "sentence": "The weekly staff meeting was meant to motivate employees.",
+            "translation": "每週一次的員工會議旨在激勵員工。"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "text": "negotiate",
+    "difficulty": 2,
+    "source": "TOEIC",
+    "phonetic": "/nəˈɡəʊ.ʃi.eɪt/",
+    "senses": [
+      {
+        "part_of_speech": "v",
+        "definition": "To confer with others in order to come to terms or reach an agreement.",
+        "translation": "與他人協商以達成協議或達成協議。",
+        "order": 0,
+        "examples": []
+      }
+    ]
+  },
+  {
+    "text": "normal",
+    "difficulty": 2,
+    "source": "TOEIC",
+    "phonetic": "/ˈnɔːməl/",
+    "senses": [
+      {
+        "part_of_speech": "n",
+        "definition": "A line or vector that is perpendicular to another line, surface, or plane.",
+        "translation": "垂直於另一條線、曲面或平面的線或向量。",
+        "order": 0,
+        "examples": []
+      },
+      {
+        "part_of_speech": "adj",
+        "definition": "According to norms or rules or to a regular pattern.",
+        "translation": "根據規範或規則或有規律的模式。",
+        "order": 1,
+        "examples": [
+          {
+            "sentence": "Organize the data into third normal form.",
+            "translation": "將資料組織成第三範式。"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "text": "objective",
+    "difficulty": 2,
+    "source": "TOEIC",
+    "phonetic": "/ɒbˈd͡ʒɛk.tɪv/",
+    "senses": [
+      {
+        "part_of_speech": "n",
+        "definition": "A material object that physically exists.",
+        "translation": "物理存在的物質對象。",
+        "order": 0,
+        "examples": []
+      },
+      {
+        "part_of_speech": "adj",
+        "definition": "Of or relating to a material object, actual existence or reality.",
+        "translation": "屬於或與物質對象、實際存在或現實相關的。",
+        "order": 1,
+        "examples": []
+      }
+    ]
+  },
+  {
+    "text": "opportunity",
+    "difficulty": 2,
+    "source": "TOEIC",
+    "phonetic": "/ˌɒp.əˈtjuː.nɪ.tɪ/",
+    "senses": [
+      {
+        "part_of_speech": "n",
+        "definition": "A chance for advancement, progress or profit.",
+        "translation": "晉升、進步或利潤的機會。",
+        "order": 0,
+        "examples": [
+          {
+            "sentence": "The world is full of opportunities and it's up to me to see them and pursue them.",
+            "translation": "世界充滿了機會，就看我去發現它們並去追求它們​​。"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "text": "organize",
+    "difficulty": 2,
+    "source": "TOEIC",
+    "phonetic": "/ˈɔːɡənaɪz/",
+    "senses": [
+      {
+        "part_of_speech": "v",
+        "definition": "To arrange in working order.",
+        "translation": "要按工作順序安排。",
+        "order": 0,
+        "examples": []
+      }
+    ]
+  },
+  {
+    "text": "output",
+    "difficulty": 2,
+    "source": "TOEIC",
+    "phonetic": "/ˈaʊtpʊt/",
+    "senses": [
+      {
+        "part_of_speech": "n",
+        "definition": "Production; quantity produced, created, or completed.",
+        "translation": "生產;生產、創建或完成的數量。",
+        "order": 0,
+        "examples": [
+          {
+            "sentence": "The factory increased its output this year.",
+            "translation": "今年工廠增加了產量。"
+          }
+        ]
+      },
+      {
+        "part_of_speech": "v",
+        "definition": "To produce, create, or complete.",
+        "translation": "生產、創造或完成。",
+        "order": 1,
+        "examples": [
+          {
+            "sentence": "We output 1400 units last year.",
+            "translation": "去年我們的產量為 1400 台。"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "text": "participate",
+    "difficulty": 2,
+    "source": "TOEIC",
+    "phonetic": "/pɑːˈtɪsɪpeɪt/",
+    "senses": [
+      {
+        "part_of_speech": "v",
+        "definition": "To join in, to take part, to involve oneself (in something).",
+        "translation": "加入、參加、使自己（參與某事）。",
+        "order": 0,
+        "examples": []
+      },
+      {
+        "part_of_speech": "adj",
+        "definition": "Acting in common; participating.",
+        "translation": "共同行事；參與。",
+        "order": 1,
+        "examples": []
+      }
+    ]
+  },
+  {
+    "text": "performance",
+    "difficulty": 2,
+    "source": "TOEIC",
+    "phonetic": "[pə.ˈfɔː.məns]",
+    "senses": [
+      {
+        "part_of_speech": "n",
+        "definition": "The act of performing; carrying into execution or action; execution; achievement; accomplishment; representation by action.",
+        "translation": "表演的行為；實施或採取行動；執行;成就;成就;以行動代表。",
+        "order": 0,
+        "examples": [
+          {
+            "sentence": "the performance of an undertaking or a duty",
+            "translation": "履行承諾或職責"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "text": "permit",
+    "difficulty": 2,
+    "source": "TOEIC",
+    "phonetic": "/ˈpɜːmɪt/",
+    "senses": [
+      {
+        "part_of_speech": "n",
+        "definition": "An artifact or document rendering something allowed or legal.",
+        "translation": "呈現允許或合法的事物的工件或文件。",
+        "order": 0,
+        "examples": [
+          {
+            "sentence": "A construction permit can be obtained from the town offices.",
+            "translation": "施工許可證可以從鎮辦公室獲得。"
+          }
+        ]
+      },
+      {
+        "part_of_speech": "v",
+        "definition": "To allow (something) to happen, to give permission for.",
+        "translation": "允許（某事）發生，給予許可。",
+        "order": 1,
+        "examples": []
+      },
+      {
+        "part_of_speech": "n",
+        "definition": "A pompano of the species Trachinotus falcatus.",
+        "translation": "鯧鯧屬 Trachinotus falcatus。",
+        "order": 2,
+        "examples": []
+      }
+    ]
+  },
+  {
+    "text": "perspective",
+    "difficulty": 2,
+    "source": "TOEIC",
+    "phonetic": "/pɚˈspɛktɪv/",
+    "senses": [
+      {
+        "part_of_speech": "n",
+        "definition": "A view, vista or outlook.",
+        "translation": "景色、遠景或展望。",
+        "order": 0,
+        "examples": []
+      },
+      {
+        "part_of_speech": "adj",
+        "definition": "Of, in or relating to perspective.",
+        "translation": "屬於、屬於或與觀點有關的。",
+        "order": 1,
+        "examples": [
+          {
+            "sentence": "a perspective drawing",
+            "translation": "透視圖"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "text": "policy",
+    "difficulty": 2,
+    "source": "TOEIC",
+    "phonetic": "/ˈpɒləsi/",
+    "senses": [
+      {
+        "part_of_speech": "n",
+        "definition": "A principle of behaviour, conduct etc. thought to be desirable or necessary, especially as formally expressed by a government or other authoritative body.",
+        "translation": "被認為是可取或必要的行為、行為等原則，尤其是由政府或其他權威機構正式表達的。",
+        "order": 0,
+        "examples": [
+          {
+            "sentence": "The Communist Party has a policy of returning power to the workers.",
+            "translation": "共產黨有一項將權力還給工人的政策。"
+          }
+        ]
+      },
+      {
+        "part_of_speech": "v",
+        "definition": "To regulate by laws; to reduce to order.",
+        "translation": "依法規範；減少訂單。",
+        "order": 1,
+        "examples": []
+      },
+      {
+        "part_of_speech": "n",
+        "definition": "A contract of insurance.",
+        "translation": "保險契約。",
+        "order": 2,
+        "examples": []
+      }
+    ]
+  },
+  {
+    "text": "potential",
+    "difficulty": 2,
+    "source": "TOEIC",
+    "phonetic": "/pəˈtɛnʃəl/",
+    "senses": [
+      {
+        "part_of_speech": "n",
+        "definition": "Currently unrealized ability (with the most common adposition being to)",
+        "translation": "目前尚未實現的能力（最常見的副詞是“to”）",
+        "order": 0,
+        "examples": [
+          {
+            "sentence": "Even from a young age it was clear that she had the potential to become a great musician.",
+            "translation": "即使從很小的時候起，她就很明顯地有成為偉大音樂家的潛力。"
+          }
+        ]
+      },
+      {
+        "part_of_speech": "adj",
+        "definition": "Existing in possibility, not in actuality.",
+        "translation": "存在於可能性中，而不存在於現實中。",
+        "order": 1,
+        "examples": []
+      }
+    ]
+  },
+  {
+    "text": "prepare",
+    "difficulty": 2,
+    "source": "TOEIC",
+    "phonetic": "/pɹɪˈpɛə/",
+    "senses": [
+      {
+        "part_of_speech": "n",
+        "definition": "Preparation",
+        "translation": "準備",
+        "order": 0,
+        "examples": []
+      },
+      {
+        "part_of_speech": "v",
+        "definition": "To make ready for a specific future purpose; to set up; to assemble or equip.",
+        "translation": "為未來的特定目的做好準備；設立；組裝或裝備。",
+        "order": 1,
+        "examples": [
+          {
+            "sentence": "We prepared the spacecraft for takeoff.",
+            "translation": "我們準備太空船起飛。"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "text": "present",
+    "difficulty": 2,
+    "source": "TOEIC",
+    "phonetic": "/pɹəˈzɛnt/",
+    "senses": [
+      {
+        "part_of_speech": "n",
+        "definition": "The current moment or period of time.",
+        "translation": "當下時刻或時段。",
+        "order": 0,
+        "examples": []
+      },
+      {
+        "part_of_speech": "adj",
+        "definition": "Relating to now, for the time being; current.",
+        "translation": "就現在而言，暫時；當前的。",
+        "order": 1,
+        "examples": [
+          {
+            "sentence": "The barbaric practice continues to the present day.",
+            "translation": "這種野蠻的做法一直延續到今天。"
+          }
+        ]
+      },
+      {
+        "part_of_speech": "n",
+        "definition": "A gift, especially one given for birthdays, Christmas, anniversaries, graduations, weddings, or any other special occasions.",
+        "translation": "一份禮物，尤其是在生日、聖誕節、週年紀念日、畢業典禮、婚禮或任何其他特殊場合贈送的禮物。",
+        "order": 2,
+        "examples": []
+      },
+      {
+        "part_of_speech": "v",
+        "definition": "To bring (someone) into the presence of (a person); to introduce formally.",
+        "translation": "使（某人）出現在（一個人）面前；正式介紹。",
+        "order": 3,
+        "examples": [
+          {
+            "sentence": "to present an envoy to the king",
+            "translation": "向國王派遣特使"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "text": "prevent",
+    "difficulty": 2,
+    "source": "TOEIC",
+    "phonetic": "/pɹəˈvɛnt/",
+    "senses": [
+      {
+        "part_of_speech": "v",
+        "definition": "To stop (an outcome); to keep from (doing something).",
+        "translation": "停止（結果）；避免（做某事）。",
+        "order": 0,
+        "examples": [
+          {
+            "sentence": "I brush my teeth regularly to prevent them from turning yellow.",
+            "translation": "我會定期刷牙以防止牙齒變黃。"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "text": "procedure",
+    "difficulty": 2,
+    "source": "TOEIC",
+    "phonetic": "/pɹəˈsiːdʒə/",
+    "senses": [
+      {
+        "part_of_speech": "n",
+        "definition": "A particular method for performing a task.",
+        "translation": "執行任務的特定方法。",
+        "order": 0,
+        "examples": []
+      }
+    ]
+  },
+  {
+    "text": "professional",
+    "difficulty": 2,
+    "source": "TOEIC",
+    "phonetic": "/pɹəˈfɛʃənəl/",
+    "senses": [
+      {
+        "part_of_speech": "n",
+        "definition": "A person who belongs to a profession",
+        "translation": "一個屬於某種職業的人",
+        "order": 0,
+        "examples": []
+      },
+      {
+        "part_of_speech": "adj",
+        "definition": "Of, pertaining to, or in accordance with the (usually high) standards of a profession.",
+        "translation": "屬於、屬於或符合某一職業的（通常是高的）標準。",
+        "order": 1,
+        "examples": []
+      }
+    ]
+  },
+  {
+    "text": "profit",
+    "difficulty": 2,
+    "source": "TOEIC",
+    "phonetic": "/ˈpɹɒfɪt/",
+    "senses": [
+      {
+        "part_of_speech": "n",
+        "definition": "Total income or cash flow minus expenditures. The money or other benefit a non-governmental organization or individual receives in exchange for products and services sold at an advertised price.",
+        "translation": "總收入或現金流量減去支出。非政府組織或個人以廣告價格出售產品和服務而獲得的金錢或其他利益。",
+        "order": 0,
+        "examples": []
+      },
+      {
+        "part_of_speech": "v",
+        "definition": "To benefit (somebody), be of use to (somebody).",
+        "translation": "使（某人）受益，對（某人）有用。",
+        "order": 1,
+        "examples": []
+      }
+    ]
+  },
+  {
+    "text": "progress",
+    "difficulty": 2,
+    "source": "TOEIC",
+    "phonetic": "/ˈpɹɒɡɹɛs/",
+    "senses": [
+      {
+        "part_of_speech": "n",
+        "definition": "Movement or advancement through a series of events, or points in time; development through time.",
+        "translation": "透過一系列事件或時間點的運動或進步；隨著時間的推移而發展。",
+        "order": 0,
+        "examples": [
+          {
+            "sentence": "Testing for the new antidote is currently in progress.",
+            "translation": "新解毒劑的測試目前正在進行中。"
+          }
+        ]
+      },
+      {
+        "part_of_speech": "v",
+        "definition": "To move, go, or proceed forward; to advance.",
+        "translation": "移動、走動或繼續前進；前進。",
+        "order": 1,
+        "examples": [
+          {
+            "sentence": "They progress through the museum.",
+            "translation": "他們穿過博物館。"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "text": "provide",
+    "difficulty": 2,
+    "source": "TOEIC",
+    "phonetic": "/pɹəˈvaɪd/",
+    "senses": [
+      {
+        "part_of_speech": "v",
+        "definition": "To make a living; earn money for necessities.",
+        "translation": "為了謀生；賺錢購買必需品。",
+        "order": 0,
+        "examples": [
+          {
+            "sentence": "It is difficult to provide for my family working on minimum wage.",
+            "translation": "我靠最低工資工作很難養家。"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "text": "qualify",
+    "difficulty": 2,
+    "source": "TOEIC",
+    "phonetic": "/ˈkwɒl.ɪ.faɪ/",
+    "senses": [
+      {
+        "part_of_speech": "n",
+        "definition": "An instance of throwing and catching each prop at least twice.",
+        "translation": "每個道具至少投擲和接住兩次的實例。",
+        "order": 0,
+        "examples": []
+      },
+      {
+        "part_of_speech": "v",
+        "definition": "To describe or characterize something by listing its qualities.",
+        "translation": "透過列出某事物的品質來描述或表徵某事物。",
+        "order": 1,
+        "examples": []
+      }
+    ]
+  },
+  {
+    "text": "quality",
+    "difficulty": 2,
+    "source": "TOEIC",
+    "phonetic": "/ˈkwɒlɪti/",
+    "senses": [
+      {
+        "part_of_speech": "n",
+        "definition": "Level of excellence.",
+        "translation": "卓越水平。",
+        "order": 0,
+        "examples": [
+          {
+            "sentence": "Quality of life is usually determined by health, education, and income.",
+            "translation": "生活品質通常由健康、教育和收入決定。"
+          }
+        ]
+      },
+      {
+        "part_of_speech": "adj",
+        "definition": "Being of good worth, well made, fit for purpose.",
+        "translation": "物有所值，製作精良，適合用途。",
+        "order": 1,
+        "examples": [
+          {
+            "sentence": "A quality system ensures products meet customer requirements.",
+            "translation": "品質系統確保產品滿足客戶的要求。"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "text": "quantity",
+    "difficulty": 2,
+    "source": "TOEIC",
+    "phonetic": "/ˈkwɑndədi/",
+    "senses": [
+      {
+        "part_of_speech": "n",
+        "definition": "A fundamental, generic term used when referring to the measurement (count, amount) of a scalar, vector, number of items or to some other way of denominating the value of a collection or group of items.",
+        "translation": "當指標量、向量、項目數量的測量（計數、金額）或指稱集合或項目組的值的其他方式時使用的基本通用術語。",
+        "order": 0,
+        "examples": [
+          {
+            "sentence": "You have to choose between quantity and quality.",
+            "translation": "你必須在數量和品質之間做出選擇。"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "text": "recommend",
+    "difficulty": 2,
+    "source": "TOEIC",
+    "phonetic": "/ɹɛkəˈmɛnd/",
+    "senses": [
+      {
+        "part_of_speech": "v",
+        "definition": "To bestow commendation on; to represent favourably; to suggest, endorse or encourage as an appropriate choice.",
+        "translation": "給予讚美；積極代表；建議、認可或鼓勵作為適當的選擇。",
+        "order": 0,
+        "examples": [
+          {
+            "sentence": "The board recommends Philips, given his ample experience in similar positions.",
+            "translation": "鑑於飛利浦在類似職位上的豐富經驗，董事會推薦飛利浦。"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "text": "reduce",
+    "difficulty": 2,
+    "source": "TOEIC",
+    "phonetic": "/ɹɪˈdjuːs/",
+    "senses": [
+      {
+        "part_of_speech": "v",
+        "definition": "To bring down the size, quantity, quality, value or intensity of something; to diminish, to lower.",
+        "translation": "降低某物的大小、數量、品質、價值或強度；減少，降低。",
+        "order": 0,
+        "examples": [
+          {
+            "sentence": "to reduce weight, speed, heat, expenses, price, personnel etc.",
+            "translation": "減少重量、速度、熱量、費用、價格、人員等。"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "text": "refer",
+    "difficulty": 2,
+    "source": "TOEIC",
+    "phonetic": "/ɹɪˈfɜː/",
+    "senses": [
+      {
+        "part_of_speech": "v",
+        "definition": "To direct the attention of.",
+        "translation": "來引導注意力。",
+        "order": 0,
+        "examples": []
+      }
+    ]
+  },
+  {
+    "text": "relationship",
+    "difficulty": 2,
+    "source": "TOEIC",
+    "phonetic": "/ɹɪˈleɪʃ(ə)nʃɪp/",
+    "senses": [
+      {
+        "part_of_speech": "n",
+        "definition": "Connection or association; the condition of being related.",
+        "translation": "連接或關聯；有關聯的條件。",
+        "order": 0,
+        "examples": []
+      }
+    ]
+  },
+  {
+    "text": "require",
+    "difficulty": 2,
+    "source": "TOEIC",
+    "phonetic": "/ɹɪˈkwaɪə/",
+    "senses": [
+      {
+        "part_of_speech": "v",
+        "definition": "To ask (someone) for something; to request.",
+        "translation": "向（某人）索取某事；請求。",
+        "order": 0,
+        "examples": []
+      }
+    ]
+  },
+  {
+    "text": "research",
+    "difficulty": 2,
+    "source": "TOEIC",
+    "phonetic": "/ɹɪˈsɜːtʃ/",
+    "senses": [
+      {
+        "part_of_speech": "n",
+        "definition": "Diligent inquiry or examination to seek or revise facts, principles, theories, applications, etc.; laborious or continued search after truth.",
+        "translation": "勤奮探究或檢驗，尋求或修正事實、原則、理論、應用等；努力或持續地尋找真理。",
+        "order": 0,
+        "examples": [
+          {
+            "sentence": "The research station that houses Wang and his team is outside Lijiang, a city of about 1.2 million people.",
+            "translation": "王和他的團隊所在的研究站位於麗江郊外，這座城市約有 120 萬人口。"
+          }
+        ]
+      },
+      {
+        "part_of_speech": "v",
+        "definition": "To search or examine with continued care; to seek diligently.",
+        "translation": "持續小心地進行搜查或檢查；去努力尋求。",
+        "order": 1,
+        "examples": []
+      }
+    ]
+  },
+  {
+    "text": "resolve",
+    "difficulty": 2,
+    "source": "TOEIC",
+    "phonetic": "/ɹiːˈzɒlv/",
+    "senses": [
+      {
+        "part_of_speech": "n",
+        "definition": "Determination; will power.",
+        "translation": "決心;意志力。",
+        "order": 0,
+        "examples": [
+          {
+            "sentence": "It took all my resolve to go through with the surgery.",
+            "translation": "我用盡了全部的決心才完成了手術。"
+          }
+        ]
+      },
+      {
+        "part_of_speech": "v",
+        "definition": "To find a solution to (a problem).",
+        "translation": "尋找（問題）的解決方案。",
+        "order": 1,
+        "examples": []
+      },
+      {
+        "part_of_speech": "v",
+        "definition": "To solve again.",
+        "translation": "再次解決。",
+        "order": 2,
+        "examples": [
+          {
+            "sentence": "I’ll have to resolve the equation with the new values.",
+            "translation": "我必須用新值來解方程式。"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "text": "resource",
+    "difficulty": 2,
+    "source": "TOEIC",
+    "phonetic": "/ɹɪˈsɔɹs/",
+    "senses": [
+      {
+        "part_of_speech": "n",
+        "definition": "Something that one uses to achieve an objective, e.g. raw materials or personnel.",
+        "translation": "人們用來實現目標的東西，例如原料或人員。",
+        "order": 0,
+        "examples": []
+      },
+      {
+        "part_of_speech": "v",
+        "definition": "To supply with resources.",
+        "translation": "供給資源。",
+        "order": 1,
+        "examples": []
+      }
+    ]
+  },
+  {
+    "text": "respond",
+    "difficulty": 2,
+    "source": "TOEIC",
+    "phonetic": "",
+    "senses": [
+      {
+        "part_of_speech": "n",
+        "definition": "A response.",
+        "translation": "一個回應。",
+        "order": 0,
+        "examples": []
+      },
+      {
+        "part_of_speech": "v",
+        "definition": "To say something in return; to answer; to reply.",
+        "translation": "說些話作為回報；回答；回應。",
+        "order": 1,
+        "examples": [
+          {
+            "sentence": "to respond to a question or an argument",
+            "translation": "回答問題或爭論"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "text": "responsible",
+    "difficulty": 2,
+    "source": "TOEIC",
+    "phonetic": "/ɹɪˈspɒnsəbl̩/",
+    "senses": [
+      {
+        "part_of_speech": "n",
+        "definition": "The individual who bears the responsibility for something.",
+        "translation": "對某件事負有責任的個人。",
+        "order": 0,
+        "examples": []
+      },
+      {
+        "part_of_speech": "adj",
+        "definition": "(followed by \"for\") Having the duty of taking care of something; answerable for an act performed or for its consequences; accountable; amenable, especially legally or politically.",
+        "translation": "（後接「for」）有義務照顧某事；對所實施的行為或其後果負責；負責；服從，特別是在法律或政治上。",
+        "order": 1,
+        "examples": [
+          {
+            "sentence": "Parents are responsible for their child's behaviour.",
+            "translation": "父母要對孩子的行為負責。"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "text": "result",
+    "difficulty": 2,
+    "source": "TOEIC",
+    "phonetic": "/ɹɪˈzʌlt/",
+    "senses": [
+      {
+        "part_of_speech": "n",
+        "definition": "That which results; the conclusion or end to which any course or condition of things leads, or which is obtained by any process or operation; consequence or effect.",
+        "translation": "結果是什麼；事物的任何過程或條件導致的結論或結果，或透過任何過程或操作獲得的結論或結果；後果或效果。",
+        "order": 0,
+        "examples": [
+          {
+            "sentence": "the result of a course of action;  the result of a mathematical operation",
+            "translation": "一連串行動的結果；  數學運算的結果"
+          }
+        ]
+      },
+      {
+        "part_of_speech": "v",
+        "definition": "To proceed, spring up or rise, as a consequence, from facts, arguments, premises, combination of circumstances, consultation, thought or endeavor.",
+        "translation": "從事實、論點、前提、環境的結合、協商、思想或努力出發、產生或興起。",
+        "order": 1,
+        "examples": []
+      },
+      {
+        "part_of_speech": "interjection",
+        "definition": "An exclamation of joy following a favorable outcome.",
+        "translation": "取得有利結果後發出的喜悅感嘆。",
+        "order": 2,
+        "examples": []
+      }
+    ]
+  },
+  {
+    "text": "return",
+    "difficulty": 2,
+    "source": "TOEIC",
+    "phonetic": "/ɹɪˈtɜːn/",
+    "senses": [
+      {
+        "part_of_speech": "n",
+        "definition": "The act of returning.",
+        "translation": "回歸的動作。",
+        "order": 0,
+        "examples": [
+          {
+            "sentence": "I expect the house to be spotless upon my return.",
+            "translation": "我希望我回來時房子一塵不染。"
+          }
+        ]
+      },
+      {
+        "part_of_speech": "v",
+        "definition": "To come or go back (to a place or person).",
+        "translation": "來或回去（到一個地方或一個人）。",
+        "order": 1,
+        "examples": [
+          {
+            "sentence": "Although the birds fly north for the summer, they return here in winter.",
+            "translation": "雖然鳥兒在夏天飛向北方，但在冬天它們會回到這裡。"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "text": "review",
+    "difficulty": 2,
+    "source": "TOEIC",
+    "phonetic": "/ɹɪˈvjuː/",
+    "senses": [
+      {
+        "part_of_speech": "n",
+        "definition": "A second or subsequent reading of a text or artifact in an attempt to gain new insights.",
+        "translation": "第二次或隨後閱讀文字或工件，試圖獲得新的見解。",
+        "order": 0,
+        "examples": [
+          {
+            "sentence": "I need to make a review of the book before I can understand it.",
+            "translation": "我需要先回顧一下這本書，然後才能理解它。"
+          }
+        ]
+      },
+      {
+        "part_of_speech": "v",
+        "definition": "To survey; to look broadly over.",
+        "translation": "調查；廣泛地觀察。",
+        "order": 1,
+        "examples": [
+          {
+            "sentence": "Before I tackle the question directly, I must briefly review historical approaches to the problem.",
+            "translation": "在直接解決這個問題之前，我必須先簡單回顧一下歷史上解決這個問題的方法。"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "text": "revise",
+    "difficulty": 2,
+    "source": "TOEIC",
+    "phonetic": "/ɹɪˈvaɪ̯z/",
+    "senses": [
+      {
+        "part_of_speech": "n",
+        "definition": "A review or a revision.",
+        "translation": "審查或修訂。",
+        "order": 0,
+        "examples": []
+      },
+      {
+        "part_of_speech": "v",
+        "definition": "To look at again, to reflect on.",
+        "translation": "重新審視，反思。",
+        "order": 1,
+        "examples": []
+      }
+    ]
+  },
+  {
+    "text": "schedule",
+    "difficulty": 2,
+    "source": "TOEIC",
+    "phonetic": "/ˈskɛ.dʒu.əl/",
+    "senses": [
+      {
+        "part_of_speech": "n",
+        "definition": "A slip of paper; a short note.",
+        "translation": "一張紙條；一個簡短的說明。",
+        "order": 0,
+        "examples": []
+      },
+      {
+        "part_of_speech": "v",
+        "definition": "To create a time-schedule.",
+        "translation": "建立一個時間表。",
+        "order": 1,
+        "examples": []
+      }
+    ]
+  },
+  {
+    "text": "secure",
+    "difficulty": 2,
+    "source": "TOEIC",
+    "phonetic": "/səˈkjɔː(ɹ)/",
+    "senses": [
+      {
+        "part_of_speech": "v",
+        "definition": "To make safe; to relieve from apprehensions of, or exposure to, danger; to guard; to protect.",
+        "translation": "確保安全；解除對危險的憂慮或暴露；守護；保護。",
+        "order": 0,
+        "examples": []
+      },
+      {
+        "part_of_speech": "adj",
+        "definition": "Free from attack or danger; protected.",
+        "translation": "免受攻擊或危險；受保護。",
+        "order": 1,
+        "examples": []
+      }
+    ]
+  },
+  {
+    "text": "select",
+    "difficulty": 2,
+    "source": "TOEIC",
+    "phonetic": "/sɪˈlɛkt/",
+    "senses": [
+      {
+        "part_of_speech": "v",
+        "definition": "To choose one or more elements of a set, especially a set of options.",
+        "translation": "選擇一組中的一個或多個元素，尤其是一組選項。",
+        "order": 0,
+        "examples": [
+          {
+            "sentence": "He looked over the menu, and selected the roast beef.",
+            "translation": "他看了看菜單，選擇了烤牛肉。"
+          }
+        ]
+      },
+      {
+        "part_of_speech": "adj",
+        "definition": "Privileged, specially selected.",
+        "translation": "特權，特選。",
+        "order": 1,
+        "examples": [
+          {
+            "sentence": "Only a select few were allowed into the premiere.",
+            "translation": "只有少數人被允許參加首映。"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "text": "significant",
+    "difficulty": 2,
+    "source": "TOEIC",
+    "phonetic": "/sɪɡˈnɪ.fɪ.kənt/",
+    "senses": [
+      {
+        "part_of_speech": "n",
+        "definition": "That which has significance; a sign; a token; a symbol.",
+        "translation": "具有重要意義的事物；一個標誌；一個令牌；一個符號。",
+        "order": 0,
+        "examples": []
+      },
+      {
+        "part_of_speech": "adj",
+        "definition": "Signifying something; carrying meaning.",
+        "translation": "表示某事；承載意義。",
+        "order": 1,
+        "examples": [
+          {
+            "sentence": "a significant word or sound; a significant look",
+            "translation": "重要的單字或聲音；一個重要的外觀"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "text": "solution",
+    "difficulty": 2,
+    "source": "TOEIC",
+    "phonetic": "/səˈl(j)uːʃən/",
+    "senses": [
+      {
+        "part_of_speech": "n",
+        "definition": "A homogeneous mixture, which may be liquid, gas or solid, formed by dissolving one or more substances.",
+        "translation": "透過溶解一種或多種物質形成的均勻混合物，可以是液體、氣體或固體。",
+        "order": 0,
+        "examples": []
+      },
+      {
+        "part_of_speech": "v",
+        "definition": "To treat with a solution.",
+        "translation": "用溶液來治療。",
+        "order": 1,
+        "examples": []
+      }
+    ]
+  },
+  {
+    "text": "specific",
+    "difficulty": 2,
+    "source": "TOEIC",
+    "phonetic": "/spəˈsɪf.ɪk/",
+    "senses": [
+      {
+        "part_of_speech": "n",
+        "definition": "A distinguishing attribute or quality.",
+        "translation": "顯著的屬性或品質。",
+        "order": 0,
+        "examples": []
+      },
+      {
+        "part_of_speech": "adj",
+        "definition": "Explicit or definite",
+        "translation": "明確的或明確的",
+        "order": 1,
+        "examples": []
+      }
+    ]
+  },
+  {
+    "text": "standard",
+    "difficulty": 2,
+    "source": "TOEIC",
+    "phonetic": "/ˈstændəd/",
+    "senses": [
+      {
+        "part_of_speech": "n",
+        "definition": "A principle or example or measure used for comparison.",
+        "translation": "用於比較的原則、例子或措施。",
+        "order": 0,
+        "examples": []
+      },
+      {
+        "part_of_speech": "adj",
+        "definition": "Falling within an accepted range of size, amount, power, quality, etc.",
+        "translation": "尺寸、數量、功率、品質等處於可接受的範圍。",
+        "order": 1,
+        "examples": []
+      },
+      {
+        "part_of_speech": "interjection",
+        "definition": "An expression of agreement",
+        "translation": "同意的表達",
+        "order": 2,
+        "examples": []
+      }
+    ]
+  },
+  {
+    "text": "status",
+    "difficulty": 2,
+    "source": "TOEIC",
+    "phonetic": "/ˈstæt.əs/",
+    "senses": [
+      {
+        "part_of_speech": "n",
+        "definition": "A person’s condition, position or standing relative to that of others.",
+        "translation": "一個人相對於他人的狀況、地位或地位。",
+        "order": 0,
+        "examples": [
+          {
+            "sentence": "Superstition is highly correlated with economic status.",
+            "translation": "迷信與經濟狀況高度相關。"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "text": "successful",
+    "difficulty": 2,
+    "source": "TOEIC",
+    "phonetic": "/səkˈsɛsfl̩/",
+    "senses": [
+      {
+        "part_of_speech": "adj",
+        "definition": "Resulting in success; assuring, or promoting, success; accomplishing what was proposed; having the desired effect",
+        "translation": "從而獲得成功；確保或促進成功；完成提議的事情；達到了預期的效果",
+        "order": 0,
+        "examples": [
+          {
+            "sentence": "a successful use of medicine;  a successful experiment;  a successful enterprise",
+            "translation": "成功使用藥物；  一次成功的實驗；  一個成功的企業"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "text": "suitable",
+    "difficulty": 2,
+    "source": "TOEIC",
+    "phonetic": "/ˈsuːtəbl/",
+    "senses": [
+      {
+        "part_of_speech": "adj",
+        "definition": "Having sufficient or the required properties for a certain purpose or task; appropriate to a certain occasion.",
+        "translation": "具有用於特定目的或任務的足夠或所需的屬性；適合某種場合。",
+        "order": 0,
+        "examples": []
+      }
+    ]
+  },
+  {
+    "text": "supply",
+    "difficulty": 2,
+    "source": "TOEIC",
+    "phonetic": "/səˈplaɪ/",
+    "senses": [
+      {
+        "part_of_speech": "n",
+        "definition": "The act of supplying.",
+        "translation": "供給的行為。",
+        "order": 0,
+        "examples": [
+          {
+            "sentence": "supply and demand",
+            "translation": "供需"
+          }
+        ]
+      },
+      {
+        "part_of_speech": "v",
+        "definition": "To provide (something), to make (something) available for use.",
+        "translation": "提供（某物），使（某物）可供使用。",
+        "order": 1,
+        "examples": [
+          {
+            "sentence": "to supply money for the war",
+            "translation": "為戰爭提供資金"
+          }
+        ]
+      },
+      {
+        "part_of_speech": "adv",
+        "definition": "Supplely: in a supple manner, with suppleness.",
+        "translation": "柔順：柔順地，柔順地。",
+        "order": 2,
+        "examples": []
+      }
+    ]
+  },
+  {
+    "text": "survey",
+    "difficulty": 2,
+    "source": "TOEIC",
+    "phonetic": "",
+    "senses": [
+      {
+        "part_of_speech": "n",
+        "definition": "The act of surveying; a general view.",
+        "translation": "測量行為；整體看法。",
+        "order": 0,
+        "examples": []
+      },
+      {
+        "part_of_speech": "v",
+        "definition": "To inspect, or take a view of; to view with attention, as from a high place; to overlook",
+        "translation": "檢查或查看；專注地觀察，如從高處觀察；忽視",
+        "order": 1,
+        "examples": [
+          {
+            "sentence": "He stood on a hill, and surveyed the surrounding country.",
+            "translation": "他站在一座小山上，環顧四周。"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "text": "target",
+    "difficulty": 2,
+    "source": "TOEIC",
+    "phonetic": "/tɑːɡɪt/",
+    "senses": [
+      {
+        "part_of_speech": "n",
+        "definition": "A butt or mark to shoot at, as for practice, or to test the accuracy of a firearm, or the force of a projectile.",
+        "translation": "用來射擊的槍託或標記，用於練習，或測試槍支的準確性或彈頭的力量。",
+        "order": 0,
+        "examples": [
+          {
+            "sentence": "Take careful aim at the target.",
+            "translation": "小心瞄準目標。"
+          }
+        ]
+      },
+      {
+        "part_of_speech": "v",
+        "definition": "To aim something, especially a weapon, at (a target).",
+        "translation": "將某物，尤其是武器，瞄準（目標）。",
+        "order": 1,
+        "examples": []
+      }
+    ]
+  },
+  {
+    "text": "task",
+    "difficulty": 2,
+    "source": "TOEIC",
+    "phonetic": "/tɑːsk/",
+    "senses": [
+      {
+        "part_of_speech": "n",
+        "definition": "A piece of work done as part of one’s duties.",
+        "translation": "作為職責的一部分完成的一項工作。",
+        "order": 0,
+        "examples": []
+      },
+      {
+        "part_of_speech": "v",
+        "definition": "To assign a task to, or impose a task on.",
+        "translation": "分配任務或強加任務。",
+        "order": 1,
+        "examples": [
+          {
+            "sentence": "On my first day in the office, I was tasked with sorting a pile of invoices.",
+            "translation": "到辦公室的第一天，我的任務是整理一堆發票。"
+          }
+        ]
+      },
+      {
+        "part_of_speech": "n",
+        "definition": "Second sight; the involuntary ability of seeing the future or distant events.",
+        "translation": "第二眼；不自覺地看見未來或遙遠事件的能力。",
+        "order": 2,
+        "examples": []
+      }
+    ]
+  },
+  {
+    "text": "technical",
+    "difficulty": 2,
+    "source": "TOEIC",
+    "phonetic": "/ˈtɛk.nɪk.əl/",
+    "senses": [
+      {
+        "part_of_speech": "n",
+        "definition": "A pickup truck with a gun mounted on it.",
+        "translation": "一輛裝有槍的皮卡車。",
+        "order": 0,
+        "examples": []
+      },
+      {
+        "part_of_speech": "adj",
+        "definition": "Of or pertaining to the useful or mechanic arts, or to any academic, legal, science, engineering, business, or the like terminology with specific and precise meaning or (frequently, as a degree of distinction) shades of meaning; specially appropriate to any art, science or engineering field, or business",
+        "translation": "屬於或關於有用或機械藝術，或任何學術、法律、科學、工程、商業或類似術語，具有特定和精確的含義或（通常，作為區別程度）含義的深淺；特別適合任何藝術、科學或工程領域或商業",
+        "order": 1,
+        "examples": []
+      }
+    ]
+  },
+  {
+    "text": "tendency",
+    "difficulty": 2,
+    "source": "TOEIC",
+    "phonetic": "/ˈtɛndənsi/",
+    "senses": [
+      {
+        "part_of_speech": "n",
+        "definition": "A likelihood of behaving in a particular way or going in a particular direction; a tending toward.",
+        "translation": "以特定方式行事或朝特定方向前進的可能性；一種傾向。",
+        "order": 0,
+        "examples": [
+          {
+            "sentence": "Denim has a tendency to fade.",
+            "translation": "牛仔布有褪色的傾向。"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "text": "transfer",
+    "difficulty": 2,
+    "source": "TOEIC",
+    "phonetic": "/ˈtɹænzfɜː/",
+    "senses": [
+      {
+        "part_of_speech": "n",
+        "definition": "The act of conveying or removing something from one place, person or thing to another.",
+        "translation": "將某物從一個地方、人或物轉移或移至另一個地方的行為。",
+        "order": 0,
+        "examples": []
+      },
+      {
+        "part_of_speech": "v",
+        "definition": "To move or pass from one place, person or thing to another.",
+        "translation": "從一個地方、人或事物移動或經過到另一個地方。",
+        "order": 1,
+        "examples": [
+          {
+            "sentence": "to transfer the laws of one country to another; to transfer suspicion",
+            "translation": "將一國法律轉移到另一國；轉移嫌疑"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "text": "treat",
+    "difficulty": 2,
+    "source": "TOEIC",
+    "phonetic": "/tɹiːt/",
+    "senses": [
+      {
+        "part_of_speech": "n",
+        "definition": "An entertainment, outing, food, drink, or other indulgence provided by someone for the enjoyment of others.",
+        "translation": "某人為了​​他人的享受而提供的娛樂、郊遊、食物、飲料或其他放縱。",
+        "order": 0,
+        "examples": [
+          {
+            "sentence": "Here are some healthy Halloween treats for ghouls and witches of all ages.",
+            "translation": "這裡有一些適合所有年齡層的食屍鬼和女巫的健康萬聖節美食。"
+          }
+        ]
+      },
+      {
+        "part_of_speech": "v",
+        "definition": "To negotiate, discuss terms, bargain (for or with).",
+        "translation": "談判、討論條款、討價還價（為或與）。",
+        "order": 1,
+        "examples": []
+      }
+    ]
+  },
+  {
+    "text": "uncertain",
+    "difficulty": 2,
+    "source": "TOEIC",
+    "phonetic": "/ʌnˈsɜːtən/",
+    "senses": [
+      {
+        "part_of_speech": "n",
+        "definition": "(with \"the\") Something uncertain.",
+        "translation": "（與「the」）不確定的事。",
+        "order": 0,
+        "examples": []
+      },
+      {
+        "part_of_speech": "adj",
+        "definition": "Not certain; unsure.",
+        "translation": "不確定；不確定。",
+        "order": 1,
+        "examples": []
+      }
+    ]
+  },
+  {
+    "text": "uniform",
+    "difficulty": 2,
+    "source": "TOEIC",
+    "phonetic": "/ˈjuːnɪfɔːm/",
+    "senses": [
+      {
+        "part_of_speech": "n",
+        "definition": "A distinctive outfit that serves to identify members of a group.",
+        "translation": "一種獨特的服裝，用於識別群體成員。",
+        "order": 0,
+        "examples": []
+      },
+      {
+        "part_of_speech": "v",
+        "definition": "To clothe in a uniform.",
+        "translation": "穿著制服。",
+        "order": 1,
+        "examples": []
+      },
+      {
+        "part_of_speech": "adj",
+        "definition": "Unvarying; all the same.",
+        "translation": "不變；都一樣。",
+        "order": 2,
+        "examples": []
+      }
+    ]
+  },
+  {
+    "text": "unique",
+    "difficulty": 2,
+    "source": "TOEIC",
+    "phonetic": "/juːˈniːk/",
+    "senses": [
+      {
+        "part_of_speech": "n",
+        "definition": "A thing without a like; something unequalled or unparallelled.",
+        "translation": "沒有喜歡的東西；無與倫比或無可比擬的東西。",
+        "order": 0,
+        "examples": []
+      },
+      {
+        "part_of_speech": "adj",
+        "definition": "Being the only one of its kind; unequaled, unparalleled or unmatched.",
+        "translation": "是同類中唯一的一個；無與倫比的、無與倫比的或無與倫比的。",
+        "order": 1,
+        "examples": [
+          {
+            "sentence": "Every person has a unique life, therefore every person has a unique journey. ― Gary Cook",
+            "translation": "每個人都有獨特的人生，因此每個人都有獨特的旅程。 ——加里·庫克"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "text": "update",
+    "difficulty": 2,
+    "source": "TOEIC",
+    "phonetic": "",
+    "senses": [
+      {
+        "part_of_speech": "n",
+        "definition": "An advisement providing more up-to-date information than currently known.",
+        "translation": "提供比目前已知的更多最新資訊的建議。",
+        "order": 0,
+        "examples": [
+          {
+            "sentence": "He gave me an update on the situation in New York.",
+            "translation": "他向我介紹了紐約的最新情況。"
+          }
+        ]
+      },
+      {
+        "part_of_speech": "v",
+        "definition": "To bring (a thing) up to date.",
+        "translation": "使（某件事）保持最新狀態。",
+        "order": 1,
+        "examples": [
+          {
+            "sentence": "I need to update my records to take account of the most recent transaction.",
+            "translation": "我需要更新我的記錄以考慮最近的交易。"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "text": "utilize",
+    "difficulty": 2,
+    "source": "TOEIC",
+    "phonetic": "/ˈjuːtɨlaɪz/",
+    "senses": [
+      {
+        "part_of_speech": "v",
+        "definition": "To make use of; to use.",
+        "translation": "利用；使用。",
+        "order": 0,
+        "examples": []
+      }
+    ]
+  },
+  {
+    "text": "valuable",
+    "difficulty": 2,
+    "source": "TOEIC",
+    "phonetic": "/ˈvæljuəbl̩/",
+    "senses": [
+      {
+        "part_of_speech": "n",
+        "definition": "A personal possession such as jewellery, of relatively great monetary value; — usually used in plural form.",
+        "translation": "具有相對較高貨幣價值的個人財產，例如珠寶； - 通常以複數形式使用。",
+        "order": 0,
+        "examples": []
+      },
+      {
+        "part_of_speech": "adj",
+        "definition": "Having a great value.",
+        "translation": "具有很大的價值。",
+        "order": 1,
+        "examples": [
+          {
+            "sentence": "valuable gemstones",
+            "translation": "珍貴的寶石"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "text": "variety",
+    "difficulty": 2,
+    "source": "TOEIC",
+    "phonetic": "/vəˈɹaɪ.ɪ.ti/",
+    "senses": [
+      {
+        "part_of_speech": "n",
+        "definition": "The quality of being varied; diversity.",
+        "translation": "多樣化的品質；多樣性。",
+        "order": 0,
+        "examples": [
+          {
+            "sentence": "Variety is the spice of life.",
+            "translation": "多樣性是生活的調味料。"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "text": "venture",
+    "difficulty": 2,
+    "source": "TOEIC",
+    "phonetic": "/ˈvɛn.t͡ʃə/",
+    "senses": [
+      {
+        "part_of_speech": "n",
+        "definition": "A risky or daring undertaking or journey.",
+        "translation": "一次冒險或大膽的事業或旅程。",
+        "order": 0,
+        "examples": []
+      },
+      {
+        "part_of_speech": "v",
+        "definition": "To undertake a risky or daring journey.",
+        "translation": "進行冒險或大膽的旅程。",
+        "order": 1,
+        "examples": []
+      }
+    ]
+  },
+  {
+    "text": "vital",
+    "difficulty": 2,
+    "source": "TOEIC",
+    "phonetic": "/ˈvaɪt̬əl/",
+    "senses": [
+      {
+        "part_of_speech": "adj",
+        "definition": "Relating to, or characteristic of life.",
+        "translation": "與生活有關或具有生活特徵。",
+        "order": 0,
+        "examples": [
+          {
+            "sentence": "vital energies; vital functions; vital actions",
+            "translation": "生命能量；重要功能；重要行動"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "text": "warehouse",
+    "difficulty": 2,
+    "source": "TOEIC",
+    "phonetic": "",
+    "senses": [
+      {
+        "part_of_speech": "n",
+        "definition": "A place for storing large amounts of products. In logistics, a place where products go to from the manufacturer before going to the retailer.",
+        "translation": "存放大量產品的地方。在物流中，產品從製造商運送到零售商之前的地方。",
+        "order": 0,
+        "examples": []
+      },
+      {
+        "part_of_speech": "v",
+        "definition": "To store in a warehouse or similar.",
+        "translation": "存放在倉庫或類似場所。",
+        "order": 1,
+        "examples": []
+      }
+    ]
+  },
+  {
+    "text": "workforce",
+    "difficulty": 2,
+    "source": "TOEIC",
+    "phonetic": "",
+    "senses": [
+      {
+        "part_of_speech": "n",
+        "definition": "All the workers employed by a specific organization or state, or on a specific project",
+        "translation": "特定組織或國家或特定項目所僱用的所有工人",
+        "order": 0,
+        "examples": []
+      }
+    ]
+  },
+  {
+    "text": "achieve",
+    "difficulty": 2,
+    "source": "TOEIC",
+    "phonetic": "/əˈtʃiːv/",
+    "senses": [
+      {
+        "part_of_speech": "v",
+        "definition": "To succeed in something, now especially in academic performance.",
+        "translation": "在某件事上取得成功，現在尤其是在學業成績方面。",
+        "order": 0,
+        "examples": []
+      }
+    ]
+  },
+  {
+    "text": "acquire",
+    "difficulty": 2,
+    "source": "TOEIC",
+    "phonetic": "/əˈkwaɪə/",
+    "senses": [
+      {
+        "part_of_speech": "v",
+        "definition": "To get.",
+        "translation": "要得到。",
+        "order": 0,
+        "examples": []
+      }
+    ]
+  },
+  {
+    "text": "adapt",
+    "difficulty": 2,
+    "source": "TOEIC",
+    "phonetic": "/əˈdæpt/",
+    "senses": [
+      {
+        "part_of_speech": "v",
+        "definition": "To make suitable; to make to correspond; to fit or suit",
+        "translation": "使適合；使對應；適合或適合",
+        "order": 0,
+        "examples": []
+      },
+      {
+        "part_of_speech": "adj",
+        "definition": "Adapted; fit; suited; suitable.",
+        "translation": "改編；合身;適合；合適的。",
+        "order": 1,
+        "examples": []
+      }
+    ]
+  },
+  {
+    "text": "administer",
+    "difficulty": 2,
+    "source": "TOEIC",
+    "phonetic": "/ədˈmɪnɪstɚ/",
+    "senses": [
+      {
+        "part_of_speech": "v",
+        "definition": "To cause to ingest (a drug), either by openly offering or through deceit.",
+        "translation": "透過公開提供或透過欺騙使人攝入（藥物）。",
+        "order": 0,
+        "examples": [
+          {
+            "sentence": "We administered the medicine to our dog by mixing it in his food.",
+            "translation": "我們透過將藥物混合在狗的食物中來給他服用。"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "text": "advance",
+    "difficulty": 2,
+    "source": "TOEIC",
+    "phonetic": "/ədˈvaːns/",
+    "senses": [
+      {
+        "part_of_speech": "n",
+        "definition": "A forward move; improvement or progression.",
+        "translation": "向前邁進；改善或進步。",
+        "order": 0,
+        "examples": [
+          {
+            "sentence": "an advance in health or knowledge",
+            "translation": "健康或知識的進步"
+          }
+        ]
+      },
+      {
+        "part_of_speech": "v",
+        "definition": "To promote or advantage.",
+        "translation": "促進或優勢。",
+        "order": 1,
+        "examples": []
+      },
+      {
+        "part_of_speech": "adj",
+        "definition": "Completed before necessary or a milestone event.",
+        "translation": "在必要事件或里程碑事件之前完成。",
+        "order": 2,
+        "examples": [
+          {
+            "sentence": "He made an advance payment on the prior shipment to show good faith.",
+            "translation": "他在先前的出貨中預付了貨款以示誠意。"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "text": "advertise",
+    "difficulty": 2,
+    "source": "TOEIC",
+    "phonetic": "/ˈadvə(ɹ)taɪz/",
+    "senses": [
+      {
+        "part_of_speech": "v",
+        "definition": "To give (especially public) notice of (something); to announce publicly.",
+        "translation": "給予（特別是公開）（某事）通知；來公開宣布。",
+        "order": 0,
+        "examples": []
+      }
+    ]
+  },
+  {
+    "text": "affect",
+    "difficulty": 2,
+    "source": "TOEIC",
+    "phonetic": "/əˈfɛkt/",
+    "senses": [
+      {
+        "part_of_speech": "v",
+        "definition": "To influence or alter.",
+        "translation": "影響或改變。",
+        "order": 0,
+        "examples": [
+          {
+            "sentence": "The experience affected me deeply.",
+            "translation": "這段經歷對我影響很深。"
+          }
+        ]
+      },
+      {
+        "part_of_speech": "v",
+        "definition": "To make a show of; to put on a pretense of; to feign; to assume. To make a false display of.",
+        "translation": "炫耀；假裝……佯裝；假設。進行虛假展示。",
+        "order": 1,
+        "examples": [
+          {
+            "sentence": "He managed to affect a smile despite feeling quite miserable.",
+            "translation": "儘管感覺很痛苦，但他還是勉強擠出了笑容。"
+          }
+        ]
+      },
+      {
+        "part_of_speech": "n",
+        "definition": "One's mood or inclination; mental state.",
+        "translation": "一個人的心情或傾向；精神狀態。",
+        "order": 2,
+        "examples": []
+      }
+    ]
+  },
+  {
+    "text": "allocate",
+    "difficulty": 2,
+    "source": "TOEIC",
+    "phonetic": "/ˈæl.ə.keɪt/",
+    "senses": [
+      {
+        "part_of_speech": "v",
+        "definition": "To set aside for a purpose.",
+        "translation": "為了某個目的而預留。",
+        "order": 0,
+        "examples": []
+      }
+    ]
+  },
+  {
+    "text": "analyze",
+    "difficulty": 2,
+    "source": "TOEIC",
+    "phonetic": "/ˈæn.ə.laɪz/",
+    "senses": [
+      {
+        "part_of_speech": "v",
+        "definition": "To subject to analysis.",
+        "translation": "待分析。",
+        "order": 0,
+        "examples": []
+      }
+    ]
+  },
+  {
+    "text": "anticipate",
+    "difficulty": 2,
+    "source": "TOEIC",
+    "phonetic": "/ænˈtɪs.ɪ.peɪt/",
+    "senses": [
+      {
+        "part_of_speech": "v",
+        "definition": "To act before (someone), especially to prevent an action.",
+        "translation": "在（某人）之前採取行動，尤指阻止某項行動。",
+        "order": 0,
+        "examples": []
+      }
+    ]
+  },
+  {
+    "text": "appreciate",
+    "difficulty": 2,
+    "source": "TOEIC",
+    "phonetic": "/əˈpɹiː.si.eɪt/",
+    "senses": [
+      {
+        "part_of_speech": "v",
+        "definition": "To be grateful or thankful for.",
+        "translation": "表示感激或感謝。",
+        "order": 0,
+        "examples": [
+          {
+            "sentence": "I appreciate your efforts",
+            "translation": "我很欣賞你的努力"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "text": "approve",
+    "difficulty": 2,
+    "source": "TOEIC",
+    "phonetic": "/əˈpɹuːv/",
+    "senses": [
+      {
+        "part_of_speech": "v",
+        "definition": "To sanction officially; to ratify; to confirm; to set as satisfactory.",
+        "translation": "正式批准；批准；確認；設定為滿意。",
+        "order": 0,
+        "examples": [
+          {
+            "sentence": "Although we may disagree with it, we must nevertheless approve the sentence handed down by the court-martial.",
+            "translation": "儘管我們可能不同意，但我們必須批准軍事法庭的判決。"
+          }
+        ]
+      },
+      {
+        "part_of_speech": "v",
+        "definition": "(English law) To make profit of; to convert to one's own profit — said especially of waste or common land appropriated by the lord of the manor.",
+        "translation": "（英國法）獲利；轉化為自己的利潤－特別是指莊園領主侵占的荒地或公共土地。",
+        "order": 1,
+        "examples": []
+      }
+    ]
+  },
+  {
+    "text": "assess",
+    "difficulty": 2,
+    "source": "TOEIC",
+    "phonetic": "/əˈsɛs/",
+    "senses": [
+      {
+        "part_of_speech": "v",
+        "definition": "To determine, estimate or judge the value of; to evaluate",
+        "translation": "確定、估計或判斷…的價值；評估",
+        "order": 0,
+        "examples": [
+          {
+            "sentence": "He assessed the situation.",
+            "translation": "他評估了形勢。"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "text": "assist",
+    "difficulty": 2,
+    "source": "TOEIC",
+    "phonetic": "/əˈsɪst/",
+    "senses": [
+      {
+        "part_of_speech": "n",
+        "definition": "A helpful action or an act of giving.",
+        "translation": "有益的行動或給予的行為。",
+        "order": 0,
+        "examples": [
+          {
+            "sentence": "The foundation gave a much needed assist to the shelter.",
+            "translation": "基金會為避難所提供了急需的幫助。"
+          }
+        ]
+      },
+      {
+        "part_of_speech": "v",
+        "definition": "To help.",
+        "translation": "來幫忙。",
+        "order": 1,
+        "examples": [
+          {
+            "sentence": "This book will assist you in getting your life in order.",
+            "translation": "這本書將幫助你讓你的生活井然有序。"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "text": "assure",
+    "difficulty": 2,
+    "source": "TOEIC",
+    "phonetic": "/əˈʃɔː/",
+    "senses": [
+      {
+        "part_of_speech": "v",
+        "definition": "To make sure and secure.",
+        "translation": "以確保安全。",
+        "order": 0,
+        "examples": []
+      }
+    ]
+  },
+  {
+    "text": "benefit",
+    "difficulty": 2,
+    "source": "TOEIC",
+    "phonetic": "/ˈbɛn.ɪ.fɪt/",
+    "senses": [
+      {
+        "part_of_speech": "n",
+        "definition": "An advantage; help or aid from something.",
+        "translation": "一個優勢；來自某事的幫助或幫助。",
+        "order": 0,
+        "examples": [
+          {
+            "sentence": "It was for her benefit.   His benefit was free beer.",
+            "translation": "這是為了她的利益。   他的好處是免費啤酒。"
+          }
+        ]
+      },
+      {
+        "part_of_speech": "v",
+        "definition": "To be or to provide a benefit to.",
+        "translation": "成為或提供利益。",
+        "order": 1,
+        "examples": []
+      }
+    ]
+  },
+  {
+    "text": "budget",
+    "difficulty": 2,
+    "source": "TOEIC",
+    "phonetic": "/ˈbʌdʒ.ɪt/",
+    "senses": [
+      {
+        "part_of_speech": "n",
+        "definition": "The amount of money or resources earmarked for a particular institution, activity or time-frame.",
+        "translation": "指定用於特定機構、活動或時間範圍的資金或資源數量。",
+        "order": 0,
+        "examples": []
+      },
+      {
+        "part_of_speech": "v",
+        "definition": "To construct or draw up a budget.",
+        "translation": "制定或製定預算。",
+        "order": 1,
+        "examples": [
+          {
+            "sentence": "Budgeting is even harder in times of recession",
+            "translation": "在經濟衰退時期制定預算更加困難"
+          }
+        ]
+      },
+      {
+        "part_of_speech": "adj",
+        "definition": "Of or relating to a budget.",
+        "translation": "屬於預算或與預算有關。",
+        "order": 2,
+        "examples": []
+      }
+    ]
+  },
+  {
+    "text": "calculate",
+    "difficulty": 2,
+    "source": "TOEIC",
+    "phonetic": "/ˈkælkjəleɪt/",
+    "senses": [
+      {
+        "part_of_speech": "v",
+        "definition": "To determine the value of something or the solution to something by a mathematical process.",
+        "translation": "透過數學過程確定某事物的價值或某事物的解決方案。",
+        "order": 0,
+        "examples": [
+          {
+            "sentence": "Calculate the square root of 3 to 10 decimal places.",
+            "translation": "計算小數點後 3 到 10 位的平方根。"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "text": "clarify",
+    "difficulty": 2,
+    "source": "TOEIC",
+    "phonetic": "/ˈklæɹɪfaɪ/",
+    "senses": [
+      {
+        "part_of_speech": "v",
+        "definition": "(of liquids, such as wine or syrup) To make clear or bright by freeing from feculent matter",
+        "translation": "（液體，如酒或糖漿）除去不潔物質，使澄清或明亮",
+        "order": 0,
+        "examples": []
+      }
+    ]
+  },
+  {
+    "text": "collaborate",
+    "difficulty": 2,
+    "source": "TOEIC",
+    "phonetic": "/kəˈlabəɹeɪt/",
+    "senses": [
+      {
+        "part_of_speech": "v",
+        "definition": "To work together with others to achieve a common goal.",
+        "translation": "與他人合作以實現共同目標。",
+        "order": 0,
+        "examples": [
+          {
+            "sentence": "Let's collaborate on this project, and get it finished faster.",
+            "translation": "讓我們合作完成這個項目，並更快地完成它。"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "text": "communicate",
+    "difficulty": 2,
+    "source": "TOEIC",
+    "phonetic": "/kəˈmjuːnɪkeɪt/",
+    "senses": [
+      {
+        "part_of_speech": "v",
+        "definition": "To impart",
+        "translation": "傳授",
+        "order": 0,
+        "examples": []
+      }
+    ]
+  },
+  {
+    "text": "compensate",
+    "difficulty": 2,
+    "source": "TOEIC",
+    "phonetic": "/ˈkɒm.pən.seɪt/",
+    "senses": [
+      {
+        "part_of_speech": "v",
+        "definition": "To do (something good) after (something bad) happens",
+        "translation": "在（壞事）發生後做（好事）",
+        "order": 0,
+        "examples": []
+      }
+    ]
+  },
+  {
+    "text": "comply",
+    "difficulty": 2,
+    "source": "TOEIC",
+    "phonetic": "/kəmˈplaɪ/",
+    "senses": [
+      {
+        "part_of_speech": "v",
+        "definition": "To yield assent; to accord; to acquiesce, agree, consent; to adapt oneself, to conform.",
+        "translation": "表示同意；一致；默許、同意、同意；使自己適應，順服。",
+        "order": 0,
+        "examples": []
+      }
+    ]
+  },
+  {
+    "text": "conduct",
+    "difficulty": 2,
+    "source": "TOEIC",
+    "phonetic": "/ˈkɒndʌkt/",
+    "senses": [
+      {
+        "part_of_speech": "n",
+        "definition": "The act or method of controlling or directing",
+        "translation": "控製或指導的行為或方法",
+        "order": 0,
+        "examples": []
+      },
+      {
+        "part_of_speech": "v",
+        "definition": "To lead, or guide; to escort.",
+        "translation": "領導或引導；護送。",
+        "order": 1,
+        "examples": []
+      }
+    ]
+  },
+  {
+    "text": "confirm",
+    "difficulty": 2,
+    "source": "TOEIC",
+    "phonetic": "/kənˈfɜːm/",
+    "senses": [
+      {
+        "part_of_speech": "v",
+        "definition": "To strengthen; to make firm or resolute.",
+        "translation": "加強；使堅定或堅決。",
+        "order": 0,
+        "examples": []
+      }
+    ]
+  },
+  {
+    "text": "consolidate",
+    "difficulty": 2,
+    "source": "TOEIC",
+    "phonetic": "/kənˈsɒlɪdeɪt/",
+    "senses": [
+      {
+        "part_of_speech": "v",
+        "definition": "To combine into a single unit; to group together or join.",
+        "translation": "合併為一個單位；聚集在一起或加入。",
+        "order": 0,
+        "examples": [
+          {
+            "sentence": "He consolidated his luggage into a single large bag.",
+            "translation": "他將行李整合到一個大袋子裡。"
+          }
+        ]
+      },
+      {
+        "part_of_speech": "adj",
+        "definition": "Formed into a solid mass; made firm; consolidated.",
+        "translation": "形成固體塊；堅定；合併。",
+        "order": 1,
+        "examples": []
+      }
+    ]
+  },
+  {
+    "text": "consult",
+    "difficulty": 2,
+    "source": "TOEIC",
+    "phonetic": "",
+    "senses": [
+      {
+        "part_of_speech": "n",
+        "definition": "The act of consulting or deliberating; consultation",
+        "translation": "諮詢或審議的行為；諮詢",
+        "order": 0,
+        "examples": []
+      },
+      {
+        "part_of_speech": "v",
+        "definition": "To seek the opinion or advice of another; to take counsel; to deliberate together; to confer.",
+        "translation": "尋求他人的意見或建議；聽取建議；共同商議；商議。",
+        "order": 1,
+        "examples": []
+      }
+    ]
+  },
+  {
+    "text": "contribute",
+    "difficulty": 2,
+    "source": "TOEIC",
+    "phonetic": "/kənˈt(ʃ)ɹɪb.juːt/",
+    "senses": [
+      {
+        "part_of_speech": "v",
+        "definition": "To give something that is or becomes part of a larger whole.",
+        "translation": "給予屬於或成為更大整體一部分的東西。",
+        "order": 0,
+        "examples": [
+          {
+            "sentence": "to contribute articles to a journal",
+            "translation": "向期刊投稿"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "text": "coordinate",
+    "difficulty": 2,
+    "source": "TOEIC",
+    "phonetic": "",
+    "senses": [
+      {
+        "part_of_speech": "n",
+        "definition": "A number representing the position of a point along a line, arc, or similar one-dimensional figure.",
+        "translation": "表示點沿直線、圓弧或類似一維圖形的位置的數字。",
+        "order": 0,
+        "examples": [
+          {
+            "sentence": "Give me your coordinates and we'll come and rescue you.",
+            "translation": "告訴我你的座標，我們會來救你。"
+          }
+        ]
+      },
+      {
+        "part_of_speech": "v",
+        "definition": "To synchronize (activities).",
+        "translation": "同步（活動）。",
+        "order": 1,
+        "examples": [
+          {
+            "sentence": "I was playing tennis for the first time, and it was difficult to coordinate.",
+            "translation": "我第一次打網球，協調起來很困難。"
+          }
+        ]
+      },
+      {
+        "part_of_speech": "adj",
+        "definition": "Of the same rank; equal.",
+        "translation": "同等級別；平等的。",
+        "order": 2,
+        "examples": [
+          {
+            "sentence": "two coordinate terms",
+            "translation": "兩個座標項"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "text": "create",
+    "difficulty": 2,
+    "source": "TOEIC",
+    "phonetic": "/kɹiːˈeɪt/",
+    "senses": [
+      {
+        "part_of_speech": "v",
+        "definition": "To bring into existence; (sometimes in particular:)",
+        "translation": "使之存在； （有時特別是：）",
+        "order": 0,
+        "examples": [
+          {
+            "sentence": "You can create the color orange by mixing yellow and red.",
+            "translation": "您可以透過混合黃色和紅色來創建橙色。"
+          }
+        ]
+      },
+      {
+        "part_of_speech": "adj",
+        "definition": "Created, resulting from creation.",
+        "translation": "因創造而生，因創造而生。",
+        "order": 1,
+        "examples": []
+      }
+    ]
+  }
+]

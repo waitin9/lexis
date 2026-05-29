@@ -1,0 +1,588 @@
+{% extends 'base.html' %}
+{% block title %}探索新詞{% endblock %}
+
+{% block extra_head %}
+<style>
+  /* 探索模式佈局：全螢幕居中 */
+  .discover-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: calc(100vh - 120px);
+    position: relative;
+    overflow: hidden;
+  }
+
+  /* 3D 卡片容器 */
+  .card-perspective {
+    perspective: 1000px;
+    width: 100%;
+    max-width: 480px;
+    height: 380px;
+    margin-bottom: 30px;
+    position: relative;
+  }
+
+  .discover-card {
+    width: 100%;
+    height: 100%;
+    position: relative;
+    transform-style: preserve-3d;
+    transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+    cursor: pointer;
+  }
+
+  /* 翻轉狀態 */
+  .discover-card.flipped {
+    transform: rotateY(180deg);
+  }
+
+  /* 卡片正面與背面 */
+  .card-face {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+    border-radius: var(--radius-lg);
+    padding: 30px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    background: rgba(22, 22, 26, 0.75);
+    border: 1px solid var(--border);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    box-shadow: var(--shadow-card);
+    transition: border-color var(--transition);
+  }
+
+  .card-face:hover {
+    border-color: rgba(108, 99, 255, 0.4);
+  }
+
+  /* 雙重保險：藉由動態 z-index 交換來解決 Chrome/Chromium 3D 深度排序 Bug */
+  .card-front {
+    z-index: 2;
+  }
+  .card-back {
+    transform: rotateY(180deg);
+    background: rgba(26, 26, 32, 0.85);
+    z-index: 1;
+  }
+
+  .discover-card.flipped .card-front {
+    z-index: 1;
+  }
+  .discover-card.flipped .card-back {
+    z-index: 2;
+  }
+
+  /* 內容排版 */
+  .word-header {
+    text-align: center;
+    margin-top: auto;
+    margin-bottom: auto;
+  }
+
+  .word-text {
+    font-size: 3.2rem;
+    font-weight: 800;
+    letter-spacing: -0.04em;
+    background: linear-gradient(135deg, #fff 30%, var(--accent) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    margin-bottom: 10px;
+    word-break: break-all;
+  }
+
+  .word-phonetic-wrap {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    font-family: var(--font-mono);
+    color: var(--text-secondary);
+    font-size: 1.1rem;
+  }
+
+  .audio-play-btn {
+    background: rgba(108, 99, 255, 0.1);
+    color: var(--accent);
+    border: 1px solid rgba(108, 99, 255, 0.2);
+    border-radius: 50%;
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-size: 0.8rem;
+    transition: all var(--transition);
+  }
+  .audio-play-btn:hover {
+    background: var(--accent);
+    color: #fff;
+    transform: scale(1.1);
+  }
+
+  .flip-hint {
+    text-align: center;
+    font-size: 0.78rem;
+    color: var(--text-muted);
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    margin-top: auto;
+  }
+
+  /* 背面釋義滾動區 */
+  .meanings-scroll {
+    overflow-y: auto;
+    flex: 1;
+    margin-bottom: 10px;
+    padding-right: 6px;
+  }
+
+  .meanings-scroll::-webkit-scrollbar {
+    width: 4px;
+  }
+  .meanings-scroll::-webkit-scrollbar-thumb {
+    background: var(--border);
+    border-radius: 2px;
+  }
+
+  .discover-sense {
+    margin-bottom: 16px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    padding-bottom: 12px;
+  }
+  .discover-sense:last-child {
+    border-bottom: none;
+    padding-bottom: 0;
+  }
+
+  .sense-pos-tag {
+    display: inline-block;
+    font-size: 0.72rem;
+    font-weight: 700;
+    padding: 2px 8px;
+    border-radius: 4px;
+    background: var(--accent-dim);
+    color: #a8a4ff;
+    margin-bottom: 8px;
+  }
+
+  .sense-chinese {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 6px;
+  }
+
+  .sense-eng-def {
+    font-size: 0.88rem;
+    color: var(--text-secondary);
+    margin-bottom: 8px;
+    line-height: 1.4;
+  }
+
+  .sense-ex-sentence {
+    font-size: 0.82rem;
+    color: var(--text-muted);
+    font-style: italic;
+    border-left: 2px solid var(--accent);
+    padding-left: 10px;
+  }
+
+  /* 控制按鈕區 */
+  .action-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 16px;
+    width: 100%;
+    max-width: 480px;
+  }
+
+  .action-btn {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 12px 10px;
+    border-radius: var(--radius-lg);
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    color: var(--text-secondary);
+    cursor: pointer;
+    transition: all var(--transition);
+    position: relative;
+  }
+
+  .action-btn:hover {
+    transform: translateY(-2px);
+  }
+
+  .action-btn-icon {
+    font-size: 1.4rem;
+    margin-bottom: 4px;
+  }
+
+  .action-btn-label {
+    font-size: 0.82rem;
+    font-weight: 600;
+  }
+
+  .action-btn-shortcut {
+    position: absolute;
+    top: -8px;
+    right: 8px;
+    font-family: var(--font-mono);
+    font-size: 0.68rem;
+    background: var(--border);
+    color: var(--text-muted);
+    padding: 1px 5px;
+    border-radius: 4px;
+    border: 1px solid rgba(255,255,255,0.05);
+  }
+
+  /* 個別按鈕樣式 */
+  .btn-skip:hover {
+    border-color: var(--text-muted);
+    background: rgba(255, 255, 255, 0.04);
+    color: var(--text-primary);
+  }
+
+  .btn-known:hover {
+    border-color: var(--green);
+    background: rgba(76, 175, 130, 0.1);
+    color: var(--green);
+  }
+  .btn-known:hover .action-btn-shortcut {
+    background: var(--green);
+    color: #0d1a12;
+  }
+
+  .btn-add:hover {
+    border-color: var(--accent);
+    background: var(--accent-glow);
+    color: #a8a4ff;
+  }
+  .btn-add:hover .action-btn-shortcut {
+    background: var(--accent);
+    color: #fff;
+  }
+
+  /* Tinder 滑動動畫 */
+  @keyframes swipeLeft {
+    to {
+      transform: translateX(-200%) rotate(-30deg);
+      opacity: 0;
+    }
+  }
+
+  @keyframes swipeRight {
+    to {
+      transform: translateX(200%) rotate(30deg);
+      opacity: 0;
+    }
+  }
+
+  @keyframes swipeDown {
+    to {
+      transform: translateY(200%) scale(0.8);
+      opacity: 0;
+    }
+  }
+
+  .swipe-left-anim {
+    animation: swipeLeft 0.45s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+  }
+
+  .swipe-right-anim {
+    animation: swipeRight 0.45s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+  }
+
+  .swipe-down-anim {
+    animation: swipeDown 0.45s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+  }
+
+  /* 進入動畫 */
+  @keyframes cardEnter {
+    from {
+      transform: scale(0.9) translateY(-10px);
+      opacity: 0;
+    }
+    to {
+      transform: scale(1) translateY(0);
+      opacity: 1;
+    }
+  }
+
+  .card-enter-anim {
+    animation: cardEnter 0.35s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="discover-container">
+
+  <!-- 頂部資訊列 -->
+  <div style="width:100%; max-width:480px; display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">
+    <span class="page-title">✦ 探索新詞</span>
+    <span class="text-muted text-sm" id="session-counter">今日新探索</span>
+  </div>
+
+  <!-- 卡片主區 -->
+  <div class="card-perspective">
+    <div class="discover-card" id="discover-card">
+      
+      <!-- 正面 -->
+      <div class="card-face card-front">
+        <div class="word-header">
+          <div class="word-text" id="word-text">Loading...</div>
+          <div class="word-phonetic-wrap">
+            <span id="word-phonetic"></span>
+            <button class="audio-play-btn" id="speak-btn" title="語音朗讀">🔊</button>
+          </div>
+        </div>
+        <div class="flip-hint">點擊卡片或按 Space 翻看釋義</div>
+      </div>
+
+      <!-- 背面 -->
+      <div class="card-face card-back">
+        <div class="meanings-scroll" id="meanings-container">
+          <!-- 由 JS 動態生成 -->
+        </div>
+        <div class="flip-hint">點擊卡片或按 Space 翻回正面</div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- 控制按鈕 -->
+  <div class="action-buttons" id="action-buttons">
+    <button class="action-btn btn-skip" id="btn-skip" title="暫時略過此字，稍後再出現 (快捷鍵: Space/S)">
+      <div class="action-btn-shortcut">S</div>
+      <div class="action-btn-icon">↺</div>
+      <div class="action-btn-label">略過</div>
+    </button>
+    
+    <button class="action-btn btn-add" id="btn-add" title="我不認識，加入我的學習庫 (快捷鍵: F 或 1)">
+      <div class="action-btn-shortcut">F</div>
+      <div class="action-btn-icon">✚</div>
+      <div class="action-btn-label">加入學習</div>
+    </button>
+
+    <button class="action-btn btn-known" id="btn-known" title="我已經認識，跳過不背 (快捷鍵: J 或 2)">
+      <div class="action-btn-shortcut">J</div>
+      <div class="action-btn-icon">✓</div>
+      <div class="action-btn-label">我已認識</div>
+    </button>
+  </div>
+
+  <!-- 結束與空狀態 -->
+  <div class="loading-overlay" id="empty-state" style="display:none; text-align:center; padding: 40px 20px;">
+    <div class="empty-state-icon" style="font-size: 3.5rem; margin-bottom: 16px;">🎉</div>
+    <div class="empty-state-title" style="font-size: 1.6rem; font-weight: 700; color: var(--text-primary); margin-bottom: 8px;">所有新詞探索完畢！</div>
+    <div class="empty-state-text" style="font-size: 0.88rem; color: var(--text-secondary); margin-bottom: 28px; line-height: 1.5;">
+      您已將官方字庫中所有的單字篩選過濾了一遍。<br>要現在去鞏固複習剛剛加入的生詞嗎？
+    </div>
+    <div style="display: flex; gap: 12px; justify-content: center; flex-wrap: wrap;">
+      <a href="{% url 'vocab:study_session' %}" class="btn btn-green" data-turbo="false" style="padding: 10px 20px; font-size: 0.88rem; font-weight: 600;">
+        立即複習字庫 ▶
+      </a>
+      <a href="{% url 'vocab:my_vocab' %}" class="btn btn-primary" style="padding: 10px 20px; font-size: 0.88rem; font-weight: 600; background: var(--accent); border-color: var(--accent);">
+        查看我的字庫 ◈
+      </a>
+      <a href="{% url 'vocab:dashboard' %}" class="btn btn-ghost" style="padding: 10px 20px; font-size: 0.88rem;">
+        返回主頁 ⊞
+      </a>
+    </div>
+  </div>
+
+</div>
+
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+(function() {
+  const card = document.getElementById('discover-card');
+  const speakBtn = document.getElementById('speak-btn');
+  const btnSkip = document.getElementById('btn-skip');
+  const btnKnown = document.getElementById('btn-known');
+  const btnAdd = document.getElementById('btn-add');
+  const container = document.getElementById('meanings-container');
+  const wordText = document.getElementById('word-text');
+  const wordPhonetic = document.getElementById('word-phonetic');
+  const actionButtons = document.getElementById('action-buttons');
+  const emptyState = document.getElementById('empty-state');
+  
+  let currentWord = null;
+  let isAnimating = false;
+  let wordsDiscoveredCount = 0;
+
+  function updateCounter() {
+    document.getElementById('session-counter').innerText = `已過濾 ${wordsDiscoveredCount} 個字`;
+  }
+
+  function speak(text) {
+    if ('speechSynthesis' in window) {
+      window.speechSynthesis.cancel();
+      const utterance = new SpeechSynthesisUtterance(text);
+      utterance.lang = 'en-US';
+      utterance.rate = 0.85;
+      window.speechSynthesis.speak(utterance);
+    }
+  }
+
+  // 翻轉卡片主動邏輯
+  function toggleFlip() {
+    if (isAnimating) return;
+    card.classList.toggle('flipped');
+  }
+
+  card.addEventListener('click', (e) => {
+    if (e.target.closest('#speak-btn')) return;
+    toggleFlip();
+  });
+
+  speakBtn.addEventListener('click', (e) => {
+    e.stopPropagation();
+    if (currentWord) speak(currentWord.text);
+  });
+
+  async function loadNextWord() {
+    try {
+      const resp = await fetch('{% url "vocab:get_next_discover_word" %}');
+      const data = await resp.json();
+      
+      if (data.finished) {
+        showEmptyState();
+        return;
+      }
+      
+      currentWord = data;
+      
+      wordText.innerText = data.text;
+      wordPhonetic.innerText = data.phonetic ? `/${data.phonetic}/` : '';
+      
+      container.innerHTML = '';
+      data.senses.forEach(sense => {
+        const senseDiv = document.createElement('div');
+        senseDiv.className = 'discover-sense';
+        
+        let exHtml = '';
+        if (sense.examples && sense.examples.length > 0) {
+          exHtml = `<div class="sense-ex-sentence">"${sense.examples[0].sentence}"<br><span style="font-size:0.75rem; color:var(--text-muted);">${sense.examples[0].translation}</span></div>`;
+        }
+        
+        senseDiv.innerHTML = `
+          <span class="sense-pos-tag">${sense.part_of_speech}</span>
+          <div class="sense-chinese">${sense.translation}</div>
+          <div class="sense-eng-def">${sense.definition}</div>
+          ${exHtml}
+        `;
+        container.appendChild(senseDiv);
+      });
+      
+      // 套用進入動畫
+      card.classList.remove('flipped');
+      card.className = 'discover-card card-enter-anim';
+      
+      // 動畫播放完畢 (350ms) 後，立即將 card-enter-anim 移除，避免 CSS forwards 鎖死 transform 屬性！
+      setTimeout(() => {
+        card.classList.remove('card-enter-anim');
+      }, 360);
+      
+      setTimeout(() => {
+        speak(data.text);
+      }, 300);
+
+    } catch (e) {
+      console.error(e);
+      wordText.innerText = "無法載入";
+    } finally {
+      isAnimating = false;
+    }
+  }
+
+  async function submitAction(action) {
+    if (!currentWord || isAnimating) return;
+    isAnimating = true;
+    
+    card.classList.remove('card-enter-anim');
+    if (action === 'added') {
+      card.className = 'discover-card swipe-left-anim';
+    } else if (action === 'known') {
+      card.className = 'discover-card swipe-right-anim';
+    } else {
+      card.className = 'discover-card swipe-down-anim';
+    }
+    
+    if (action === 'added' || action === 'known') {
+      wordsDiscoveredCount++;
+      updateCounter();
+    }
+    
+    const formData = new FormData();
+    formData.append('word_id', currentWord.word_id);
+    formData.append('action', action);
+    
+    try {
+      await fetch('{% url "vocab:submit_discover" %}', {
+        method: 'POST',
+        headers: {
+          'X-CSRFToken': '{{ csrf_token }}'
+        },
+        body: formData
+      });
+    } catch(e) {
+      console.error(e);
+    }
+    
+    setTimeout(() => {
+      loadNextWord();
+    }, 400);
+  }
+
+  function showEmptyState() {
+    card.style.display = 'none';
+    actionButtons.style.display = 'none';
+    emptyState.style.display = 'block';
+    emptyState.className = 'loading-overlay card-enter-anim';
+  }
+
+  btnSkip.addEventListener('click', () => submitAction('skipped'));
+  btnKnown.addEventListener('click', () => submitAction('known'));
+  btnAdd.addEventListener('click', () => submitAction('added'));
+
+  // 鍵盤快捷鍵
+  document.addEventListener('keydown', (e) => {
+    if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
+    if (isAnimating || !currentWord) return;
+    
+    const key = e.key.toLowerCase();
+    
+    if (key === ' ' || key === 'enter') {
+      e.preventDefault();
+      toggleFlip(); // 空白鍵直接呼叫 toggleFlip() 函數，不依賴 click() 觸發以保證 100% 成功
+    } else if (key === 'f' || key === '1') {
+      submitAction('added');
+    } else if (key === 'j' || key === '2') {
+      submitAction('known');
+    } else if (key === 's' || key === '3') {
+      submitAction('skipped');
+    } else if (key === 'v') {
+      speak(currentWord.text);
+    }
+  });
+
+  updateCounter();
+  loadNextWord();
+})();
+</script>
+{% endblock %}

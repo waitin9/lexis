@@ -1,0 +1,125 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>{% block title %}Lexis{% endblock %} — Lexis</title>
+  <meta name="description" content="{% block meta_desc %}Lexis 英文單字學習系統，SM-2 間隔重複，幫你真正記住單字。{% endblock %}" />
+  <link rel="stylesheet" href="{% static 'css/main.css' %}" />
+  {% block extra_head %}{% endblock %}
+  <!-- 引入 Hotwire Turbo 實現 SPA 級秒開與無閃爍體驗 -->
+  <script src="https://unpkg.com/@hotwired/turbo@7.3.0/dist/turbo.es2017-umd.js"></script>
+  
+  <style>
+    /* 閃爍星光背景 */
+    .stars-layer {
+      position: fixed;
+      top: 0; left: 0; width: 100%; height: 100%;
+      pointer-events: none;
+      z-index: -1;
+      opacity: 0.55;
+    }
+    .star {
+      position: absolute;
+      width: 2px;
+      height: 2px;
+      background: #fff;
+      border-radius: 50%;
+      box-shadow: 0 0 3px #fff;
+      animation: star-blink 3.5s infinite ease-in-out;
+    }
+    @keyframes star-blink {
+      0%, 100% { opacity: 0.15; transform: scale(0.8); }
+      50% { opacity: 1; transform: scale(1.4); box-shadow: 0 0 6px #fff; }
+    }
+  </style>
+</head>
+<body>
+  <!-- 飄浮光暈與星光背景 (data-turbo-permanent 確保跨頁面切換時動畫不中斷、不重置) -->
+  <div id="orb-permanent-1" class="orb orb-1" data-turbo-permanent></div>
+  <div id="orb-permanent-2" class="orb orb-2" data-turbo-permanent></div>
+  <div class="stars-layer" data-turbo-permanent id="stars-permanent">
+    <div class="star" style="top: 15%; left: 20%; animation-delay: 0.2s;"></div>
+    <div class="star" style="top: 40%; left: 85%; animation-delay: 1.5s;"></div>
+    <div class="star" style="top: 75%; left: 8%; animation-delay: 0.7s;"></div>
+    <div class="star" style="top: 62%; left: 32%; animation-delay: 2.1s;"></div>
+    <div class="star" style="top: 22%; left: 68%; animation-delay: 1.1s;"></div>
+    <div class="star" style="top: 82%; left: 74%; animation-delay: 0.4s;"></div>
+    <div class="star" style="top: 50%; left: 52%; animation-delay: 1.8s;"></div>
+    <div class="star" style="top: 12%; left: 90%; animation-delay: 2.5s;"></div>
+    <div class="star" style="top: 88%; left: 28%; animation-delay: 1.3s;"></div>
+    <div class="star" style="top: 28%; left: 44%; animation-delay: 0.9s;"></div>
+  </div>
+
+{% block body %}
+<div class="app-layout">
+
+  <!-- 頂部導覽 -->
+  <header class="topbar">
+    <span class="topbar-brand">Le<span>x</span>is</span>
+    <div class="topbar-actions">
+      {% if user.is_authenticated %}
+        <span class="text-muted text-sm">{{ user.username }}</span>
+        <form method="post" action="{% url 'accounts:logout' %}" style="margin:0">
+          {% csrf_token %}
+          <button type="submit" class="btn btn-ghost btn-sm">登出</button>
+        </form>
+      {% endif %}
+    </div>
+  </header>
+
+  <!-- 側邊欄 -->
+  {% if user.is_authenticated %}
+  <nav class="sidebar">
+    <span class="sidebar-section">學習</span>
+    <a href="{% url 'vocab:dashboard' %}"
+       class="sidebar-link {% if request.resolver_match.url_name == 'dashboard' %}active{% endif %}">
+      <span class="icon">⊞</span> 主頁
+    </a>
+    <a href="{% url 'vocab:discover_session' %}"
+       class="sidebar-link {% if request.resolver_match.url_name == 'discover_session' %}active{% endif %}">
+      <span class="icon">✦</span> 探索新詞
+    </a>
+    <a href="{% url 'vocab:study_session' %}" data-turbo="false"
+       class="sidebar-link {% if 'study' in request.resolver_match.url_name %}active{% endif %}">
+      <span class="icon">▶</span> 開始複習
+    </a>
+
+    <span class="sidebar-section">字庫</span>
+    <a href="{% url 'vocab:my_vocab' %}"
+       class="sidebar-link {% if request.resolver_match.url_name == 'my_vocab' %}active{% endif %}">
+      <span class="icon">◈</span> 我的字庫
+    </a>
+    <a href="{% url 'words:list' %}"
+       class="sidebar-link {% if request.resolver_match.app_name == 'words' %}active{% endif %}">
+      <span class="icon">≡</span> 官方字庫
+    </a>
+    <a href="{% url 'vocab:add_custom_word' %}"
+       class="sidebar-link {% if request.resolver_match.url_name == 'add_custom_word' %}active{% endif %}">
+      <span class="icon">＋</span> 新增單字
+    </a>
+  </nav>
+  {% endif %}
+
+  <!-- 主要內容 -->
+  <main class="main-content">
+    {% if messages %}
+    <div class="messages-list">
+      {% for message in messages %}
+      <div class="message message-{{ message.tags }}">
+        {{ message }}
+      </div>
+      {% endfor %}
+    </div>
+    {% endif %}
+
+    {% block content %}{% endblock %}
+  </main>
+
+</div>
+{% endblock %}
+
+{% block extra_scripts %}{% endblock %}
+</body>
+</html>

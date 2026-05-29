@@ -1,0 +1,426 @@
+{% extends 'base.html' %}
+{% block title %}我的字庫{% endblock %}
+{% block content %}
+
+<div class="page-header">
+  <div>
+    <h1 class="page-title">我的字庫</h1>
+    <p class="page-subtitle">共 {{ total_count }} 個單字</p>
+  </div>
+  <div style="display:flex;gap:10px;">
+    <a href="{% url 'vocab:add_custom_word' %}" class="btn btn-primary">＋ 新增單字</a>
+    <a href="{% url 'words:list' %}" class="btn btn-ghost">瀏覽官方字庫</a>
+  </div>
+</div>
+
+<!-- 掌握度篩選 -->
+<div class="filter-tabs">
+  <a href="{% url 'vocab:my_vocab' %}"
+     class="filter-tab {% if mastery_filter == '' %}active{% endif %}">全部</a>
+  <a href="?mastery=0" class="filter-tab {% if mastery_filter == '0' %}active{% endif %}"
+     style="{% if mastery_filter == '0' %}border-color:var(--mastery-0);color:var(--mastery-0);{% endif %}">
+    生疏
+  </a>
+  <a href="?mastery=1" class="filter-tab {% if mastery_filter == '1' %}active{% endif %}"
+     style="{% if mastery_filter == '1' %}border-color:var(--yellow);color:var(--yellow);{% endif %}">
+    學習中
+  </a>
+  <a href="?mastery=2" class="filter-tab {% if mastery_filter == '2' %}active{% endif %}"
+     style="{% if mastery_filter == '2' %}border-color:var(--blue);color:var(--blue);{% endif %}">
+    熟悉
+  </a>
+  <a href="?mastery=3" class="filter-tab {% if mastery_filter == '3' %}active{% endif %}"
+     style="{% if mastery_filter == '3' %}border-color:var(--green);color:var(--green);{% endif %}">
+    精通
+  </a>
+</div>
+
+{% if vocab_entries %}
+<div class="word-grid">
+  {% for entry in vocab_entries %}
+  <div class="word-card">
+    <!-- 掌握度 -->
+    {% if entry.srs_card %}
+    <div style="position:absolute;top:14px;right:14px;">
+      <span class="mastery-badge mastery-{{ entry.srs_card.mastery_level }}">
+        {% if entry.srs_card.mastery_level == 0 %}生疏
+        {% elif entry.srs_card.mastery_level == 1 %}學習中
+        {% elif entry.srs_card.mastery_level == 2 %}熟悉
+        {% else %}精通{% endif %}
+      </span>
+    </div>
+    {% endif %}
+
+    <div style="display:flex; align-items:center; gap:8px; margin-bottom: 2px;">
+      <div class="word-card-text">{{ entry.display_text }}</div>
+      {% if entry.is_custom %}
+      <span style="font-size: 0.65rem; font-weight: 500; color: #a8a4ff; border: 1px solid rgba(168, 164, 255, 0.22); border-radius: 4px; padding: 1px 5px; background: rgba(168, 164, 255, 0.04); cursor: default;" title="您自己新增的單字">
+        自建
+      </span>
+      {% endif %}
+    </div>
+
+    <!-- 音標 -->
+    {% if entry.word %}
+      {% with p=entry.word.phonetics.first %}
+        {% if p %}<div class="word-card-phonetic">/{{ p.notation }}/</div>{% endif %}
+      {% endwith %}
+    {% elif entry.custom_phonetic %}
+      <div class="word-card-phonetic">
+        {% if entry.custom_phonetic|slice:":1" == "/" %}{{ entry.custom_phonetic }}{% else %}/{{ entry.custom_phonetic }}/{% endif %}
+      </div>
+    {% endif %}
+
+    <!-- 詞性 -->
+    {% if entry.word %}
+      {% for sense in entry.word.senses.all|slice:":2" %}
+        <span class="word-card-pos">{{ sense.get_part_of_speech_display }}</span>
+      {% endfor %}
+    {% elif entry.custom_part_of_speech %}
+      <span class="word-card-pos">{{ entry.custom_part_of_speech }}</span>
+    {% endif %}
+
+    <div class="word-card-translation" style="margin-top: 4px;">{{ entry.display_translation }}</div>
+
+    <!-- 到期時間 -->
+    {% if entry.srs_card %}
+    <div class="text-sm text-muted mt-1">
+      下次複習：{{ entry.srs_card.next_review }}
+    </div>
+    {% endif %}
+
+    <!-- 備註 -->
+    {% if entry.note %}
+    <div class="text-sm mt-1" style="color:var(--accent);">💡 {{ entry.note }}</div>
+    {% endif %}
+
+    <div class="word-card-actions">
+      {% if entry.word %}
+      <a href="{% url 'words:detail' entry.word.id %}" class="btn btn-ghost btn-sm">詳情</a>
+      {% else %}
+      <button type="button" class="btn btn-ghost btn-sm" onclick="showCustomDetail('{{ entry.id }}', '{{ entry.display_text|escapejs }}', '{{ entry.custom_phonetic|escapejs }}', '{{ entry.custom_part_of_speech|escapejs }}', '{{ entry.display_translation|escapejs }}', '{{ entry.display_definition|escapejs }}', '{{ entry.display_example|escapejs }}', '{{ entry.note|escapejs }}', this.closest('.word-card'))">
+        詳情
+      </button>
+      {% endif %}
+      <form method="post" action="{% url 'vocab:remove_from_vocab' entry.id %}" style="margin:0">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-danger btn-sm"
+                onclick="return confirm('確定要從字庫移除「{{ entry.display_text }}」？')">
+          移除
+        </button>
+      </form>
+    </div>
+  </div>
+  {% endfor %}
+</div>
+
+{% else %}
+<div class="empty-state">
+  <div class="empty-state-icon">📭</div>
+  <div class="empty-state-title">
+    {% if mastery_filter %}這個掌握度沒有單字{% else %}字庫是空的{% endif %}
+  </div>
+  <div class="empty-state-text">
+    {% if mastery_filter %}
+      <a href="{% url 'vocab:my_vocab' %}">查看全部單字</a>
+    {% else %}
+      去加一些單字吧！
+    {% endif %}
+  </div>
+  {% if not mastery_filter %}
+  <a href="{% url 'words:list' %}" class="btn btn-primary">瀏覽官方字庫</a>
+  {% endif %}
+</div>
+{% endif %}
+
+<!-- 自訂單字詳情/編輯 Modal -->
+<div id="custom-detail-modal" class="modal-overlay" style="display: none;">
+  <div class="modal-content" style="max-width: 500px;">
+    
+    <!-- 唯讀模式 Header -->
+    <div class="modal-header" id="modal-header-view">
+      <h3>自建單字詳情 <span style="font-size:0.75rem; border:1px solid rgba(168,164,255,0.3); border-radius:4px; padding:1px 5px; color:#a8a4ff; margin-left:8px;">自建</span></h3>
+      <div style="display:flex; align-items:center; gap:10px;">
+        <button id="edit-modal-btn" class="btn btn-ghost btn-sm" style="border-color: rgba(255,255,255,0.1); font-size: 0.72rem; padding: 2px 8px; background: transparent;">✎ 快速編輯</button>
+        <button id="close-detail-btn" class="modal-close-btn">&times;</button>
+      </div>
+    </div>
+    
+    <!-- 編輯模式 Header -->
+    <div class="modal-header" id="modal-header-edit" style="display: none;">
+      <h3>編輯自建單字</h3>
+      <button id="close-edit-btn" class="modal-close-btn">&times;</button>
+    </div>
+
+    <!-- 唯讀模式 Body -->
+    <div class="modal-body" id="modal-body-view" style="padding: 20px 24px;">
+      <div style="text-align: center; margin-bottom: 20px;">
+        <h2 id="modal-word-text" style="font-size: 2.2rem; font-weight: 700; color: var(--text-primary); margin-bottom: 4px;"></h2>
+        <div id="modal-word-phonetic" class="word-card-phonetic" style="font-size: 1rem; margin-bottom: 8px;"></div>
+        <span id="modal-word-pos" class="word-card-pos" style="font-size: 0.78rem; padding: 3px 10px;"></span>
+      </div>
+
+      <div style="border-top: 1px solid var(--border); padding-top: 16px;">
+        <div style="margin-bottom: 16px;">
+          <div style="font-size: 0.75rem; font-weight: 600; color: var(--text-muted); text-transform: uppercase; margin-bottom: 4px;">中文翻譯</div>
+          <div id="modal-word-translation" style="font-size: 1.1rem; font-weight: 600; color: var(--text-primary);"></div>
+        </div>
+
+        <div style="margin-bottom: 16px;">
+          <div style="font-size: 0.75rem; font-weight: 600; color: var(--text-muted); text-transform: uppercase; margin-bottom: 4px;">英文定義</div>
+          <div id="modal-word-definition" style="font-size: 0.9rem; color: var(--text-secondary); line-height: 1.5;"></div>
+        </div>
+
+        <div style="margin-bottom: 16px;">
+          <div style="font-size: 0.75rem; font-weight: 600; color: var(--text-muted); text-transform: uppercase; margin-bottom: 4px;">例句</div>
+          <div id="modal-word-example" style="font-size: 0.88rem; color: var(--text-secondary); font-style: italic; border-left: 2px solid var(--accent); padding-left: 12px; line-height: 1.4;"></div>
+        </div>
+
+        <div id="modal-note-section" style="margin-bottom: 0;">
+          <div style="font-size: 0.75rem; font-weight: 600; color: var(--text-muted); text-transform: uppercase; margin-bottom: 4px;">個人備註</div>
+          <div id="modal-word-note" style="font-size: 0.88rem; color: var(--accent);"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 編輯模式 Body -->
+    <div class="modal-body" id="modal-body-edit" style="display: none; padding: 20px 24px;">
+      <form id="modal-edit-form" onsubmit="saveCustomWordEdit(event)">
+        {% csrf_token %}
+        <input type="hidden" id="edit-vocab-id" value="" />
+        
+        <div class="form-group" style="margin-bottom: 14px;">
+          <label class="form-label" style="font-size: 0.75rem;">中文翻譯 *</label>
+          <input type="text" id="edit-input-translation" class="form-control" style="padding: 6px 10px; font-size: 0.85rem;" required />
+        </div>
+
+        <div class="form-group" style="margin-bottom: 14px;">
+          <label class="form-label" style="font-size: 0.75rem;">英文定義</label>
+          <textarea id="edit-input-definition" class="form-control" style="padding: 6px 10px; font-size: 0.85rem; min-height: 50px; resize: vertical;"></textarea>
+        </div>
+
+        <div class="form-group" style="margin-bottom: 14px;">
+          <label class="form-label" style="font-size: 0.75rem;">例句</label>
+          <textarea id="edit-input-example" class="form-control" style="padding: 6px 10px; font-size: 0.85rem; min-height: 50px; resize: vertical;"></textarea>
+        </div>
+
+        <div class="form-group" style="margin-bottom: 20px;">
+          <label class="form-label" style="font-size: 0.75rem;">個人備註</label>
+          <input type="text" id="edit-input-note" class="form-control" style="padding: 6px 10px; font-size: 0.85rem;" />
+        </div>
+
+        <div style="display: flex; gap: 10px; justify-content: flex-end;">
+          <button type="button" id="edit-cancel-btn" class="btn btn-ghost btn-sm">取消</button>
+          <button type="submit" id="edit-save-btn" class="btn btn-primary btn-sm">儲存修改</button>
+        </div>
+      </form>
+    </div>
+
+  </div>
+</div>
+
+<script>
+  let currentEditingVocabId = null;
+  let currentCardElement = null;
+
+  function showCustomDetail(vocabId, word, phonetic, pos, translation, definition, example, note, cardEl) {
+    currentEditingVocabId = vocabId;
+    currentCardElement = cardEl;
+
+    // 填入資料
+    document.getElementById('modal-word-text').innerText = word;
+    document.getElementById('modal-word-phonetic').innerText = phonetic ? (phonetic.startsWith('/') ? phonetic : '/' + phonetic + '/') : '';
+    
+    const posSpan = document.getElementById('modal-word-pos');
+    if (pos) {
+      posSpan.innerText = pos;
+      posSpan.style.display = 'inline-block';
+    } else {
+      posSpan.style.display = 'none';
+    }
+    
+    document.getElementById('modal-word-translation').innerText = translation || '無中文翻譯';
+    document.getElementById('modal-word-definition').innerText = definition || '無英文定義';
+    
+    const exDiv = document.getElementById('modal-word-example');
+    if (example) {
+      exDiv.innerText = `"${example}"`;
+      exDiv.parentElement.style.display = 'block';
+    } else {
+      exDiv.parentElement.style.display = 'none';
+    }
+
+    const noteSection = document.getElementById('modal-note-section');
+    const noteDiv = document.getElementById('modal-word-note');
+    if (note) {
+      noteDiv.innerText = `💡 ${note}`;
+      noteSection.style.display = 'block';
+    } else {
+      noteSection.style.display = 'none';
+    }
+
+    // 填入編輯表單預設值
+    document.getElementById('edit-vocab-id').value = vocabId;
+    document.getElementById('edit-input-translation').value = translation;
+    document.getElementById('edit-input-definition').value = definition;
+    document.getElementById('edit-input-example').value = example;
+    document.getElementById('edit-input-note').value = note;
+
+    switchToViewMode();
+
+    const modal = document.getElementById('custom-detail-modal');
+    modal.style.display = 'flex';
+    document.body.style.overflow = 'hidden';
+  }
+
+  function switchToEditMode() {
+    document.getElementById('modal-header-view').style.display = 'none';
+    document.getElementById('modal-body-view').style.display = 'none';
+    document.getElementById('modal-header-edit').style.display = 'flex';
+    document.getElementById('modal-body-edit').style.display = 'block';
+  }
+
+  function switchToViewMode() {
+    document.getElementById('modal-header-edit').style.display = 'none';
+    document.getElementById('modal-body-edit').style.display = 'none';
+    document.getElementById('modal-header-view').style.display = 'flex';
+    document.getElementById('modal-body-view').style.display = 'block';
+  }
+
+  async function saveCustomWordEdit(event) {
+    event.preventDefault();
+    const vocabId = document.getElementById('edit-vocab-id').value;
+    const trans = document.getElementById('edit-input-translation').value.trim();
+    const def = document.getElementById('edit-input-definition').value.trim();
+    const ex = document.getElementById('edit-input-example').value.trim();
+    const note = document.getElementById('edit-input-note').value.trim();
+    const csrfToken = document.querySelector('#modal-edit-form [name=csrfmiddlewaretoken]').value;
+
+    const saveBtn = document.getElementById('edit-save-btn');
+    saveBtn.disabled = true;
+    saveBtn.innerText = '儲存中...';
+
+    try {
+      const fd = new FormData();
+      fd.append('translation', trans);
+      fd.append('definition', def);
+      fd.append('example', ex);
+      fd.append('note', note);
+
+      const url = "{% url 'vocab:update_vocab_api' 0 %}".replace('0', vocabId);
+      const resp = await fetch(url, {
+        method: 'POST',
+        headers: {
+          'X-CSRFToken': csrfToken
+        },
+        body: fd
+      });
+      const data = await resp.json();
+
+      if (data.success) {
+        // 更新單字卡片 UI
+        if (currentCardElement) {
+          const transEl = currentCardElement.querySelector('.word-card-translation');
+          if (transEl) transEl.innerText = data.translation;
+          
+          let noteEl = currentCardElement.querySelector('.text-sm.mt-1');
+          if (data.note) {
+            if (noteEl) {
+              noteEl.innerText = `💡 ${data.note}`;
+              noteEl.style.display = 'block';
+            } else {
+              const actionsDiv = currentCardElement.querySelector('.word-card-actions');
+              if (actionsDiv) {
+                noteEl = document.createElement('div');
+                noteEl.className = 'text-sm mt-1';
+                noteEl.style.color = 'var(--accent)';
+                noteEl.innerText = `💡 ${data.note}`;
+                currentCardElement.insertBefore(noteEl, actionsDiv);
+              }
+            }
+          } else {
+            if (noteEl && noteEl.innerText.startsWith('💡')) {
+              noteEl.style.display = 'none';
+            }
+          }
+        }
+
+        // 更新 Modal 唯讀區內容
+        document.getElementById('modal-word-translation').innerText = data.translation;
+        document.getElementById('modal-word-definition').innerText = data.definition;
+        
+        const exDiv = document.getElementById('modal-word-example');
+        if (data.example) {
+          exDiv.innerText = `"${data.example}"`;
+          exDiv.parentElement.style.display = 'block';
+        } else {
+          exDiv.parentElement.style.display = 'none';
+        }
+
+        const noteSection = document.getElementById('modal-note-section');
+        const noteDiv = document.getElementById('modal-word-note');
+        if (data.note) {
+          noteDiv.innerText = `💡 ${data.note}`;
+          noteSection.style.display = 'block';
+        } else {
+          noteSection.style.display = 'none';
+        }
+
+        // 重新為按鈕綁定新值，避免二度編輯時帶入舊值
+        const detailBtn = currentCardElement.querySelector('.btn-ghost.btn-sm');
+        if (detailBtn) {
+          const wordText = document.getElementById('modal-word-text').innerText;
+          const phonetic = document.getElementById('modal-word-phonetic').innerText;
+          const posSpan = document.getElementById('modal-word-pos');
+          const pos = posSpan.style.display !== 'none' ? posSpan.innerText : '';
+          detailBtn.setAttribute('onclick', `showCustomDetail('${vocabId}', '${wordText.replace(/'/g, "\\'")}', '${phonetic.replace(/[\/']/g, "")}', '${pos.replace(/'/g, "\\'")}', '${data.translation.replace(/'/g, "\\'")}', '${data.definition.replace(/'/g, "\\'")}', '${data.example.replace(/'/g, "\\'")}', '${data.note.replace(/'/g, "\\'")}', this.closest('.word-card'))`);
+        }
+
+        switchToViewMode();
+      } else {
+        alert('儲存失敗，請重試。');
+      }
+    } catch(e) {
+      alert('網路錯誤，請重試。');
+    } finally {
+      saveBtn.disabled = false;
+      saveBtn.innerText = '儲存修改';
+    }
+  }
+
+  document.addEventListener('turbo:load', function() {
+    const modal = document.getElementById('custom-detail-modal');
+    const closeBtn = document.getElementById('close-detail-btn');
+    const closeEditBtn = document.getElementById('close-edit-btn');
+    const editBtn = document.getElementById('edit-modal-btn');
+    const cancelBtn = document.getElementById('edit-cancel-btn');
+    
+    function closeModal() {
+      if (modal) {
+        modal.style.display = 'none';
+        document.body.style.overflow = '';
+      }
+    }
+
+    if (closeBtn) closeBtn.addEventListener('click', closeModal);
+    if (closeEditBtn) closeEditBtn.addEventListener('click', closeModal);
+    if (editBtn) editBtn.addEventListener('click', switchToEditMode);
+    if (cancelBtn) cancelBtn.addEventListener('click', switchToViewMode);
+
+    if (modal) {
+      modal.addEventListener('click', function(e) {
+        if (e.target === modal) {
+          closeModal();
+        }
+      });
+    }
+
+    document.addEventListener('keydown', function(e) {
+      if (e.key === 'Escape' && modal && modal.style.display === 'flex') {
+        closeModal();
+      }
+    });
+  });
+</script>
+
+{% endblock %}

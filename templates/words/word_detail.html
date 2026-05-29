@@ -1,0 +1,66 @@
+{% extends 'base.html' %}
+{% block title %}{{ word.text }}{% endblock %}
+{% block content %}
+
+<div style="margin-bottom:12px;">
+  <a href="{% url 'words:list' %}" class="btn btn-ghost btn-sm">← 回字庫</a>
+</div>
+
+<div class="card" style="max-width:680px;">
+  <div style="display:flex;align-items:flex-start;justify-content:space-between;flex-wrap:wrap;gap:12px;">
+    <div>
+      <h1 style="font-size:2.2rem;font-weight:800;letter-spacing:-0.04em;">{{ word.text }}</h1>
+      {% with p=word.phonetics.first %}
+      {% if p %}
+      <div style="font-family:var(--font-mono);color:var(--text-muted);font-size:1rem;margin-top:4px;">
+        /{{ p.notation }}/
+        <span style="font-size:0.75rem;color:var(--border-focus);margin-left:6px;">{{ p.notation_type }}</span>
+      </div>
+      {% endif %}
+      {% endwith %}
+    </div>
+    <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
+      <span class="difficulty-badge diff-{{ word.difficulty }}">
+        {% if word.difficulty == 1 %}入門{% elif word.difficulty == 2 %}基礎{% elif word.difficulty == 3 %}進階{% elif word.difficulty == 4 %}困難{% else %}專家{% endif %}
+      </span>
+      {% if in_vocab %}
+      <span class="btn btn-ghost btn-sm" style="cursor:default;color:var(--green);">✓ 已在字庫</span>
+      {% else %}
+      <form method="post" action="{% url 'vocab:add_to_vocab' word.id %}" style="margin:0">
+        {% csrf_token %}
+        <input type="hidden" name="next_url" value="/words/{{ word.id }}/" />
+        <button type="submit" class="btn btn-primary">＋ 加入字庫</button>
+      </form>
+      {% endif %}
+    </div>
+  </div>
+
+  <hr class="divider" />
+
+  {% for sense in word.senses.all %}
+  <div style="margin-bottom:24px;">
+    <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px;">
+      <span class="word-card-pos" style="font-size:0.78rem;">{{ sense.get_part_of_speech_display }}</span>
+      <span style="font-size:0.82rem;color:var(--text-muted);">義項 {{ forloop.counter }}</span>
+    </div>
+    <div style="font-size:1.1rem;font-weight:600;color:var(--text-primary);margin-bottom:6px;">
+      {{ sense.translation }}
+    </div>
+    {% if sense.definition %}
+    <div style="font-size:0.9rem;color:var(--text-secondary);margin-bottom:12px;">
+      {{ sense.definition }}
+    </div>
+    {% endif %}
+    {% for ex in sense.examples.all %}
+    <div class="study-example">"{{ ex.sentence }}"
+      {% if ex.translation %}
+      <div style="font-style:normal;color:var(--text-muted);margin-top:4px;font-size:0.8rem;">{{ ex.translation }}</div>
+      {% endif %}
+    </div>
+    {% endfor %}
+  </div>
+  {% endfor %}
+
+</div>
+
+{% endblock %}

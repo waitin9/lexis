@@ -1,0 +1,84 @@
+{% extends 'base.html' %}
+{% block title %}官方字庫{% endblock %}
+{% block content %}
+
+<div class="page-header">
+  <div>
+    <h1 class="page-title">官方字庫</h1>
+    <p class="page-subtitle">{{ total_count }} 個單字 · TOEIC 高頻詞彙</p>
+  </div>
+</div>
+
+<!-- 搜尋 -->
+<form method="get" class="search-bar">
+  <input type="text" name="q" class="form-control" placeholder="搜尋單字或中文..."
+         value="{{ query }}" id="search-input" />
+  <select name="difficulty" class="form-control" style="max-width:130px;">
+    <option value="">所有難度</option>
+    <option value="1" {% if difficulty == '1' %}selected{% endif %}>⬤ 入門</option>
+    <option value="2" {% if difficulty == '2' %}selected{% endif %}>⬤ 基礎</option>
+    <option value="3" {% if difficulty == '3' %}selected{% endif %}>⬤ 進階</option>
+    <option value="4" {% if difficulty == '4' %}selected{% endif %}>⬤ 困難</option>
+  </select>
+  <button type="submit" class="btn btn-primary">搜尋</button>
+  {% if query or difficulty %}
+  <a href="{% url 'words:list' %}" class="btn btn-ghost">清除</a>
+  {% endif %}
+</form>
+
+{% if words %}
+<div class="word-grid">
+  {% for word in words %}
+  <div class="word-card">
+    <!-- 已加入標記 -->
+    {% if word.id in user_word_ids %}
+    <div style="position:absolute;top:14px;right:14px;">
+      <span style="font-size:0.7rem;color:var(--green);font-weight:600;">✓ 已加入</span>
+    </div>
+    {% endif %}
+
+    <div class="word-card-text">{{ word.text }}</div>
+
+    {% with p=word.phonetics.first %}
+    {% if p %}<div class="word-card-phonetic">/{{ p.notation }}/</div>{% endif %}
+    {% endwith %}
+
+    <!-- 難度 -->
+    <span class="difficulty-badge diff-{{ word.difficulty }}">
+      {% if word.difficulty == 1 %}入門
+      {% elif word.difficulty == 2 %}基礎
+      {% elif word.difficulty == 3 %}進階
+      {% elif word.difficulty == 4 %}困難
+      {% else %}專家{% endif %}
+    </span>
+
+    {% if word.senses.all %}
+    <span class="word-card-pos">{{ word.senses.first.get_part_of_speech_display }}</span>
+    <div class="word-card-translation">{{ word.senses.first.translation }}</div>
+    {% endif %}
+
+    <div class="word-card-actions">
+      <a href="{% url 'words:detail' word.id %}" class="btn btn-ghost btn-sm">詳情</a>
+      {% if word.id not in user_word_ids %}
+      <form method="post" action="{% url 'vocab:add_to_vocab' word.id %}" style="margin:0">
+        {% csrf_token %}
+        <input type="hidden" name="next_url" value="/words/" />
+        <button type="submit" class="btn btn-primary btn-sm">＋ 加入</button>
+      </form>
+      {% else %}
+      <span class="btn btn-ghost btn-sm" style="opacity:0.5;cursor:default;">已在字庫</span>
+      {% endif %}
+    </div>
+  </div>
+  {% endfor %}
+</div>
+
+{% else %}
+<div class="empty-state">
+  <div class="empty-state-icon">🔍</div>
+  <div class="empty-state-title">沒有找到符合的單字</div>
+  <div class="empty-state-text">試試其他關鍵字，或<a href="{% url 'vocab:add_custom_word' %}">自行新增</a>。</div>
+</div>
+{% endif %}
+
+{% endblock %}

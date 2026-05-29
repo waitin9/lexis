@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+{% block title %}複習完成{% endblock %}
+{% block content %}
+<div style="max-width:480px;margin:80px auto;text-align:center;">
+  <div style="font-size:3rem;margin-bottom:20px;">✓</div>
+  <h1 class="page-title" style="margin-bottom:8px;">今日完成！</h1>
+  <p class="text-muted" style="margin-bottom:8px;">
+    你已複習完今天所有的單字。
+  </p>
+  {% if profile.streak > 0 %}
+  <p style="color:var(--yellow);font-weight:600;font-size:1.1rem;margin-bottom:32px;">
+    🔥 連續 {{ profile.streak }} 天！繼續保持。
+  </p>
+  {% else %}
+  <div style="margin-bottom:32px;"></div>
+  {% endif %}
+  <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;">
+    <a href="{% url 'vocab:dashboard' %}" class="btn btn-primary">回主頁</a>
+    <a href="{% url 'vocab:discover_session' %}" class="btn btn-ghost" style="color: var(--accent); border-color: rgba(108, 99, 255, 0.2);">探索新詞 ✦</a>
+    <a href="{% url 'vocab:my_vocab' %}" class="btn btn-ghost">查看字庫</a>
+  </div>
+</div>
+{% endblock %}
