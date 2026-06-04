@@ -1,0 +1,2221 @@
+﻿{% extends 'base.html' %}
+{% load static %}
+{% block title %}設定中心{% endblock %}
+
+{% block extra_head %}
+<style>
+  /* 雙欄 Discord 風格設定佈局 */
+  .settings-layout {
+    display: flex;
+    gap: 30px;
+    max-width: 1100px;
+    margin: 0 auto;
+    align-items: flex-start;
+  }
+
+  /* 左側導覽列 */
+  .settings-sidebar {
+    width: 220px;
+    flex-shrink: 0;
+    background: rgba(22, 22, 26, 0.45);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 20px 12px;
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    box-shadow: var(--shadow-card);
+    position: sticky;
+    top: 90px;
+    z-index: 10;
+  }
+
+  .sidebar-header {
+    padding: 0 8px 15px 8px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    margin-bottom: 15px;
+  }
+
+  .sidebar-title {
+    font-size: 1.05rem;
+    font-weight: 800;
+    color: var(--text-primary);
+    letter-spacing: 0.5px;
+  }
+
+  .sidebar-menu {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .nav-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 14px;
+    border-radius: var(--radius);
+    color: var(--text-secondary);
+    cursor: pointer;
+    font-size: 0.92rem;
+    font-weight: 500;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    border-left: 3px solid transparent;
+  }
+
+  .nav-item:hover {
+    background: rgba(255, 255, 255, 0.03);
+    color: var(--text-primary);
+  }
+
+  .nav-item.active {
+    background: rgba(108, 99, 255, 0.12);
+    border-left-color: var(--accent);
+    color: #fff;
+    font-weight: 700;
+    box-shadow: inset 0 0 10px rgba(108, 99, 255, 0.15);
+  }
+
+  .nav-icon {
+    flex-shrink: 0;
+    opacity: 0.7;
+    transition: transform 0.2s ease;
+  }
+
+  .nav-item:hover .nav-icon,
+  .nav-item.active .nav-icon {
+    opacity: 1;
+    color: var(--accent);
+    transform: scale(1.05);
+  }
+
+  /* 右側設定內容 */
+  .settings-content {
+    flex: 1;
+    min-width: 0;
+    position: relative;
+    z-index: 1;
+  }
+
+  .settings-pane {
+    display: none;
+    background: rgba(22, 22, 26, 0.7);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 30px;
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    box-shadow: var(--shadow-card);
+    animation: paneFadeIn 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  }
+
+  .settings-pane.active {
+    display: block;
+  }
+
+  @keyframes paneFadeIn {
+    from { opacity: 0; transform: translateY(12px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .pane-header {
+    margin-bottom: 25px;
+    padding-bottom: 15px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  }
+
+  .pane-title {
+    font-size: 1.35rem;
+    font-weight: 800;
+    color: var(--text-primary);
+    margin: 0 0 6px 0;
+    letter-spacing: 0.5px;
+  }
+
+  .pane-subtitle {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    margin: 0;
+  }
+
+  .accent-text {
+    color: var(--accent);
+    font-weight: 700;
+  }
+
+  /* 原有主題 Card 樣式 */
+  .theme-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+
+  .theme-card {
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+    background: rgba(255, 255, 255, 0.01);
+    transition: all 0.2s ease;
+  }
+
+  .theme-card.active {
+    border-color: var(--accent);
+    background: rgba(108, 99, 255, 0.05);
+    box-shadow: 0 0 15px rgba(108, 99, 255, 0.1);
+  }
+
+  .theme-card.locked {
+    opacity: 0.55;
+    background: rgba(0, 0, 0, 0.15);
+  }
+
+  .theme-card-left {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    flex: 1;
+    min-width: 0;
+  }
+
+  .theme-color-dot {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    flex-shrink: 0;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+    position: relative;
+  }
+  
+  .theme-color-dot::after {
+    content: '';
+    position: absolute;
+    inset: 4px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.15);
+  }
+
+  .theme-meta {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .theme-name {
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-bottom: 4px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .theme-desc {
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+    line-height: 1.4;
+  }
+
+  .theme-lock-hint {
+    font-size: 0.72rem;
+    color: #e05c5c;
+    background: rgba(224, 92, 92, 0.08);
+    border: 1px solid rgba(224, 92, 92, 0.2);
+    padding: 2px 8px;
+    border-radius: 4px;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    margin-top: 6px;
+  }
+
+  .theme-card-right {
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+
+  /* 主題小預覽框 */
+  .theme-mini-preview {
+    width: 60px;
+    height: 38px;
+    border-radius: var(--radius-sm);
+    border: 1px solid rgba(255,255,255,0.06);
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+  }
+
+  .theme-mini-preview::before {
+    content: '';
+    position: absolute;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    filter: blur(8px);
+  }
+
+  .preview-deep-space { background: #121216; }
+  .preview-deep-space::before { background: #6C63FF; top: -8px; left: -8px; }
+
+  .preview-aurora { background: #0d1e13; }
+  .preview-aurora::before { background: #4CAF50; top: -8px; right: -8px; }
+
+  .preview-cherry { background: #1b1618; }
+  .preview-cherry::before { background: #FF8DA1; bottom: -8px; left: -8px; }
+
+  .preview-cyberpunk { background: #18181c; }
+  .preview-cyberpunk::before { background: #FF007F; top: -8px; right: -8px; }
+  .preview-cyberpunk::after {
+    content: ''; position: absolute; width: 16px; height: 16px; border-radius: 50%;
+    filter: blur(5px); background: #FFEB3B; bottom: -4px; left: -4px;
+  }
+
+  .preview-zen { background: #111a14; }
+  .preview-zen::before { background: #8BC34A; top: -8px; left: -8px; }
+  .preview-zen::after {
+    content: ''; position: absolute; width: 24px; height: 24px; border-radius: 50%;
+    filter: blur(6px); background: #CDDC39; bottom: -8px; right: -8px;
+  }
+
+  .preview-arcade { background: #000000; }
+  .preview-arcade::before { background: #FFEB3B; top: -8px; right: -8px; }
+  .preview-arcade::after {
+    content: ''; position: absolute; width: 20px; height: 20px; border-radius: 50%;
+    filter: blur(5px); background: #00F2FE; bottom: -4px; left: -4px;
+  }
+
+  .preview-forest { background: #0b1c11; }
+  .preview-forest::before { background: #4CAF50; top: -8px; left: -8px; }
+  .preview-forest::after {
+    content: ''; position: absolute; width: 24px; height: 24px; border-radius: 50%;
+    filter: blur(6px); background: #8BC34A; bottom: -8px; right: -8px;
+  }
+
+  /* Switch 樣式 */
+  .switch-container {
+    position: relative;
+    display: inline-block;
+    width: 46px;
+    height: 24px;
+  }
+  .switch-input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+  }
+  .switch-label {
+    position: absolute;
+    cursor: pointer;
+    inset: 0;
+    background-color: rgba(255, 255, 255, 0.06);
+    border: 1px solid var(--border);
+    transition: all 0.3s ease;
+    border-radius: 24px;
+  }
+  .switch-label::before {
+    position: absolute;
+    content: "";
+    height: 16px;
+    width: 16px;
+    left: 3px;
+    bottom: 3px;
+    background-color: var(--text-secondary);
+    transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+    border-radius: 50%;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+  }
+  .switch-input:checked + .switch-label {
+    background-color: var(--accent-glow);
+    border-color: var(--accent);
+  }
+  .switch-input:checked + .switch-label::before {
+    transform: translateX(22px);
+    background-color: var(--accent);
+    box-shadow: 0 0 8px var(--accent);
+  }
+
+  /* 響應式：手機端自動轉換為橫向 Tabs */
+  @media (max-width: 768px) {
+    .settings-layout {
+      flex-direction: column;
+      gap: 20px;
+    }
+    
+    .settings-sidebar {
+      width: 100%;
+      position: static;
+      padding: 10px;
+    }
+    
+    .sidebar-header {
+      display: none;
+    }
+    
+    .sidebar-menu {
+      flex-direction: row;
+      overflow-x: auto;
+      white-space: nowrap;
+      gap: 8px;
+      -webkit-overflow-scrolling: touch;
+      padding-bottom: 4px;
+    }
+    
+    .sidebar-menu::-webkit-scrollbar {
+      height: 3px;
+    }
+    .sidebar-menu::-webkit-scrollbar-thumb {
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 2px;
+    }
+    
+    .nav-item {
+      flex: 1;
+      justify-content: center;
+      padding: 8px 12px;
+      margin: 0;
+      border-left: none;
+      border-bottom: 3px solid transparent;
+      border-radius: var(--radius-sm);
+    }
+    
+    .nav-item.active {
+      border-bottom-color: var(--accent);
+      background: rgba(108, 99, 255, 0.08);
+      box-shadow: none;
+    }
+  }
+
+  /* 新增主題預覽樣式 */
+  .preview-deep-sea { background: #0b1a30; }
+  .preview-deep-sea::before { background: #0288D1; top: -8px; left: -8px; }
+  .preview-deep-sea::after {
+    content: ''; position: absolute; width: 24px; height: 24px; border-radius: 50%;
+    filter: blur(6px); background: #00F2FE; bottom: -8px; right: -8px;
+  }
+
+  .preview-candy { background: #1f1224; }
+  .preview-candy::before { background: #E040FB; top: -8px; right: -8px; }
+  .preview-candy::after {
+    content: ''; position: absolute; width: 20px; height: 20px; border-radius: 50%;
+    filter: blur(5px); background: #FF8DA1; bottom: -4px; left: -4px;
+  }
+
+  /* 外觀商城元件樣式 */
+  .cosmetics-section {
+    margin-bottom: 40px;
+  }
+  .cosmetics-section-title {
+    font-size: 1.15rem;
+    font-weight: 800;
+    color: var(--text-primary);
+    margin-bottom: 18px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    padding-bottom: 8px;
+  }
+  .cosmetics-section-title svg {
+    color: var(--accent);
+  }
+  .cosmetics-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 20px;
+  }
+  .cosmetic-card {
+    background: rgba(255, 255, 255, 0.01);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    overflow: hidden;
+  }
+  .cosmetic-card:hover {
+    border-color: rgba(255, 255, 255, 0.12);
+    background: rgba(255, 255, 255, 0.02);
+    transform: translateY(-3px);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+  }
+  .cosmetic-card.active {
+    border-color: var(--accent);
+    background: rgba(108, 99, 255, 0.05);
+    box-shadow: 0 0 20px rgba(108, 99, 255, 0.15);
+  }
+  .cosmetic-card.locked {
+    background: rgba(0, 0, 0, 0.15);
+  }
+  .cosmetic-preview-box {
+    height: 110px;
+    background: rgba(0, 0, 0, 0.3);
+    border-radius: var(--radius-sm);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    border: 1px solid rgba(255, 255, 255, 0.03);
+    position: relative;
+  }
+  
+  /* Mock Card inside preview */
+  .mock-vocab-card {
+    width: 140px;
+    height: 64px;
+    background: #16161a;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: var(--radius-sm);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--font-serif);
+    position: relative;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.5);
+  }
+  .mock-vocab-card .mock-word {
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    letter-spacing: 0.5px;
+  }
+  .mock-vocab-card .mock-pos {
+    font-size: 0.65rem;
+    color: var(--text-muted);
+    margin-top: 3px;
+  }
+
+  /* Mock background preview box */
+  .mock-bg-preview {
+    width: 100%;
+    height: 100%;
+    position: relative;
+    background: #0d0d11;
+    overflow: hidden;
+  }
+  .preview-bg-none {
+    background: #0d0d11;
+  }
+  .preview-bg-snow::before {
+    content: '❄ ❄ ❄ ❄';
+    position: absolute;
+    color: rgba(255, 255, 255, 0.4);
+    font-size: 0.8rem;
+    top: -15px; left: 10px; width: 120px;
+    letter-spacing: 12px;
+    animation: mockFall 3s infinite linear;
+  }
+  .preview-bg-bubbles::before {
+    content: '○ ◌ ○ ◌';
+    position: absolute;
+    color: rgba(108, 99, 255, 0.3);
+    font-size: 0.9rem;
+    bottom: -15px; left: 20px; width: 100px;
+    letter-spacing: 15px;
+    animation: mockRise 4s infinite linear;
+  }
+  .preview-bg-meteor {
+    background: linear-gradient(140deg, #09090e 0%, #151528 100%);
+  }
+  .preview-bg-meteor::before {
+    content: '';
+    position: absolute;
+    width: 50px; height: 1px;
+    background: linear-gradient(90deg, #fff, transparent);
+    transform: rotate(-35deg);
+    top: 10px; left: 10px;
+    opacity: 0.7;
+    animation: mockMeteor 2s infinite ease-in;
+  }
+  .preview-bg-matrix {
+    background: #040904;
+  }
+  .preview-bg-matrix::before {
+    content: '1 0 1 1\n0 1 0 0\n1 1 0 1';
+    white-space: pre;
+    position: absolute;
+    color: rgba(0, 255, 100, 0.25);
+    font-family: monospace;
+    font-size: 0.6rem;
+    line-height: 1.2;
+    top: 5px; left: 10px;
+    animation: mockMatrix 4s infinite linear;
+  }
+  .preview-bg-cherry {
+    background: #170e13;
+  }
+  .preview-bg-cherry::before {
+    content: '🌸 🌸 🌸';
+    position: absolute;
+    font-size: 0.8rem;
+    top: -15px; left: 10px; width: 120px;
+    letter-spacing: 18px;
+    opacity: 0.5;
+    animation: mockFall 3.5s infinite linear;
+  }
+  .preview-bg-arcade-grid {
+    background: #000;
+    background-image: 
+      linear-gradient(rgba(0, 242, 254, 0.12) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0, 242, 254, 0.12) 1px, transparent 1px);
+    background-size: 15px 15px;
+  }
+  .preview-bg-forest-glow {
+    background: #08160a;
+  }
+  .preview-bg-forest-glow::before {
+    content: '● ● ●';
+    position: absolute;
+    color: #8bc34a;
+    font-size: 0.6rem;
+    filter: blur(2px);
+    bottom: -10px; left: 20px; width: 100px;
+    letter-spacing: 20px;
+    animation: mockRise 5s infinite linear;
+  }
+
+  @keyframes mockFall {
+    0% { transform: translateY(0) rotate(0deg); }
+    100% { transform: translateY(135px) rotate(360deg); }
+  }
+  @keyframes mockRise {
+    0% { transform: translateY(0); opacity: 0; }
+    10% { opacity: 0.8; }
+    90% { opacity: 0.8; }
+    100% { transform: translateY(-135px); opacity: 0; }
+  }
+  @keyframes mockMeteor {
+    0% { transform: translate(-30px, -30px) rotate(-35deg); opacity: 0; }
+    10% { opacity: 1; }
+    30% { transform: translate(110px, 70px) rotate(-35deg); opacity: 0; }
+    100% { transform: translate(110px, 70px) rotate(-35deg); opacity: 0; }
+  }
+  @keyframes mockMatrix {
+    0% { transform: translateY(-30px); }
+    100% { transform: translateY(110px); }
+  }
+
+  .cosmetic-meta {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  .cosmetic-name {
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .cosmetic-desc {
+    font-size: 0.78rem;
+    color: var(--text-secondary);
+    line-height: 1.4;
+  }
+  .cosmetic-status-text {
+    font-size: 0.72rem;
+    font-weight: 600;
+    color: var(--text-muted);
+  }
+  .cosmetic-lock-badge {
+    font-size: 0.7rem;
+    color: #e05c5c;
+    background: rgba(224, 92, 92, 0.08);
+    border: 1px solid rgba(224, 92, 92, 0.2);
+    padding: 1px 6px;
+    border-radius: 4px;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    align-self: flex-start;
+  }
+  .cosmetic-action {
+    margin-top: auto;
+  }
+  .cosmetic-action button {
+    width: 100%;
+    justify-content: center;
+    height: 34px;
+    font-size: 0.82rem;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  /* 稱號徽章陳列架 */
+  .badge-rack {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 12px;
+    background: rgba(0, 0, 0, 0.15);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 20px;
+  }
+  .badge-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 12px 10px;
+    border-radius: var(--radius-sm);
+    border: 1px solid transparent;
+    cursor: pointer;
+    background: rgba(255, 255, 255, 0.01);
+    transition: all 0.2s ease;
+    gap: 8px;
+    text-align: center;
+  }
+  .badge-item:hover {
+    background: rgba(255, 255, 255, 0.03);
+    border-color: rgba(255, 255, 255, 0.08);
+    transform: translateY(-2px);
+  }
+  .badge-item.active {
+    background: rgba(108, 99, 255, 0.06);
+    border-color: var(--accent);
+    box-shadow: 0 0 10px rgba(108, 99, 255, 0.1);
+  }
+  .badge-item.locked {
+    opacity: 0.45;
+    cursor: not-allowed;
+  }
+  .badge-item.locked:hover {
+    transform: none;
+    background: rgba(255, 255, 255, 0.01);
+    border-color: transparent;
+  }
+  .badge-item-requirement {
+    font-size: 0.72rem;
+    color: var(--text-muted);
+  }
+  .badge-item .custom-badge {
+    pointer-events: none; /* 防止點擊干擾 */
+  }
+
+  .badge-item:hover .badge-pixel-art {
+    transform: translateY(-4px) scale(1.1);
+    filter: drop-shadow(0 4px 8px rgba(255,255,255,0.15));
+  }
+  .badge-item.active .badge-pixel-art {
+    filter: drop-shadow(0 0 10px rgba(255, 215, 0, 0.4));
+  }
+  .badge-item.locked .badge-pixel-art {
+    filter: grayscale(100%) opacity(0.3);
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="settings-header-wrapper" style="max-width: 1100px; margin: 0 auto 25px auto;">
+  <div class="page-header" style="margin-bottom: 0; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px;">
+    <div>
+      <h1 class="page-title creative-glow-title">設定中心</h1>
+      <p class="page-subtitle">自訂個人化學習介面與偏好設定。</p>
+    </div>
+    <div class="coins-display-badge" style="background: rgba(255, 215, 0, 0.08); border: 1px solid rgba(255, 215, 0, 0.3); border-radius: 12px; padding: 10px 18px; font-weight: 800; color: #ffd700; display: inline-flex; align-items: center; gap: 8px; box-shadow: 0 0 15px rgba(255, 215, 0, 0.15); font-size: 1.05rem;">
+      <img src="/static/images/pixel_coin.png" class="pixel-coin-icon" style="width: 18px; height: 18px;" /> 金幣餘額: <span id="settings-user-coins">{{ profile.coins }}</span>
+    </div>
+  </div>
+</div>
+
+<div class="settings-layout">
+  
+  <!-- 左側導覽列 -->
+  <aside class="settings-sidebar">
+    <div class="sidebar-header">
+      <div class="sidebar-title">設定目錄</div>
+    </div>
+    <nav class="sidebar-menu">
+      <div class="nav-item active" data-tab="theme">
+        <svg class="nav-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 14.7255 3.09032 17.1962 4.85857 19C5.03345 19.1749 5.0999 19.4375 5.0213 19.6733C4.8559 20.1694 4.72314 20.7078 4.67396 21.2828C4.63412 21.7485 4.97864 22 5.44624 22H12Z"/><circle cx="7.5" cy="10.5" r="1.5" fill="currentColor"/><circle cx="11.5" cy="7.5" r="1.5" fill="currentColor"/><circle cx="16.5" cy="9.5" r="1.5" fill="currentColor"/><circle cx="15.5" cy="14.5" r="1.5" fill="currentColor"/></svg>
+        <span>系統主題</span>
+      </div>
+      <div class="nav-item" data-tab="preferences">
+        <svg class="nav-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="4" y1="21" x2="4" y2="14" /><line x1="4" y1="10" x2="4" y2="3" /><line x1="12" y1="21" x2="12" y2="12" /><line x1="12" y1="8" x2="12" y2="3" /><line x1="20" y1="21" x2="20" y2="16" /><line x1="20" y1="12" x2="20" y2="3" /><line x1="1" y1="14" x2="7" y2="14" /><line x1="9" y1="8" x2="15" y2="8" /><line x1="17" y1="16" x2="23" y2="16" /></svg>
+        <span>學習偏好</span>
+      </div>
+      <div class="nav-item" data-tab="cosmetics">
+        <svg class="nav-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364-6.364l-.707.707M6.343 17.657l-.707.707m0-12.728l.707.707m10.607 10.607l.707.707M12 8a4 4 0 100 8 4 4 0 000-8z"/></svg>
+        <span>外觀裝飾</span>
+      </div>
+    </nav>
+  </aside>
+
+  <!-- 右側設定內容 -->
+  <div class="settings-content">
+    
+    <!-- 系統主題設定 -->
+    <section class="settings-pane active" id="pane-theme">
+      <div class="pane-header">
+        <h2 class="pane-title">系統主題設定</h2>
+        <p class="pane-subtitle">選擇或解鎖你的專屬系統色彩主題。目前已累積字數：<span class="accent-text">{{ vocab_count }}</span> 字</p>
+      </div>
+      
+      <form method="post" action="{% url 'vocab:settings' %}" class="theme-grid" data-turbo="false">
+
+        {% csrf_token %}
+        {% for t in themes %}
+        <div class="theme-card {% if profile.theme == t.id %}active{% endif %} {% if not t.is_unlocked %}locked{% endif %}" data-theme-id="{{ t.id }}">
+          <div class="theme-card-left">
+            <div class="theme-color-dot" style="background: {{ t.color }};"></div>
+            <div class="theme-meta">
+              <div class="theme-name">
+                <span>{{ t.name }}</span>
+                {% if profile.theme == t.id %}
+                <span style="font-size: 0.72rem; color: var(--green); font-weight: 700; background: rgba(76, 175, 130, 0.1); padding: 1px 6px; border-radius: 4px; border: 1px solid rgba(76, 175, 130, 0.2);">當前套用</span>
+                {% endif %}
+              </div>
+              <div class="theme-desc">{{ t.desc }}</div>
+              {% if not t.is_unlocked %}
+              <div class="theme-lock-hint">
+                {{ t.req_desc }} (未解鎖)
+              </div>
+              {% endif %}
+            </div>
+          </div>
+
+          <div class="theme-card-right">
+            <div class="theme-mini-preview preview-{{ t.id }}" title="{{ t.name }}"></div>
+
+            {% if profile.theme == t.id %}
+            <button type="button" class="btn btn-ghost btn-sm" disabled style="color: var(--green); border-color: rgba(76, 175, 130, 0.3);">
+              ✓ 已套用
+            </button>
+            {% elif t.is_unlocked %}
+            <button type="submit" name="theme" value="{{ t.id }}" class="btn btn-primary btn-sm">
+              套用主題
+            </button>
+            {% elif t.price %}
+              {% if profile.coins < t.price %}
+              <button type="button" class="btn btn-ghost btn-sm theme-purchase-btn-disabled" disabled style="opacity: 0.6; cursor: not-allowed; color: #ff5c5c; border-color: rgba(255, 92, 92, 0.25);" data-item-type="theme" data-item-id="{{ t.id }}" data-price="{{ t.price }}">
+                金幣不足 (🪙 {{ t.price }})
+              </button>
+              {% else %}
+              <button type="button" class="btn btn-primary btn-sm theme-purchase-btn" data-item-type="theme" data-item-id="{{ t.id }}" data-price="{{ t.price }}">
+                <img src="/static/images/pixel_coin.png" class="pixel-coin-icon" /> {{ t.price }} 解鎖
+              </button>
+              {% endif %}
+            {% else %}
+            <button type="button" class="btn btn-ghost btn-sm" disabled style="opacity: 0.5; cursor: not-allowed;">
+              尚未解鎖
+            </button>
+            {% endif %}
+          </div>
+        </div>
+        {% endfor %}
+      </form>
+    </section>
+
+    <!-- 學習偏好設定 -->
+    <section class="settings-pane" id="pane-preferences">
+      <div class="pane-header">
+        <h2 class="pane-title">學習偏好設定</h2>
+        <p class="pane-subtitle">調整音標顯示種類、發音偏好與每日字數上限。</p>
+      </div>
+      
+      <div style="display: flex; flex-direction: column; gap: 16px;">
+        <!-- 音標顯示 -->
+        <div style="display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 1px solid rgba(255, 255, 255, 0.04);">
+          <div>
+            <div style="font-size: 0.95rem; font-weight: 700; color: var(--text-primary); margin-bottom: 4px;">音標顯示種類</div>
+            <div style="font-size: 0.78rem; color: var(--text-secondary);">系統會優先顯示您習慣的音標種類。</div>
+          </div>
+          <select id="phonetic-pref-select" class="form-control" style="max-width: 160px; border-radius: 8px; background: rgba(0,0,0,0.25); border: 1px solid var(--border); color: var(--text-primary); padding: 6px 12px;">
+            <option value="kk" {% if profile.phonetic_pref == 'kk' %}selected{% endif %}>優先 KK 音標</option>
+            <option value="ipa" {% if profile.phonetic_pref == 'ipa' %}selected{% endif %}>僅顯示 IPA</option>
+            <option value="hide" {% if profile.phonetic_pref == 'hide' %}selected{% endif %}>關閉音標</option>
+          </select>
+        </div>
+
+        <!-- 每日新探索上限 -->
+        <div style="display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 1px solid rgba(255, 255, 255, 0.04);">
+          <div>
+            <div style="font-size: 0.95rem; font-weight: 700; color: var(--text-primary); margin-bottom: 4px;">每日學習上限</div>
+            <div style="font-size: 0.78rem; color: var(--text-secondary);">每日新探索單字上限，可保護大腦不易過載。</div>
+          </div>
+          <select id="daily-target-select" class="form-control" style="max-width: 160px; border-radius: 8px; background: rgba(0,0,0,0.25); border: 1px solid var(--border); color: var(--text-primary); padding: 6px 12px;">
+            <option value="15" {% if profile.daily_target == 15 %}selected{% endif %}>15 字</option>
+            <option value="20" {% if profile.daily_target == 20 %}selected{% endif %}>20 字</option>
+            <option value="30" {% if profile.daily_target == 30 %}selected{% endif %}>30 字</option>
+            <option value="9999" {% if profile.daily_target == 9999 %}selected{% endif %}>無限制</option>
+          </select>
+        </div>
+
+        <!-- 自動發音 -->
+        <div style="display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 1px solid rgba(255, 255, 255, 0.04);">
+          <div>
+            <div style="font-size: 0.95rem; font-weight: 700; color: var(--text-primary); margin-bottom: 4px;">自動發音</div>
+            <div style="font-size: 0.78rem; color: var(--text-secondary);">在卡片翻面或進入詳情時自動播放預設真人發音。</div>
+          </div>
+          <div class="switch-container">
+            <input type="checkbox" id="auto-pronounce-chk" {% if profile.auto_pronounce %}checked{% endif %} class="switch-input">
+            <label for="auto-pronounce-chk" class="switch-label"></label>
+          </div>
+        </div>
+
+        <!-- 發音口音偏好 -->
+        <div style="display: flex; justify-content: space-between; align-items: center; padding: 10px 0;">
+          <div>
+            <div style="font-size: 0.95rem; font-weight: 700; color: var(--text-primary); margin-bottom: 4px;">發音口音偏好</div>
+            <div style="font-size: 0.78rem; color: var(--text-secondary);">選擇點進卡片或自動朗讀時的預設發音口音（美音/英音）。</div>
+          </div>
+          <select id="pronunciation-pref-select" class="form-control" style="max-width: 160px; border-radius: 8px; background: rgba(0,0,0,0.25); border: 1px solid var(--border); color: var(--text-primary); padding: 6px 12px;">
+            <option value="US" {% if profile.pronunciation_pref == 'US' %}selected{% endif %}>美音 (US)</option>
+            <option value="UK" {% if profile.pronunciation_pref == 'UK' %}selected{% endif %}>英音 (UK)</option>
+          </select>
+        </div>
+      </div>
+    </section>
+
+    <!-- 外觀特效與裝飾設定 -->
+    <section class="settings-pane" id="pane-cosmetics">
+      <div class="pane-header">
+        <h2 class="pane-title">外觀特效與裝飾設定</h2>
+        <p class="pane-subtitle">自訂卡片流光邊框、全域背景粒子特效及頂部稱號徽章（解鎖條件見成就殿堂）。</p>
+      </div>
+      
+      <!-- 金幣獲取說明面板 -->
+      <div class="coin-info-panel" style="
+        background: linear-gradient(135deg, rgba(255, 215, 0, 0.03) 0%, rgba(255, 165, 0, 0.08) 100%);
+        border: 1px solid rgba(255, 215, 0, 0.2);
+        border-radius: var(--radius-lg);
+        padding: 20px;
+        margin-bottom: 25px;
+        display: flex;
+        align-items: center;
+        gap: 20px;
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.25);
+        backdrop-filter: blur(8px);
+        -webkit-backdrop-filter: blur(8px);
+      ">
+        <div style="font-size: 2.5rem; flex-shrink: 0; filter: drop-shadow(0 0 10px rgba(255, 215, 0, 0.4));">
+          <img src="/static/images/pixel_chest_closed.png" class="pixel-chest-icon" style="width: 48px; height: 48px; object-fit: contain;" />
+        </div>
+        <div style="flex: 1;">
+          <h4 style="color: #ffd700; font-size: 1.05rem; font-weight: 800; margin: 0 0 6px 0; display: flex; align-items: center; gap: 8px;">
+            如何獲取與使用金幣？
+          </h4>
+          <p style="color: var(--text-secondary); font-size: 0.85rem; line-height: 1.5; margin: 0;">
+            在系統中，金幣可用於解鎖專屬的<strong>系統色彩主題</strong>、<strong>卡片流光邊框</strong>與<strong>全域網頁背景粒子特效</strong>。<br>
+            您可以點擊頂部導覽列的「極速挑戰」參與挑戰。在每次挑戰完畢後，點擊開啟<strong>神秘寶箱</strong>，即可隨機賺取 <strong style="color: #ffd700;">50 ～ 100 枚金幣</strong>！
+          </p>
+        </div>
+      </div>
+
+      <!-- 隱藏的 Select 選單，作為與後端 Pref API 交互的狀態 Holder -->
+      <select id="card-border-style-select" style="display: none;">
+        <option value="default" {% if profile.card_border_style == 'default' %}selected{% endif %}>預設無邊框</option>
+        <option value="shadow-void" {% if profile.card_border_style == 'shadow-void' %}selected{% endif %} {% if 'border:shadow-void' not in unlocked_items_list %}data-locked="true" data-price="150" data-item-type="style" data-item-id="shadow-void"{% endif %}>虛空暗影</option>
+        <option value="platinum" {% if profile.card_border_style == 'platinum' %}selected{% endif %} {% if profile.total_reviews < 100 %}disabled{% endif %}>白金流光</option>
+        <option value="emerald-glow" {% if profile.card_border_style == 'emerald-glow' %}selected{% endif %} {% if 'border:emerald-glow' not in unlocked_items_list %}data-locked="true" data-price="300" data-item-type="style" data-item-id="emerald-glow"{% endif %}>翡翠微光</option>
+        <option value="rainbow-neon" {% if profile.card_border_style == 'rainbow-neon' %}selected{% endif %} {% if profile.total_reviews < 500 %}disabled{% endif %}>炫彩霓虹</option>
+        <option value="golden-lava" {% if profile.card_border_style == 'golden-lava' %}selected{% endif %} {% if mastered_count < 5 %}disabled{% endif %}>黃金熔岩</option>
+      </select>
+
+      <select id="background-effect-select" style="display: none;">
+        <option value="none" {% if profile.background_effect == 'none' %}selected{% endif %}>無特效</option>
+        <option value="snow" {% if profile.background_effect == 'snow' %}selected{% endif %} {% if profile.streak < 3 %}disabled{% endif %}>浪漫飄雪</option>
+        <option value="bubbles" {% if profile.background_effect == 'bubbles' %}selected{% endif %} {% if profile.streak < 5 %}disabled{% endif %}>夢幻氣泡</option>
+        <option value="meteor" {% if profile.background_effect == 'meteor' %}selected{% endif %} {% if profile.streak < 7 %}disabled{% endif %}>星光流星</option>
+        <option value="matrix" {% if profile.background_effect == 'matrix' %}selected{% endif %} {% if profile.total_reviews < 1000 %}disabled{% endif %}>數位雨</option>
+        <option value="cherry" {% if profile.background_effect == 'cherry' %}selected{% endif %} {% if 'effect:cherry' not in unlocked_items_list %}data-locked="true" data-price="400" data-item-type="effect" data-item-id="cherry"{% endif %}>櫻花飄落</option>
+        <option value="arcade-grid" {% if profile.background_effect == 'arcade-grid' %}selected{% endif %} {% if 'effect:arcade-grid' not in unlocked_items_list %}data-locked="true" data-price="500" data-item-type="effect" data-item-id="arcade-grid"{% endif %}>3D科幻網格</option>
+        <option value="forest-glow" {% if profile.background_effect == 'forest-glow' %}selected{% endif %} {% if 'effect:forest-glow' not in unlocked_items_list %}data-locked="true" data-price="350" data-item-type="effect" data-item-id="forest-glow"{% endif %}>魔法螢光</option>
+      </select>
+
+      <select id="user-badge-select" style="display: none;">
+        <option value="none" {% if profile.user_badge == 'none' %}selected{% endif %}>無頭銜稱號</option>
+        <option value="sprout" {% if profile.user_badge == 'sprout' %}selected{% endif %} {% if vocab_count < 1 %}disabled{% endif %}>幼嫩萌芽</option>
+        <option value="novice" {% if profile.user_badge == 'novice' %}selected{% endif %} {% if vocab_count < 30 %}disabled{% endif %}>冒險新手</option>
+        <option value="iron" {% if profile.user_badge == 'iron' %}selected{% endif %} {% if vocab_count < 80 %}disabled{% endif %}>鋼鐵意志</option>
+        <option value="star" {% if profile.user_badge == 'star' %}selected{% endif %} {% if profile.total_reviews < 1 %}disabled{% endif %}>勤奮之星</option>
+        <option value="walker" {% if profile.user_badge == 'walker' %}selected{% endif %} {% if profile.total_reviews < 20 %}disabled{% endif %}>溫故行者</option>
+        <option value="start" {% if profile.user_badge == 'start' %}selected{% endif %} {% if profile.streak < 1 %}disabled{% endif %}>挑戰起點</option>
+        <option value="time-traveler" {% if profile.user_badge == 'time-traveler' %}selected{% endif %} {% if profile.streak < 14 %}disabled{% endif %}>時間旅者</option>
+        <option value="wisdom" {% if profile.user_badge == 'wisdom' %}selected{% endif %} {% if mastered_count < 1 %}disabled{% endif %}>智慧啟盟</option>
+        <option value="master" {% if profile.user_badge == 'master' %}selected{% endif %} {% if mastered_count < 10 %}disabled{% endif %}>黃金學習者</option>
+        <option value="sage" {% if profile.user_badge == 'sage' %}selected{% endif %} {% if mastered_count < 30 %}disabled{% endif %}>單字賢者</option>
+        <option value="survivor" {% if profile.user_badge == 'survivor' %}selected{% endif %} {% if profile.challenges_played < 1 %}disabled{% endif %}>浴血倖存者</option>
+        <option value="explorer" {% if profile.user_badge == 'explorer' %}selected{% endif %} {% if explorer_count < 10 %}disabled{% endif %}>新詞探索家</option>
+      </select>
+
+      <div style="display: flex; flex-direction: column; gap: 30px;">
+        <!-- 1. 卡片流光邊框區塊 -->
+        <div class="cosmetics-section">
+          <h3 class="cosmetics-section-title">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><line x1="9" y1="3" x2="9" y2="21"/></svg>
+            卡片流光邊框商城
+          </h3>
+          <div class="cosmetics-grid" id="border-shop-grid">
+            
+            <!-- 預設無邊框 -->
+            <div class="cosmetic-card border-shop-card {% if profile.card_border_style == 'default' %}active{% endif %}" data-item-id="default" data-locked="false">
+              <div class="cosmetic-preview-box">
+                <div class="mock-vocab-card">
+                  <span class="mock-word">Lexis</span>
+                  <span class="mock-pos">n. 字典</span>
+                </div>
+              </div>
+              <div class="cosmetic-meta">
+                <div class="cosmetic-name">預設無邊框</div>
+                <div class="cosmetic-desc">最純粹、簡潔的卡片風格，幫助專注學習。</div>
+                <div class="cosmetic-status-text text-success">預設已解鎖</div>
+              </div>
+              <div class="cosmetic-action">
+                {% if profile.card_border_style == 'default' %}
+                <button class="btn btn-ghost btn-sm" disabled style="color: var(--green); border-color: rgba(76, 175, 130, 0.3);">✓ 當前套用</button>
+                {% else %}
+                <button class="btn btn-primary btn-sm btn-cosmetic-apply">套用裝飾</button>
+                {% endif %}
+              </div>
+            </div>
+
+            <!-- 虛空暗影 -->
+            <div class="cosmetic-card border-shop-card {% if profile.card_border_style == 'shadow-void' %}active{% endif %} {% if 'border:shadow-void' not in unlocked_items_list %}locked{% endif %}" data-item-id="shadow-void" {% if 'border:shadow-void' not in unlocked_items_list %}data-locked="true" data-price="150" data-item-type="style"{% else %}data-locked="false"{% endif %}>
+              <div class="cosmetic-preview-box">
+                <div class="mock-vocab-card card-border-shadow-void">
+                  <span class="mock-word">Void</span>
+                  <span class="mock-pos">adj. 虛空的</span>
+                </div>
+              </div>
+              <div class="cosmetic-meta">
+                <div class="cosmetic-name">虛空暗影</div>
+                <div class="cosmetic-desc">深邃的暗紫與虛空黑色漸層流光，低調神秘。</div>
+                {% if 'border:shadow-void' not in unlocked_items_list %}
+                <div class="cosmetic-lock-badge">🪙 150 金幣解鎖</div>
+                {% else %}
+                <div class="cosmetic-status-text text-success">已解鎖</div>
+                {% endif %}
+              </div>
+              <div class="cosmetic-action">
+                {% if profile.card_border_style == 'shadow-void' %}
+                <button class="btn btn-ghost btn-sm" disabled style="color: var(--green); border-color: rgba(76, 175, 130, 0.3);">✓ 當前套用</button>
+                {% elif 'border:shadow-void' in unlocked_items_list %}
+                <button class="btn btn-primary btn-sm btn-cosmetic-apply">套用裝飾</button>
+                {% else %}
+                  {% if profile.coins < 150 %}
+                  <button class="btn btn-ghost btn-sm btn-cosmetic-buy-disabled" disabled style="opacity: 0.6; cursor: not-allowed; color: #ff5c5c; border-color: rgba(255, 92, 92, 0.25);">金幣不足 (🪙 150)</button>
+                  {% else %}
+                  <button class="btn btn-primary btn-sm btn-cosmetic-buy" style="background: linear-gradient(135deg, #ffd700, #ffa500); color: #000; border: none; font-weight: 700;">🪙 150 購買解鎖</button>
+                  {% endif %}
+                {% endif %}
+              </div>
+            </div>
+
+            <!-- 白金流光 -->
+            <div class="cosmetic-card border-shop-card {% if profile.card_border_style == 'platinum' %}active{% endif %} {% if profile.total_reviews < 100 %}locked{% endif %}" data-item-id="platinum" data-locked="{% if profile.total_reviews < 100 %}true{% else %}false{% endif %}">
+              <div class="cosmetic-preview-box">
+                <div class="mock-vocab-card card-border-platinum">
+                  <span class="mock-word">Platinum</span>
+                  <span class="mock-pos">n. 白金</span>
+                </div>
+              </div>
+              <div class="cosmetic-meta">
+                <div class="cosmetic-name">白金流光</div>
+                <div class="cosmetic-desc">高雅的白金金屬流動光澤，精緻無比。</div>
+                {% if profile.total_reviews < 100 %}
+                <div class="cosmetic-lock-badge" style="color: #4a90e2; background: rgba(74, 144, 226, 0.08); border-color: rgba(74, 144, 226, 0.2);">🔒 需累積複習 100 次</div>
+                {% else %}
+                <div class="cosmetic-status-text text-success">已解鎖</div>
+                {% endif %}
+              </div>
+              <div class="cosmetic-action">
+                {% if profile.card_border_style == 'platinum' %}
+                <button class="btn btn-ghost btn-sm" disabled style="color: var(--green); border-color: rgba(76, 175, 130, 0.3);">✓ 當前套用</button>
+                {% elif profile.total_reviews >= 100 %}
+                <button class="btn btn-primary btn-sm btn-cosmetic-apply">套用裝飾</button>
+                {% else %}
+                <button class="btn btn-ghost btn-sm" disabled style="opacity: 0.5; cursor: not-allowed;">尚未解鎖</button>
+                {% endif %}
+              </div>
+            </div>
+
+            <!-- 翡翠微光 -->
+            <div class="cosmetic-card border-shop-card {% if profile.card_border_style == 'emerald-glow' %}active{% endif %} {% if 'border:emerald-glow' not in unlocked_items_list %}locked{% endif %}" data-item-id="emerald-glow" {% if 'border:emerald-glow' not in unlocked_items_list %}data-locked="true" data-price="300" data-item-type="style"{% else %}data-locked="false"{% endif %}>
+              <div class="cosmetic-preview-box">
+                <div class="mock-vocab-card card-border-emerald-glow">
+                  <span class="mock-word">Emerald</span>
+                  <span class="mock-pos">n. 翡翠</span>
+                </div>
+              </div>
+              <div class="cosmetic-meta">
+                <div class="cosmetic-name">翡翠微光</div>
+                <div class="cosmetic-desc">充滿生命氣息的翡翠亮綠流光，散發自然生機。</div>
+                {% if 'border:emerald-glow' not in unlocked_items_list %}
+                <div class="cosmetic-lock-badge">🪙 300 金幣解鎖</div>
+                {% else %}
+                <div class="cosmetic-status-text text-success">已解鎖</div>
+                {% endif %}
+              </div>
+              <div class="cosmetic-action">
+                {% if profile.card_border_style == 'emerald-glow' %}
+                <button class="btn btn-ghost btn-sm" disabled style="color: var(--green); border-color: rgba(76, 175, 130, 0.3);">✓ 當前套用</button>
+                {% elif 'border:emerald-glow' in unlocked_items_list %}
+                <button class="btn btn-primary btn-sm btn-cosmetic-apply">套用裝飾</button>
+                {% else %}
+                  {% if profile.coins < 300 %}
+                  <button class="btn btn-ghost btn-sm btn-cosmetic-buy-disabled" disabled style="opacity: 0.6; cursor: not-allowed; color: #ff5c5c; border-color: rgba(255, 92, 92, 0.25);">金幣不足 (🪙 300)</button>
+                  {% else %}
+                  <button class="btn btn-primary btn-sm btn-cosmetic-buy" style="background: linear-gradient(135deg, #ffd700, #ffa500); color: #000; border: none; font-weight: 700;">🪙 300 購買解鎖</button>
+                  {% endif %}
+                {% endif %}
+              </div>
+            </div>
+
+            <!-- 炫彩霓虹 -->
+            <div class="cosmetic-card border-shop-card {% if profile.card_border_style == 'rainbow-neon' %}active{% endif %} {% if profile.total_reviews < 500 %}locked{% endif %}" data-item-id="rainbow-neon" data-locked="{% if profile.total_reviews < 500 %}true{% else %}false{% endif %}">
+              <div class="cosmetic-preview-box">
+                <div class="mock-vocab-card card-border-rainbow-neon">
+                  <span class="mock-word">Neon</span>
+                  <span class="mock-pos">adj. 霓虹的</span>
+                </div>
+              </div>
+              <div class="cosmetic-meta">
+                <div class="cosmetic-name">炫彩霓虹</div>
+                <div class="cosmetic-desc">賽博朋克風格的多重色彩動態流光，耀眼吸睛。</div>
+                {% if profile.total_reviews < 500 %}
+                <div class="cosmetic-lock-badge" style="color: #4a90e2; background: rgba(74, 144, 226, 0.08); border-color: rgba(74, 144, 226, 0.2);">🔒 需累積複習 500 次</div>
+                {% else %}
+                <div class="cosmetic-status-text text-success">已解鎖</div>
+                {% endif %}
+              </div>
+              <div class="cosmetic-action">
+                {% if profile.card_border_style == 'rainbow-neon' %}
+                <button class="btn btn-ghost btn-sm" disabled style="color: var(--green); border-color: rgba(76, 175, 130, 0.3);">✓ 當前套用</button>
+                {% elif profile.total_reviews >= 500 %}
+                <button class="btn btn-primary btn-sm btn-cosmetic-apply">套用裝飾</button>
+                {% else %}
+                <button class="btn btn-ghost btn-sm" disabled style="opacity: 0.5; cursor: not-allowed;">尚未解鎖</button>
+                {% endif %}
+              </div>
+            </div>
+
+            <!-- 黃金熔岩 -->
+            <div class="cosmetic-card border-shop-card {% if profile.card_border_style == 'golden-lava' %}active{% endif %} {% if mastered_count < 5 %}locked{% endif %}" data-item-id="golden-lava" data-locked="{% if mastered_count < 5 %}true{% else %}false{% endif %}">
+              <div class="cosmetic-preview-box">
+                <div class="mock-vocab-card card-border-golden-lava">
+                  <span class="mock-word">Lava</span>
+                  <span class="mock-pos">n. 熔岩</span>
+                </div>
+              </div>
+              <div class="cosmetic-meta">
+                <div class="cosmetic-name">黃金熔岩</div>
+                <div class="cosmetic-desc">燃燒的黃金融熔岩呼吸流光，頂級榮耀的象徵。</div>
+                {% if mastered_count < 5 %}
+                <div class="cosmetic-lock-badge" style="color: #e0a020; background: rgba(224, 160, 32, 0.08); border-color: rgba(224, 160, 32, 0.2);">🔒 需精通 5 個單字</div>
+                {% else %}
+                <div class="cosmetic-status-text text-success">已解鎖</div>
+                {% endif %}
+              </div>
+              <div class="cosmetic-action">
+                {% if profile.card_border_style == 'golden-lava' %}
+                <button class="btn btn-ghost btn-sm" disabled style="color: var(--green); border-color: rgba(76, 175, 130, 0.3);">✓ 當前套用</button>
+                {% elif mastered_count >= 5 %}
+                <button class="btn btn-primary btn-sm btn-cosmetic-apply">套用裝飾</button>
+                {% else %}
+                <button class="btn btn-ghost btn-sm" disabled style="opacity: 0.5; cursor: not-allowed;">尚未解鎖</button>
+                {% endif %}
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- 2. 全域背景粒子特效區塊 -->
+        <div class="cosmetics-section">
+          <h3 class="cosmetics-section-title">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364-6.364l-.707.707M6.343 17.657l-.707.707m0-12.728l.707.707m10.607 10.607l.707.707M12 8a4 4 0 100 8 4 4 0 000-8z"/></svg>
+            全域背景粒子特效商城
+          </h3>
+          <div class="cosmetics-grid" id="effect-shop-grid">
+            
+            <!-- 無特效 -->
+            <div class="cosmetic-card effect-shop-card {% if profile.background_effect == 'none' %}active{% endif %}" data-item-id="none" data-locked="false">
+              <div class="cosmetic-preview-box">
+                <div class="mock-bg-preview preview-bg-none"></div>
+              </div>
+              <div class="cosmetic-meta">
+                <div class="cosmetic-name">無特效</div>
+                <div class="cosmetic-desc">清爽乾淨的系統網頁背景，專注於背單字本身。</div>
+                <div class="cosmetic-status-text text-success">預設已解鎖</div>
+              </div>
+              <div class="cosmetic-action">
+                {% if profile.background_effect == 'none' %}
+                <button class="btn btn-ghost btn-sm" disabled style="color: var(--green); border-color: rgba(76, 175, 130, 0.3);">✓ 當前套用</button>
+                {% else %}
+                <button class="btn btn-primary btn-sm btn-cosmetic-apply">套用特效</button>
+                {% endif %}
+              </div>
+            </div>
+
+            <!-- 浪漫飄雪 -->
+            <div class="cosmetic-card effect-shop-card {% if profile.background_effect == 'snow' %}active{% endif %} {% if profile.streak < 3 %}locked{% endif %}" data-item-id="snow" data-locked="{% if profile.streak < 3 %}true{% else %}false{% endif %}">
+              <div class="cosmetic-preview-box">
+                <div class="mock-bg-preview preview-bg-snow"></div>
+              </div>
+              <div class="cosmetic-meta">
+                <div class="cosmetic-name">浪漫飄雪</div>
+                <div class="cosmetic-desc">網頁背景隨機飄落白淨雪花，浪漫典雅的意境。</div>
+                {% if profile.streak < 3 %}
+                <div class="cosmetic-lock-badge" style="color: #4a90e2; background: rgba(74, 144, 226, 0.08); border-color: rgba(74, 144, 226, 0.2);">🔒 需連續學習 3 天</div>
+                {% else %}
+                <div class="cosmetic-status-text text-success">已解鎖</div>
+                {% endif %}
+              </div>
+              <div class="cosmetic-action">
+                {% if profile.background_effect == 'snow' %}
+                <button class="btn btn-ghost btn-sm" disabled style="color: var(--green); border-color: rgba(76, 175, 130, 0.3);">✓ 當前套用</button>
+                {% elif profile.streak >= 3 %}
+                <button class="btn btn-primary btn-sm btn-cosmetic-apply">套用特效</button>
+                {% else %}
+                <button class="btn btn-ghost btn-sm" disabled style="opacity: 0.5; cursor: not-allowed;">尚未解鎖</button>
+                {% endif %}
+              </div>
+            </div>
+
+            <!-- 夢幻氣泡 -->
+            <div class="cosmetic-card effect-shop-card {% if profile.background_effect == 'bubbles' %}active{% endif %} {% if profile.streak < 5 %}locked{% endif %}" data-item-id="bubbles" data-locked="{% if profile.streak < 5 %}true{% else %}false{% endif %}">
+              <div class="cosmetic-preview-box">
+                <div class="mock-bg-preview preview-bg-bubbles"></div>
+              </div>
+              <div class="cosmetic-meta">
+                <div class="cosmetic-name">夢幻氣泡</div>
+                <div class="cosmetic-desc">半透明炫彩氣泡緩緩往上升起，童趣且夢幻。</div>
+                {% if profile.streak < 5 %}
+                <div class="cosmetic-lock-badge" style="color: #4a90e2; background: rgba(74, 144, 226, 0.08); border-color: rgba(74, 144, 226, 0.2);">🔒 需連續學習 5 天</div>
+                {% else %}
+                <div class="cosmetic-status-text text-success">已解鎖</div>
+                {% endif %}
+              </div>
+              <div class="cosmetic-action">
+                {% if profile.background_effect == 'bubbles' %}
+                <button class="btn btn-ghost btn-sm" disabled style="color: var(--green); border-color: rgba(76, 175, 130, 0.3);">✓ 當前套用</button>
+                {% elif profile.streak >= 5 %}
+                <button class="btn btn-primary btn-sm btn-cosmetic-apply">套用特效</button>
+                {% else %}
+                <button class="btn btn-ghost btn-sm" disabled style="opacity: 0.5; cursor: not-allowed;">尚未解鎖</button>
+                {% endif %}
+              </div>
+            </div>
+
+            <!-- 星光流星 -->
+            <div class="cosmetic-card effect-shop-card {% if profile.background_effect == 'meteor' %}active{% endif %} {% if profile.streak < 7 %}locked{% endif %}" data-item-id="meteor" data-locked="{% if profile.streak < 7 %}true{% else %}false{% endif %}">
+              <div class="cosmetic-preview-box">
+                <div class="mock-bg-preview preview-bg-meteor"></div>
+              </div>
+              <div class="cosmetic-meta">
+                <div class="cosmetic-name">星光流星</div>
+                <div class="cosmetic-desc">深邃背景中偶爾劃過明亮耀眼的流星，十分動感。</div>
+                {% if profile.streak < 7 %}
+                <div class="cosmetic-lock-badge" style="color: #4a90e2; background: rgba(74, 144, 226, 0.08); border-color: rgba(74, 144, 226, 0.2);">🔒 需連續學習 7 天</div>
+                {% else %}
+                <div class="cosmetic-status-text text-success">已解鎖</div>
+                {% endif %}
+              </div>
+              <div class="cosmetic-action">
+                {% if profile.background_effect == 'meteor' %}
+                <button class="btn btn-ghost btn-sm" disabled style="color: var(--green); border-color: rgba(76, 175, 130, 0.3);">✓ 當前套用</button>
+                {% elif profile.streak >= 7 %}
+                <button class="btn btn-primary btn-sm btn-cosmetic-apply">套用特效</button>
+                {% else %}
+                <button class="btn btn-ghost btn-sm" disabled style="opacity: 0.5; cursor: not-allowed;">尚未解鎖</button>
+                {% endif %}
+              </div>
+            </div>
+
+            <!-- 數位雨 -->
+            <div class="cosmetic-card effect-shop-card {% if profile.background_effect == 'matrix' %}active{% endif %} {% if profile.total_reviews < 1000 %}locked{% endif %}" data-item-id="matrix" data-locked="{% if profile.total_reviews < 1000 %}true{% else %}false{% endif %}">
+              <div class="cosmetic-preview-box">
+                <div class="mock-bg-preview preview-bg-matrix"></div>
+              </div>
+              <div class="cosmetic-meta">
+                <div class="cosmetic-name">數位雨</div>
+                <div class="cosmetic-desc">黑客帝國極客風格的綠色二進位程式碼下雨動畫。</div>
+                {% if profile.total_reviews < 1000 %}
+                <div class="cosmetic-lock-badge" style="color: #4a90e2; background: rgba(74, 144, 226, 0.08); border-color: rgba(74, 144, 226, 0.2);">🔒 需累積複習 1000 次</div>
+                {% else %}
+                <div class="cosmetic-status-text text-success">已解鎖</div>
+                {% endif %}
+              </div>
+              <div class="cosmetic-action">
+                {% if profile.background_effect == 'matrix' %}
+                <button class="btn btn-ghost btn-sm" disabled style="color: var(--green); border-color: rgba(76, 175, 130, 0.3);">✓ 當前套用</button>
+                {% elif profile.total_reviews >= 1000 %}
+                <button class="btn btn-primary btn-sm btn-cosmetic-apply">套用特效</button>
+                {% else %}
+                <button class="btn btn-ghost btn-sm" disabled style="opacity: 0.5; cursor: not-allowed;">尚未解鎖</button>
+                {% endif %}
+              </div>
+            </div>
+
+            <!-- 櫻花飄落 -->
+            <div class="cosmetic-card effect-shop-card {% if profile.background_effect == 'cherry' %}active{% endif %} {% if 'effect:cherry' not in unlocked_items_list %}locked{% endif %}" data-item-id="cherry" {% if 'effect:cherry' not in unlocked_items_list %}data-locked="true" data-price="400" data-item-type="effect"{% else %}data-locked="false"{% endif %}>
+              <div class="cosmetic-preview-box">
+                <div class="mock-bg-preview preview-bg-cherry"></div>
+              </div>
+              <div class="cosmetic-meta">
+                <div class="cosmetic-name">櫻花飄落</div>
+                <div class="cosmetic-desc">粉色溫柔櫻花瓣在網頁背景旋轉飄落，浪漫迷人。</div>
+                {% if 'effect:cherry' not in unlocked_items_list %}
+                <div class="cosmetic-lock-badge">🪙 400 金幣解鎖</div>
+                {% else %}
+                <div class="cosmetic-status-text text-success">已解鎖</div>
+                {% endif %}
+              </div>
+              <div class="cosmetic-action">
+                {% if profile.background_effect == 'cherry' %}
+                <button class="btn btn-ghost btn-sm" disabled style="color: var(--green); border-color: rgba(76, 175, 130, 0.3);">✓ 當前套用</button>
+                {% elif 'effect:cherry' in unlocked_items_list %}
+                <button class="btn btn-primary btn-sm btn-cosmetic-apply">套用特效</button>
+                {% else %}
+                  {% if profile.coins < 400 %}
+                  <button class="btn btn-ghost btn-sm btn-cosmetic-buy-disabled" disabled style="opacity: 0.6; cursor: not-allowed; color: #ff5c5c; border-color: rgba(255, 92, 92, 0.25);">金幣不足 (🪙 400)</button>
+                  {% else %}
+                  <button class="btn btn-primary btn-sm btn-cosmetic-buy" style="background: linear-gradient(135deg, #ffd700, #ffa500); color: #000; border: none; font-weight: 700;">🪙 400 購買解鎖</button>
+                  {% endif %}
+                {% endif %}
+              </div>
+            </div>
+
+            <!-- 3D科幻網格 -->
+            <div class="cosmetic-card effect-shop-card {% if profile.background_effect == 'arcade-grid' %}active{% endif %} {% if 'effect:arcade-grid' not in unlocked_items_list %}locked{% endif %}" data-item-id="arcade-grid" {% if 'effect:arcade-grid' not in unlocked_items_list %}data-locked="true" data-price="500" data-item-type="effect"{% else %}data-locked="false"{% endif %}>
+              <div class="cosmetic-preview-box">
+                <div class="mock-bg-preview preview-bg-arcade-grid"></div>
+              </div>
+              <div class="cosmetic-meta">
+                <div class="cosmetic-name">3D科幻網格</div>
+                <div class="cosmetic-desc">賽博朋克復古未來 3D 霓虹網格，具高階動感。</div>
+                {% if 'effect:arcade-grid' not in unlocked_items_list %}
+                <div class="cosmetic-lock-badge">🪙 500 金幣解鎖</div>
+                {% else %}
+                <div class="cosmetic-status-text text-success">已解鎖</div>
+                {% endif %}
+              </div>
+              <div class="cosmetic-action">
+                {% if profile.background_effect == 'arcade-grid' %}
+                <button class="btn btn-ghost btn-sm" disabled style="color: var(--green); border-color: rgba(76, 175, 130, 0.3);">✓ 當前套用</button>
+                {% elif 'effect:arcade-grid' in unlocked_items_list %}
+                <button class="btn btn-primary btn-sm btn-cosmetic-apply">套用特效</button>
+                {% else %}
+                  {% if profile.coins < 500 %}
+                  <button class="btn btn-ghost btn-sm btn-cosmetic-buy-disabled" disabled style="opacity: 0.6; cursor: not-allowed; color: #ff5c5c; border-color: rgba(255, 92, 92, 0.25);">金幣不足 (🪙 500)</button>
+                  {% else %}
+                  <button class="btn btn-primary btn-sm btn-cosmetic-buy" style="background: linear-gradient(135deg, #ffd700, #ffa500); color: #000; border: none; font-weight: 700;">🪙 500 購買解鎖</button>
+                  {% endif %}
+                {% endif %}
+              </div>
+            </div>
+
+            <!-- 魔法螢光 -->
+            <div class="cosmetic-card effect-shop-card {% if profile.background_effect == 'forest-glow' %}active{% endif %} {% if 'effect:forest-glow' not in unlocked_items_list %}locked{% endif %}" data-item-id="forest-glow" {% if 'effect:forest-glow' not in unlocked_items_list %}data-locked="true" data-price="350" data-item-type="effect"{% else %}data-locked="false"{% endif %}>
+              <div class="cosmetic-preview-box">
+                <div class="mock-bg-preview preview-bg-forest-glow"></div>
+              </div>
+              <div class="cosmetic-meta">
+                <div class="cosmetic-name">魔法螢光</div>
+                <div class="cosmetic-desc">微弱瑩綠森林中，閃爍點點螢火蟲微光。</div>
+                {% if 'effect:forest-glow' not in unlocked_items_list %}
+                <div class="cosmetic-lock-badge">🪙 350 金幣解鎖</div>
+                {% else %}
+                <div class="cosmetic-status-text text-success">已解鎖</div>
+                {% endif %}
+              </div>
+              <div class="cosmetic-action">
+                {% if profile.background_effect == 'forest-glow' %}
+                <button class="btn btn-ghost btn-sm" disabled style="color: var(--green); border-color: rgba(76, 175, 130, 0.3);">✓ 當前套用</button>
+                {% elif 'effect:forest-glow' in unlocked_items_list %}
+                <button class="btn btn-primary btn-sm btn-cosmetic-apply">套用特效</button>
+                {% else %}
+                  {% if profile.coins < 350 %}
+                  <button class="btn btn-ghost btn-sm btn-cosmetic-buy-disabled" disabled style="opacity: 0.6; cursor: not-allowed; color: #ff5c5c; border-color: rgba(255, 92, 92, 0.25);">金幣不足 (🪙 350)</button>
+                  {% else %}
+                  <button class="btn btn-primary btn-sm btn-cosmetic-buy" style="background: linear-gradient(135deg, #ffd700, #ffa500); color: #000; border: none; font-weight: 700;">🪙 350 購買解鎖</button>
+                  {% endif %}
+                {% endif %}
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- 3. 頭銜稱號徽章展示架 -->
+        <div class="cosmetics-section" style="margin-bottom: 0;">
+          <h3 class="cosmetics-section-title">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+            成就稱號徽章陳列架
+          </h3>
+          <div class="badge-rack">
+            <!-- 無稱號 -->
+            <div class="badge-item {% if profile.user_badge == 'none' %}active{% endif %}" data-badge-id="none">
+              <span class="custom-badge" style="background: rgba(255,255,255,0.06); color: var(--text-secondary); border-color: var(--border); border-style: solid; border-width: 1px; padding: 3px 8px; border-radius: 4px; font-size: 0.78rem;">🚫 無稱號徽章</span>
+              <div class="badge-item-requirement">預設狀態</div>
+            </div>
+            <!-- 幼嫩萌芽 -->
+            <div class="badge-item {% if profile.user_badge == 'sprout' %}active{% endif %} {% if vocab_count < 1 %}locked{% endif %}" data-badge-id="sprout">
+              <div style="display:flex; flex-direction:column; align-items:center; gap:6px;">
+                <img src="{% static 'images/badges/badge_sprout.png' %}" class="badge-pixel-art" style="width:36px; height:36px; image-rendering:pixelated; margin: 0 auto; transition: transform 0.2s, filter 0.2s;" />
+                <span class="custom-badge badge-sprout" style="border-style: solid; border-width: 1px; padding: 3px 8px; border-radius: 4px; font-size: 0.78rem;">幼嫩萌芽</span>
+              </div>
+              <div class="badge-item-requirement">{% if vocab_count < 1 %}🔒 需字庫 1 字{% else %}已解鎖{% endif %}</div>
+            </div>
+            <!-- 冒險新手 -->
+            <div class="badge-item {% if profile.user_badge == 'novice' %}active{% endif %} {% if vocab_count < 30 %}locked{% endif %}" data-badge-id="novice">
+              <div style="display:flex; flex-direction:column; align-items:center; gap:6px;">
+                <img src="{% static 'images/badges/badge_novice.png' %}" class="badge-pixel-art" style="width:36px; height:36px; image-rendering:pixelated; margin: 0 auto; transition: transform 0.2s, filter 0.2s;" />
+                <span class="custom-badge badge-novice" style="border-style: solid; border-width: 1px; padding: 3px 8px; border-radius: 4px; font-size: 0.78rem;">冒險新手</span>
+              </div>
+              <div class="badge-item-requirement">{% if vocab_count < 30 %}🔒 需字庫 30 字{% else %}已解鎖{% endif %}</div>
+            </div>
+            <!-- 鋼鐵意志 -->
+            <div class="badge-item {% if profile.user_badge == 'iron' %}active{% endif %} {% if vocab_count < 80 %}locked{% endif %}" data-badge-id="iron">
+              <div style="display:flex; flex-direction:column; align-items:center; gap:6px;">
+                <img src="{% static 'images/badges/badge_iron.png' %}" class="badge-pixel-art" style="width:36px; height:36px; image-rendering:pixelated; margin: 0 auto; transition: transform 0.2s, filter 0.2s;" />
+                <span class="custom-badge badge-iron" style="border-style: solid; border-width: 1px; padding: 3px 8px; border-radius: 4px; font-size: 0.78rem;">鋼鐵意志</span>
+              </div>
+              <div class="badge-item-requirement">{% if vocab_count < 80 %}🔒 需字庫 80 字{% else %}已解鎖{% endif %}</div>
+            </div>
+            <!-- 勤奮之星 -->
+            <div class="badge-item {% if profile.user_badge == 'star' %}active{% endif %} {% if profile.total_reviews < 1 %}locked{% endif %}" data-badge-id="star">
+              <div style="display:flex; flex-direction:column; align-items:center; gap:6px;">
+                <img src="{% static 'images/badges/badge_star.png' %}" class="badge-pixel-art" style="width:36px; height:36px; image-rendering:pixelated; margin: 0 auto; transition: transform 0.2s, filter 0.2s;" />
+                <span class="custom-badge badge-star" style="border-style: solid; border-width: 1px; padding: 3px 8px; border-radius: 4px; font-size: 0.78rem;">勤奮之星</span>
+              </div>
+              <div class="badge-item-requirement">{% if profile.total_reviews < 1 %}🔒 需複習 1 次{% else %}已解鎖{% endif %}</div>
+            </div>
+            <!-- 溫故行者 -->
+            <div class="badge-item {% if profile.user_badge == 'walker' %}active{% endif %} {% if profile.total_reviews < 20 %}locked{% endif %}" data-badge-id="walker">
+              <div style="display:flex; flex-direction:column; align-items:center; gap:6px;">
+                <img src="{% static 'images/badges/badge_walker.png' %}" class="badge-pixel-art" style="width:36px; height:36px; image-rendering:pixelated; margin: 0 auto; transition: transform 0.2s, filter 0.2s;" />
+                <span class="custom-badge badge-walker" style="border-style: solid; border-width: 1px; padding: 3px 8px; border-radius: 4px; font-size: 0.78rem;">溫故行者</span>
+              </div>
+              <div class="badge-item-requirement">{% if profile.total_reviews < 20 %}🔒 需複習 20 次{% else %}已解鎖{% endif %}</div>
+            </div>
+            <!-- 挑戰起點 -->
+            <div class="badge-item {% if profile.user_badge == 'start' %}active{% endif %} {% if profile.streak < 1 %}locked{% endif %}" data-badge-id="start">
+              <div style="display:flex; flex-direction:column; align-items:center; gap:6px;">
+                <img src="{% static 'images/badges/badge_start.png' %}" class="badge-pixel-art" style="width:36px; height:36px; image-rendering:pixelated; margin: 0 auto; transition: transform 0.2s, filter 0.2s;" />
+                <span class="custom-badge badge-start" style="border-style: solid; border-width: 1px; padding: 3px 8px; border-radius: 4px; font-size: 0.78rem;">挑戰起點</span>
+              </div>
+              <div class="badge-item-requirement">{% if profile.streak < 1 %}🔒 需連續 1 天{% else %}已解鎖{% endif %}</div>
+            </div>
+            <!-- 時間旅者 -->
+            <div class="badge-item {% if profile.user_badge == 'time-traveler' %}active{% endif %} {% if profile.streak < 14 %}locked{% endif %}" data-badge-id="time-traveler">
+              <div style="display:flex; flex-direction:column; align-items:center; gap:6px;">
+                <img src="{% static 'images/badges/badge_time-traveler.png' %}" class="badge-pixel-art" style="width:36px; height:36px; image-rendering:pixelated; margin: 0 auto; transition: transform 0.2s, filter 0.2s;" />
+                <span class="custom-badge badge-time-traveler" style="border-style: solid; border-width: 1px; padding: 3px 8px; border-radius: 4px; font-size: 0.78rem;">時間旅者</span>
+              </div>
+              <div class="badge-item-requirement">{% if profile.streak < 14 %}🔒 需連續 14 天{% else %}已解鎖{% endif %}</div>
+            </div>
+            <!-- 智慧啟蒙 -->
+            <div class="badge-item {% if profile.user_badge == 'wisdom' %}active{% endif %} {% if mastered_count < 1 %}locked{% endif %}" data-badge-id="wisdom">
+              <div style="display:flex; flex-direction:column; align-items:center; gap:6px;">
+                <img src="{% static 'images/badges/badge_wisdom.png' %}" class="badge-pixel-art" style="width:36px; height:36px; image-rendering:pixelated; margin: 0 auto; transition: transform 0.2s, filter 0.2s;" />
+                <span class="custom-badge badge-wisdom" style="border-style: solid; border-width: 1px; padding: 3px 8px; border-radius: 4px; font-size: 0.78rem;">智慧啟蒙</span>
+              </div>
+              <div class="badge-item-requirement">{% if mastered_count < 1 %}🔒 需精通 1 字{% else %}已解鎖{% endif %}</div>
+            </div>
+            <!-- 黃金學習者 -->
+            <div class="badge-item {% if profile.user_badge == 'master' %}active{% endif %} {% if mastered_count < 10 %}locked{% endif %}" data-badge-id="master">
+              <div style="display:flex; flex-direction:column; align-items:center; gap:6px;">
+                <img src="{% static 'images/badges/badge_master.png' %}" class="badge-pixel-art" style="width:36px; height:36px; image-rendering:pixelated; margin: 0 auto; transition: transform 0.2s, filter 0.2s;" />
+                <span class="custom-badge badge-master" style="border-style: solid; border-width: 1px; padding: 3px 8px; border-radius: 4px; font-size: 0.78rem;">黃金學習者</span>
+              </div>
+              <div class="badge-item-requirement">{% if mastered_count < 10 %}🔒 需精通 10 字{% else %}已解鎖{% endif %}</div>
+            </div>
+            <!-- 單字賢者 -->
+            <div class="badge-item {% if profile.user_badge == 'sage' %}active{% endif %} {% if mastered_count < 30 %}locked{% endif %}" data-badge-id="sage">
+              <div style="display:flex; flex-direction:column; align-items:center; gap:6px;">
+                <img src="{% static 'images/badges/badge_sage.png' %}" class="badge-pixel-art" style="width:36px; height:36px; image-rendering:pixelated; margin: 0 auto; transition: transform 0.2s, filter 0.2s;" />
+                <span class="custom-badge badge-sage" style="border-style: solid; border-width: 1px; padding: 3px 8px; border-radius: 4px; font-size: 0.78rem;">單字賢者</span>
+              </div>
+              <div class="badge-item-requirement">{% if mastered_count < 30 %}🔒 需精通 30 字{% else %}已解鎖{% endif %}</div>
+            </div>
+            <!-- 浴血倖存者 -->
+            <div class="badge-item {% if profile.user_badge == 'survivor' %}active{% endif %} {% if profile.challenges_played < 1 %}locked{% endif %}" data-badge-id="survivor">
+              <div style="display:flex; flex-direction:column; align-items:center; gap:6px;">
+                <img src="{% static 'images/badges/badge_survivor.png' %}" class="badge-pixel-art" style="width:36px; height:36px; image-rendering:pixelated; margin: 0 auto; transition: transform 0.2s, filter 0.2s;" />
+                <span class="custom-badge badge-survivor" style="border-style: solid; border-width: 1px; padding: 3px 8px; border-radius: 4px; font-size: 0.78rem;">浴血倖存者</span>
+              </div>
+              <div class="badge-item-requirement">{% if profile.challenges_played < 1 %}🔒 需挑戰 1 次{% else %}已解鎖{% endif %}</div>
+            </div>
+            <!-- 新詞探索家 -->
+            <div class="badge-item {% if profile.user_badge == 'explorer' %}active{% endif %} {% if explorer_count < 10 %}locked{% endif %}" data-badge-id="explorer">
+              <div style="display:flex; flex-direction:column; align-items:center; gap:6px;">
+                <img src="{% static 'images/badges/badge_explorer.png' %}" class="badge-pixel-art" style="width:36px; height:36px; image-rendering:pixelated; margin: 0 auto; transition: transform 0.2s, filter 0.2s;" />
+                <span class="custom-badge badge-explorer" style="border-style: solid; border-width: 1px; padding: 3px 8px; border-radius: 4px; font-size: 0.78rem;">新詞探索家</span>
+              </div>
+              <div class="badge-item-requirement">{% if explorer_count < 10 %}🔒 需探索 10 字{% else %}已解鎖{% endif %}</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </div>
+</div>
+
+<!-- 精美購買確認彈窗 -->
+<div id="purchase-confirm-overlay" style="
+  display:none; position:fixed; inset:0; z-index:9999;
+  background:rgba(0,0,0,0.7); backdrop-filter:blur(6px); -webkit-backdrop-filter:blur(6px);
+  align-items:center; justify-content:center; padding:20px;
+">
+  <div class="theme-modal" style="
+    background:rgba(22, 22, 26, 0.95); border:1px solid rgba(255, 255, 255, 0.1);
+    border-radius:18px; width:100%; max-width:400px;
+    padding: 25px; box-shadow: 0 20px 50px rgba(0,0,0,0.8);
+    text-align: center;
+    animation: wqvIn 0.2s cubic-bezier(0.34,1.56,0.64,1);
+  ">
+    <div style="font-size: 2.2rem; margin-bottom: 15px;">🪙</div>
+    <h3 style="font-size: 1.25rem; font-weight: 800; color: #fff; margin-bottom: 10px;" id="pconfirm-title">確認解鎖商品</h3>
+    <p style="font-size: 0.88rem; color: var(--text-secondary); line-height: 1.5; margin-bottom: 20px;" id="pconfirm-desc">您即將解鎖此項目。</p>
+    
+    <div style="display: flex; gap: 12px; justify-content: center;">
+      <button type="button" class="btn btn-ghost" id="pconfirm-cancel-btn" style="flex: 1; padding: 10px; border-radius: 8px;">取消</button>
+      <button type="button" class="btn btn-primary" id="pconfirm-ok-btn" style="flex: 1; padding: 10px; border-radius: 8px; background: linear-gradient(135deg, #ffd700, #ffa500); color: #000; border: none; font-weight: 700;">確認購買</button>
+    </div>
+  </div>
+</div>
+<script>
+(function() {
+  // 全域變數鎖
+  let isSavingPreferences = false;
+  let isSwitchingTheme = false;
+
+  // 前端稱號徽章對照表
+  const badgesMap = {
+    'none': { name: '<img src="/static/images/badges/badge_none.png" style="width:16px; height:16px; image-rendering:pixelated; vertical-align:middle; margin-right:4px;" />無稱號徽章', class: 'badge-none' },
+    'sprout': { name: '<img src="/static/images/badges/badge_sprout.png" style="width:16px; height:16px; image-rendering:pixelated; vertical-align:middle; margin-right:4px;" />幼嫩萌芽', class: 'badge-sprout' },
+    'novice': { name: '<img src="/static/images/badges/badge_novice.png" style="width:16px; height:16px; image-rendering:pixelated; vertical-align:middle; margin-right:4px;" />冒險新手', class: 'badge-novice' },
+    'iron': { name: '<img src="/static/images/badges/badge_iron.png" style="width:16px; height:16px; image-rendering:pixelated; vertical-align:middle; margin-right:4px;" />鋼鐵意志', class: 'badge-iron' },
+    'star': { name: '<img src="/static/images/badges/badge_star.png" style="width:16px; height:16px; image-rendering:pixelated; vertical-align:middle; margin-right:4px;" />勤奮之星', class: 'badge-star' },
+    'walker': { name: '<img src="/static/images/badges/badge_walker.png" style="width:16px; height:16px; image-rendering:pixelated; vertical-align:middle; margin-right:4px;" />溫故行者', class: 'badge-walker' },
+    'start': { name: '<img src="/static/images/badges/badge_start.png" style="width:16px; height:16px; image-rendering:pixelated; vertical-align:middle; margin-right:4px;" />挑戰起點', class: 'badge-start' },
+    'time-traveler': { name: '<img src="/static/images/badges/badge_time-traveler.png" style="width:16px; height:16px; image-rendering:pixelated; vertical-align:middle; margin-right:4px;" />時間旅者', class: 'badge-time-traveler' },
+    'wisdom': { name: '<img src="/static/images/badges/badge_wisdom.png" style="width:16px; height:16px; image-rendering:pixelated; vertical-align:middle; margin-right:4px;" />智慧啟蒙', class: 'badge-wisdom' },
+    'master': { name: '<img src="/static/images/badges/badge_master.png" style="width:16px; height:16px; image-rendering:pixelated; vertical-align:middle; margin-right:4px;" />黃金學習者', class: 'badge-master' },
+    'sage': { name: '<img src="/static/images/badges/badge_sage.png" style="width:16px; height:16px; image-rendering:pixelated; vertical-align:middle; margin-right:4px;" />單字賢者', class: 'badge-sage' },
+    'survivor': { name: '<img src="/static/images/badges/badge_survivor.png" style="width:16px; height:16px; image-rendering:pixelated; vertical-align:middle; margin-right:4px;" />浴血倖存者', class: 'badge-survivor' },
+    'explorer': { name: '<img src="/static/images/badges/badge_explorer.png" style="width:16px; height:16px; image-rendering:pixelated; vertical-align:middle; margin-right:4px;" />新詞探索家', class: 'badge-explorer' }
+  };
+
+  // 動態即時更新金幣餘額與所有尚未解鎖按鈕的顯示狀態
+  function updateAllPurchaseButtons(totalCoins) {
+    // 1. 更新頁面金幣數字
+    const coinsSpan = document.getElementById('settings-user-coins');
+    if (coinsSpan) coinsSpan.innerText = totalCoins;
+
+    // 2. 更新主題按鈕狀態
+    const themeCards = document.querySelectorAll('.theme-card');
+    themeCards.forEach(card => {
+      const rightDiv = card.querySelector('.theme-card-right');
+      if (!rightDiv) return;
+      
+      let btn = rightDiv.querySelector('.theme-purchase-btn') || rightDiv.querySelector('.theme-purchase-btn-disabled');
+      if (!btn) return;
+
+      const price = parseInt(btn.getAttribute('data-price')) || 0;
+      const itemId = btn.getAttribute('data-item-id');
+      const itemType = btn.getAttribute('data-item-type');
+
+      if (totalCoins < price) {
+        if (btn.classList.contains('theme-purchase-btn')) {
+          const disabledBtn = document.createElement('button');
+          disabledBtn.type = 'button';
+          disabledBtn.className = 'btn btn-ghost btn-sm theme-purchase-btn-disabled';
+          disabledBtn.disabled = true;
+          disabledBtn.style = 'opacity: 0.6; cursor: not-allowed; color: #ff5c5c; border-color: rgba(255, 92, 92, 0.25);';
+          disabledBtn.setAttribute('data-item-type', itemType);
+          disabledBtn.setAttribute('data-item-id', itemId);
+          disabledBtn.setAttribute('data-price', price);
+          disabledBtn.innerText = `金幣不足 (🪙 ${price})`;
+          
+          btn.remove();
+          rightDiv.appendChild(disabledBtn);
+        }
+      } else {
+        if (btn.classList.contains('theme-purchase-btn-disabled')) {
+          const activeBtn = document.createElement('button');
+          activeBtn.type = 'button';
+          activeBtn.className = 'btn btn-primary btn-sm theme-purchase-btn';
+          activeBtn.setAttribute('data-item-type', itemType);
+          activeBtn.setAttribute('data-item-id', itemId);
+          activeBtn.setAttribute('data-price', price);
+          activeBtn.innerHTML = `<img src="/static/images/pixel_coin.png" class="pixel-coin-icon" /> ${price} 解鎖`;
+          
+          btn.remove();
+          bindThemePurchaseSingleButton(activeBtn);
+          rightDiv.appendChild(activeBtn);
+        }
+      }
+    });
+
+    // 3. 更新隱藏下拉選單中的 option 顯示文字 (作為備用)
+    const updateSelectOptionText = (selectEl) => {
+      if (!selectEl) return;
+      Array.from(selectEl.options).forEach(opt => {
+        const isLocked = opt.getAttribute('data-locked') === 'true';
+        if (isLocked) {
+          const price = parseInt(opt.getAttribute('data-price')) || 0;
+          const textName = opt.text.split('(')[0].trim();
+          if (totalCoins < price) {
+            opt.text = `${textName} (🪙 ${price} - 金幣不足)`; // 已改寫，不再隱藏價格！
+          } else {
+            opt.text = `${textName} (🪙 ${price} 金幣解鎖)`;
+          }
+        }
+      });
+    };
+
+    updateSelectOptionText(document.getElementById('card-border-style-select'));
+    updateSelectOptionText(document.getElementById('background-effect-select'));
+
+    // 4. 更新外觀商城卡片按鈕 (卡片邊框與背景特效)
+    const cosmeticCards = document.querySelectorAll('.cosmetic-card[data-locked="true"]');
+    cosmeticCards.forEach(card => {
+      const price = parseInt(card.getAttribute('data-price')) || 0;
+      const itemId = card.getAttribute('data-item-id');
+      const itemType = card.getAttribute('data-item-type');
+      const actionDiv = card.querySelector('.cosmetic-action');
+      if (!actionDiv) return;
+
+      if (totalCoins < price) {
+        actionDiv.innerHTML = `<button class="btn btn-ghost btn-sm btn-cosmetic-buy-disabled" disabled style="opacity: 0.6; cursor: not-allowed; color: #ff5c5c; border-color: rgba(255, 92, 92, 0.25);">金幣不足 (🪙 ${price})</button>`;
+      } else {
+        actionDiv.innerHTML = `<button class="btn btn-primary btn-sm btn-cosmetic-buy" style="background: linear-gradient(135deg, #ffd700, #ffa500); color: #000; border: none; font-weight: 700;">🪙 ${price} 購買解鎖</button>`;
+      }
+    });
+  }
+
+  // 綁定單個主題購買按鈕事件
+  function bindThemePurchaseSingleButton(btn) {
+    btn.onclick = async function(e) {
+      e.preventDefault();
+      const itemType = btn.getAttribute('data-item-type');
+      const itemId = btn.getAttribute('data-item-id');
+      const price = parseInt(btn.getAttribute('data-price')) || 0;
+      const card = document.querySelector(`.theme-card[data-theme-id="${itemId}"]`);
+      const textName = card ? card.querySelector('.theme-name span').innerText.trim() : '此主題';
+      
+      const userCoins = parseInt(document.getElementById('settings-user-coins').innerText) || 0;
+      if (userCoins < price) {
+        window.showToast('您的金幣不足！', 'error');
+        return;
+      }
+
+      const confirmed = await showPurchaseConfirm(
+        '確認解鎖主題',
+        `是否花費 <strong style="color:#ffd700">🪙 ${price} 金幣</strong> 購買解鎖 [${textName}] 主題？`
+      );
+      if (!confirmed) return;
+      
+      btn.disabled = true;
+      btn.innerHTML = '處理中...';
+      
+      const csrfToken = document.querySelector('#pane-theme [name=csrfmiddlewaretoken]')
+                     || document.cookie.match(/csrftoken=([^;]+)/);
+      const csrf = csrfToken ? (csrfToken.value || csrfToken[1]) : '';
+      
+      const fd = new FormData();
+      fd.append('item_type', itemType);
+      fd.append('item_id', itemId);
+      
+      try {
+        const resp = await fetch('{% url "vocab:purchase_item" %}', {
+          method: 'POST',
+          headers: { 'X-CSRFToken': csrf },
+          body: fd
+        });
+        const d = await resp.json();
+        if (d.success) {
+          window.showToast(d.message, 'success');
+          // 即時更新所有按鈕與餘額顯示！
+          updateAllPurchaseButtons(d.total_coins);
+          
+          const rightDiv = btn.parentElement;
+          if (rightDiv) {
+            btn.remove();
+            
+            const applyBtn = document.createElement('button');
+            applyBtn.type = 'submit';
+            applyBtn.name = 'theme';
+            applyBtn.value = itemId;
+            applyBtn.className = 'btn btn-primary btn-sm';
+            applyBtn.innerText = '套用主題';
+            
+            bindThemeButton(applyBtn);
+            rightDiv.appendChild(applyBtn);
+          }
+          
+          if (card) {
+            card.classList.remove('locked');
+            const lockHint = card.querySelector('.theme-lock-hint');
+            if (lockHint) lockHint.remove();
+          }
+        } else {
+          window.showToast(d.message, 'error');
+          btn.disabled = false;
+          btn.innerHTML = `<img src="/static/images/pixel_coin.png" class="pixel-coin-icon" /> ${price} 解鎖`;
+        }
+      } catch(err) {
+        window.showToast('無法與伺服器連線', 'error');
+        btn.disabled = false;
+        btn.innerHTML = `<img src="/static/images/pixel_coin.png" class="pixel-coin-icon" /> ${price} 解鎖`;
+      }
+    };
+  }
+
+  // 精美購買確認視窗 Promise
+  function showPurchaseConfirm(title, desc) {
+    return new Promise((resolve) => {
+      const overlay = document.getElementById('purchase-confirm-overlay');
+      const titleEl = document.getElementById('pconfirm-title');
+      const descEl = document.getElementById('pconfirm-desc');
+      const cancelBtn = document.getElementById('pconfirm-cancel-btn');
+      const okBtn = document.getElementById('pconfirm-ok-btn');
+      
+      if (!overlay) {
+        resolve(confirm(title + '\n' + desc.replace(/<[^>]+>/g, '')));
+        return;
+      }
+
+      titleEl.innerText = title;
+      descEl.innerHTML = desc;
+      overlay.style.display = 'flex';
+
+      function cleanup() {
+        overlay.style.display = 'none';
+        okBtn.onclick = null;
+        cancelBtn.onclick = null;
+      }
+
+      okBtn.onclick = () => {
+        cleanup();
+        resolve(true);
+      };
+
+      cancelBtn.onclick = () => {
+        cleanup();
+        resolve(false);
+      };
+    });
+  }
+
+
+  // 1. Tab 切換邏輯
+  function switchTab(tabId) {
+    const currentNavItems = document.querySelectorAll('.nav-item');
+    const currentPanes = document.querySelectorAll('.settings-pane');
+
+    currentNavItems.forEach(item => {
+      if (item.getAttribute('data-tab') === tabId) {
+        item.classList.add('active');
+      } else {
+        item.classList.remove('active');
+      }
+    });
+
+    currentPanes.forEach(pane => {
+      if (pane.id === 'pane-' + tabId) {
+        pane.classList.add('active');
+      } else {
+        pane.classList.remove('active');
+      }
+    });
+  }
+
+  function initTabs() {
+    const navItems = document.querySelectorAll('.nav-item');
+    navItems.forEach(item => {
+      item.onclick = () => {
+        const tabId = item.getAttribute('data-tab');
+        window.location.hash = tabId;
+        switchTab(tabId);
+      };
+    });
+
+    // 監聽 Hash 變更
+    window.onhashchange = () => {
+      let currentTab = window.location.hash.replace('#', '');
+      if (['theme', 'preferences', 'cosmetics'].includes(currentTab)) {
+        switchTab(currentTab);
+      }
+    };
+
+    // 初始化讀取 Hash
+    let initialTab = window.location.hash.replace('#', '');
+    if (!['theme', 'preferences', 'cosmetics'].includes(initialTab)) {
+      initialTab = 'theme';
+    }
+    switchTab(initialTab);
+  }
+
+  // 即時更新側邊欄像素圖標套裝 (Optimistic UI)
+  function updateSidebarIcons(theme) {
+    const sidebarIcons = document.querySelectorAll('.sidebar-pixel-icon');
+    sidebarIcons.forEach(img => {
+      const matches = img.src.match(/(pixel_[a-z0-9_]+)\.png/i);
+      if (matches) {
+        const filename = matches[1] + '.png';
+        img.className = img.className.replace(/\btheme-icon-\S+/g, '').trim();
+        img.classList.add('theme-icon-' + theme);
+        if (['cherry', 'cyberpunk', 'zen'].includes(theme)) {
+          img.src = `/static/images/themes/${theme}/${filename}?v=7`;
+        } else {
+          img.src = `/static/images/${filename}?v=7`;
+        }
+      }
+    });
+  }
+
+  // 前端動態更新所有 theme-card UI
+  function updateThemeCardsUI(themeForm, themeId) {
+    const themeCards = themeForm.querySelectorAll('.theme-card');
+    themeCards.forEach(card => {
+      const cardThemeId = card.getAttribute('data-theme-id');
+      if (!cardThemeId) return;
+      const isTarget = (cardThemeId === themeId);
+
+      if (isTarget) {
+        card.classList.add('active');
+        
+        let themeNameDiv = card.querySelector('.theme-name');
+        if (themeNameDiv) {
+          // 移除舊標籤
+          const oldSpans = themeNameDiv.querySelectorAll('span');
+          oldSpans.forEach(sp => {
+            if (sp.textContent === '當前套用') sp.remove();
+          });
+          
+          const badgeSpan = document.createElement('span');
+          badgeSpan.className = 'current-theme-badge';
+          badgeSpan.style = 'font-size: 0.72rem; color: var(--green); font-weight: 700; background: rgba(76, 175, 130, 0.1); padding: 1px 6px; border-radius: 4px; border: 1px solid rgba(76, 175, 130, 0.2);';
+          badgeSpan.innerText = '當前套用';
+          themeNameDiv.appendChild(badgeSpan);
+        }
+        
+        const rightDiv = card.querySelector('.theme-card-right');
+        if (rightDiv) {
+          const oldBtn = rightDiv.querySelector('button');
+          if (oldBtn) oldBtn.remove();
+          
+          const newBtn = document.createElement('button');
+          newBtn.type = 'button';
+          newBtn.className = 'btn btn-ghost btn-sm';
+          newBtn.disabled = true;
+          newBtn.style = 'color: var(--green); border-color: rgba(76, 175, 130, 0.3);';
+          newBtn.innerText = '✓ 已套用';
+          rightDiv.appendChild(newBtn);
+        }
+      } else {
+        card.classList.remove('active');
+        
+        const badgeSpan = card.querySelector('.current-theme-badge');
+        if (badgeSpan) badgeSpan.remove();
+        
+        const oldSpans = card.querySelectorAll('.theme-name span');
+        oldSpans.forEach(sp => {
+          if (sp.textContent.trim() === '當前套用') sp.remove();
+        });
+
+        const rightDiv = card.querySelector('.theme-card-right');
+        if (rightDiv) {
+          const oldBtn = rightDiv.querySelector('button');
+          if (oldBtn && oldBtn.innerText.includes('已套用')) {
+            oldBtn.remove();
+            
+            const newBtn = document.createElement('button');
+            newBtn.type = 'submit';
+            newBtn.name = 'theme';
+            newBtn.value = cardThemeId;
+            newBtn.className = 'btn btn-primary btn-sm';
+            newBtn.innerText = '套用主題';
+            
+            bindThemeButton(newBtn);
+            rightDiv.appendChild(newBtn);
+          }
+        }
+      }
+    });
+  }
+
+  // 2. 主題按鈕點擊與購買綁定
+  function bindThemeButton(btn) {
+    btn.onclick = async function(e) {
+      e.preventDefault();
+      if (isSwitchingTheme) return;
+      isSwitchingTheme = true;
+
+      const themeId = btn.value;
+      const themeForm = document.querySelector('.theme-grid');
+      if (!themeForm) {
+        isSwitchingTheme = false;
+        return;
+      }
+      const csrfInput = themeForm.querySelector('[name=csrfmiddlewaretoken]');
+      const csrfToken = csrfInput ? csrfInput.value : '';
+      
+      const originalTheme = document.body.getAttribute('data-theme') || 'deep-space';
+
+      // 樂觀 UI 更新：立刻在 0ms 切換背景主題與圖標
+      document.body.setAttribute('data-theme', themeId);
+      updateSidebarIcons(themeId);
+
+      const fd = new FormData();
+      fd.append('theme', themeId);
+
+      try {
+        const resp = await fetch('{% url "vocab:settings" %}?ajax=1', {
+          method: 'POST',
+          headers: { 'X-CSRFToken': csrfToken },
+          body: fd
+        });
+        const d = await resp.json();
+        if (d.success) {
+          window.showToast(d.message, 'success');
+          // 更新整個主題卡片狀態
+          updateThemeCardsUI(themeForm, themeId);
+        } else {
+          window.showToast(d.message || '套用失敗', 'error');
+          // 失敗時回滾主題與圖標
+          document.body.setAttribute('data-theme', originalTheme);
+          updateSidebarIcons(originalTheme);
+        }
+      } catch (e) {
+        window.showToast('無法與伺服器連線', 'error');
+        // 失敗時回滾主題與圖標
+        document.body.setAttribute('data-theme', originalTheme);
+        updateSidebarIcons(originalTheme);
+      } finally {
+        isSwitchingTheme = false;
+      }
+    };
+  }
+
+  function bindThemePurchaseButtons() {
+    const buyBtns = document.querySelectorAll('.theme-purchase-btn');
+    buyBtns.forEach(btn => {
+      bindThemePurchaseSingleButton(btn);
+    });
+  }
+
+  // 3. 所有設定項目的即時儲存與購買確認綁定
+  function initAllSettingsElements() {
+    const phoneticSelect = document.getElementById('phonetic-pref-select');
+    const dailyTargetSelect = document.getElementById('daily-target-select');
+    const autoPronounceChk = document.getElementById('auto-pronounce-chk');
+    const pronunciationPrefSelect = document.getElementById('pronunciation-pref-select');
+    
+    const cardBorderStyleSelect = document.getElementById('card-border-style-select');
+    const backgroundEffectSelect = document.getElementById('background-effect-select');
+    const userBadgeSelect = document.getElementById('user-badge-select');
+
+    async function savePreferences() {
+      if (isSavingPreferences) return;
+      isSavingPreferences = true;
+
+      const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]')
+                     || document.cookie.match(/csrftoken=([^;]+)/);
+      const csrf = csrfToken ? (csrfToken.value || csrfToken[1]) : '';
+      
+      const fd = new FormData();
+      fd.append('action', 'save_preferences');
+      if (phoneticSelect) fd.append('phonetic_pref', phoneticSelect.value);
+      if (dailyTargetSelect) fd.append('daily_target', dailyTargetSelect.value);
+      if (autoPronounceChk) fd.append('auto_pronounce', autoPronounceChk.checked ? 'true' : 'false');
+      if (pronunciationPrefSelect) fd.append('pronunciation_pref', pronunciationPrefSelect.value);
+      
+      if (cardBorderStyleSelect) fd.append('card_border_style', cardBorderStyleSelect.value);
+      if (backgroundEffectSelect) fd.append('background_effect', backgroundEffectSelect.value);
+      if (userBadgeSelect) fd.append('user_badge', userBadgeSelect.value);
+   
+      try {
+        const resp = await fetch('{% url "vocab:settings" %}?ajax=1', {
+          method: 'POST',
+          headers: { 'X-CSRFToken': csrf },
+          body: fd
+        });
+        const d = await resp.json();
+        if (d.success) {
+          window.showToast(d.message, 'success');
+          
+          const canvas = document.getElementById('ambient-effect-canvas');
+          if (canvas && backgroundEffectSelect) {
+            canvas.setAttribute('data-effect', backgroundEffectSelect.value);
+            // 觸發 canvas 動態重新載入特效
+            if (window.initEffect) window.initEffect(backgroundEffectSelect.value);
+          }
+  
+          const badgeContainer = document.getElementById('topbar-badge-container');
+          if (badgeContainer && userBadgeSelect) {
+            const badgeId = userBadgeSelect.value;
+            if (badgeId === 'none') {
+              badgeContainer.innerHTML = '';
+            } else {
+              const badgeInfo = badgesMap[badgeId];
+              if (badgeInfo) {
+                badgeContainer.innerHTML = `<span class="custom-badge ${badgeInfo.class}" title="成就稱號獎勵">${badgeInfo.name}</span>`;
+              }
+            }
+          }
+  
+          const wqvModal = document.getElementById('wqv-modal');
+          if (wqvModal && cardBorderStyleSelect) {
+            wqvModal.className = wqvModal.className.replace(/\bcard-border-\S+/g, '').trim();
+            const borderStyle = cardBorderStyleSelect.value;
+            if (borderStyle !== 'default') {
+              wqvModal.classList.add('card-border-' + borderStyle);
+            }
+          }
+  
+          if (autoPronounceChk) window.userAutoPronounce = autoPronounceChk.checked;
+          if (pronunciationPrefSelect) window.userPronunciationPref = pronunciationPrefSelect.value;
+          
+        } else {
+          window.showToast(d.message || '儲存失敗', 'error');
+        }
+      } catch (e) {
+        window.showToast('無法與伺服器連線', 'error');
+      } finally {
+        isSavingPreferences = false;
+      }
+    }
+
+    if (phoneticSelect) {
+      phoneticSelect.onchange = savePreferences;
+    }
+    if (dailyTargetSelect) {
+      dailyTargetSelect.onchange = savePreferences;
+    }
+    if (autoPronounceChk) {
+      autoPronounceChk.onchange = savePreferences;
+    }
+    if (pronunciationPrefSelect) {
+      pronunciationPrefSelect.onchange = savePreferences;
+    }
+    if (userBadgeSelect) {
+      userBadgeSelect.onchange = savePreferences;
+    }
+
+    // 綁定裝飾商城與徽章陳列架點擊邏輯
+    function initCosmeticsShopEvents() {
+      const paneCosmetics = document.getElementById('pane-cosmetics');
+      if (!paneCosmetics || paneCosmetics.dataset.cosmeticsBound) return;
+      paneCosmetics.dataset.cosmeticsBound = "true";
+
+      // 1. 處理邊框與背景特效點擊
+      paneCosmetics.addEventListener('click', async function(e) {
+        // 點擊套用按鈕
+        const applyBtn = e.target.closest('.btn-cosmetic-apply');
+        if (applyBtn) {
+          e.preventDefault();
+          const card = applyBtn.closest('.cosmetic-card');
+          if (!card) return;
+
+          const itemId = card.getAttribute('data-item-id');
+          const isBorder = card.classList.contains('border-shop-card');
+
+          if (isBorder) {
+            if (cardBorderStyleSelect) {
+              cardBorderStyleSelect.value = itemId;
+              // 更新 UI 選中狀態
+              document.querySelectorAll('.border-shop-card').forEach(c => c.classList.remove('active'));
+              card.classList.add('active');
+              
+              // 更新按鈕
+              document.querySelectorAll('.border-shop-card .cosmetic-action').forEach(act => {
+                const pCard = act.closest('.cosmetic-card');
+                const pId = pCard.getAttribute('data-item-id');
+                const isPcardLocked = pCard.getAttribute('data-locked') === 'true';
+                if (pId === itemId) {
+                  act.innerHTML = `<button class="btn btn-ghost btn-sm" disabled style="color: var(--green); border-color: rgba(76, 175, 130, 0.3);">✓ 當前套用</button>`;
+                } else if (!isPcardLocked) {
+                  act.innerHTML = `<button class="btn btn-primary btn-sm btn-cosmetic-apply">套用裝飾</button>`;
+                }
+              });
+            }
+          } else {
+            if (backgroundEffectSelect) {
+              backgroundEffectSelect.value = itemId;
+              // 更新 UI 選中狀態
+              document.querySelectorAll('.effect-shop-card').forEach(c => c.classList.remove('active'));
+              card.classList.add('active');
+              
+              // 更新按鈕
+              document.querySelectorAll('.effect-shop-card .cosmetic-action').forEach(act => {
+                const pCard = act.closest('.cosmetic-card');
+                const pId = pCard.getAttribute('data-item-id');
+                const isPcardLocked = pCard.getAttribute('data-locked') === 'true';
+                if (pId === itemId) {
+                  act.innerHTML = `<button class="btn btn-ghost btn-sm" disabled style="color: var(--green); border-color: rgba(76, 175, 130, 0.3);">✓ 當前套用</button>`;
+                } else if (!isPcardLocked) {
+                  act.innerHTML = `<button class="btn btn-primary btn-sm btn-cosmetic-apply">套用特效</button>`;
+                }
+              });
+            }
+          }
+          // 調用原本的偏好存取邏輯
+          savePreferences();
+          return;
+        }
+
+        // 點擊金幣購買按鈕
+        const buyBtn = e.target.closest('.btn-cosmetic-buy');
+        if (buyBtn) {
+          e.preventDefault();
+          const card = buyBtn.closest('.cosmetic-card');
+          if (!card) return;
+
+          const itemId = card.getAttribute('data-item-id');
+          const itemType = card.getAttribute('data-item-type'); // style / effect
+          const price = parseInt(card.getAttribute('data-price')) || 0;
+          const textName = card.querySelector('.cosmetic-name').innerText.trim();
+
+          const userCoins = parseInt(document.getElementById('settings-user-coins').innerText) || 0;
+          if (userCoins < price) {
+            window.showToast('您的金幣不足！', 'error');
+            return;
+          }
+
+          const isBorder = card.classList.contains('border-shop-card');
+          const confirmTitle = isBorder ? '確認解鎖邊框' : '確認解鎖特效';
+          const confirmDesc = isBorder 
+            ? `是否花費 <strong style="color:#ffd700">🪙 ${price} 金幣</strong> 解鎖 [${textName}] 卡片邊框？`
+            : `是否花費 <strong style="color:#ffd700">🪙 ${price} 金幣</strong> 解鎖 [${textName}] 全域背景特效？`;
+
+          const confirmed = await showPurchaseConfirm(confirmTitle, confirmDesc);
+          if (!confirmed) return;
+
+          buyBtn.disabled = true;
+          buyBtn.innerText = '處理中...';
+
+          const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]')
+                         || document.cookie.match(/csrftoken=([^;]+)/);
+          const csrf = csrfToken ? (csrfToken.value || csrfToken[1]) : '';
+
+          const fd = new FormData();
+          fd.append('item_type', itemType);
+          fd.append('item_id', itemId);
+
+          try {
+            const resp = await fetch('{% url "vocab:purchase_item" %}', {
+              method: 'POST',
+              headers: { 'X-CSRFToken': csrf },
+              body: fd
+            });
+            const d = await resp.json();
+            if (d.success) {
+              window.showToast(d.message, 'success');
+              
+              // 1. 移除卡片與 select option 上的鎖定屬性
+              card.removeAttribute('data-locked');
+              card.setAttribute('data-locked', 'false');
+              card.classList.remove('locked');
+              
+              const metaBadge = card.querySelector('.cosmetic-lock-badge');
+              if (metaBadge) {
+                metaBadge.className = 'cosmetic-status-text text-success';
+                metaBadge.innerText = '已解鎖';
+              }
+
+              const selectEl = isBorder ? cardBorderStyleSelect : backgroundEffectSelect;
+              if (selectEl) {
+                const opt = Array.from(selectEl.options).find(o => o.value === itemId);
+                if (opt) {
+                  opt.removeAttribute('data-locked');
+                  opt.removeAttribute('data-price');
+                }
+              }
+
+              // 2. 即時更新全站金幣餘額與商店按鈕
+              updateAllPurchaseButtons(d.total_coins);
+
+              // 3. 自動套用新解鎖的商品
+              const actDiv = card.querySelector('.cosmetic-action');
+              if (actDiv) {
+                actDiv.innerHTML = `<button class="btn btn-primary btn-sm btn-cosmetic-apply">套用</button>`;
+                const applyBtnInst = actDiv.querySelector('.btn-cosmetic-apply');
+                if (applyBtnInst) {
+                  applyBtnInst.click(); // 自動觸發套用
+                }
+              }
+            } else {
+              window.showToast(d.message, 'error');
+              buyBtn.disabled = false;
+              buyBtn.innerHTML = `🪙 ${price} 購買解鎖`;
+            }
+          } catch(err) {
+            window.showToast('無法與伺服器連線', 'error');
+            buyBtn.disabled = false;
+            buyBtn.innerHTML = `🪙 ${price} 購買解鎖`;
+          }
+          return;
+        }
+      });
+
+      // 2. 處理稱號徽章點擊
+      const badgeItems = paneCosmetics.querySelectorAll('.badge-item');
+      badgeItems.forEach(item => {
+        item.addEventListener('click', function(e) {
+          if (item.classList.contains('locked')) {
+            window.showToast('您尚未達成該稱號徽章的解鎖成就條件！', 'error');
+            return;
+          }
+
+          const badgeId = item.getAttribute('data-badge-id');
+          if (userBadgeSelect) {
+            userBadgeSelect.value = badgeId;
+            
+            // 更新 UI
+            badgeItems.forEach(b => b.classList.remove('active'));
+            item.classList.add('active');
+
+            savePreferences();
+          }
+        });
+      });
+    }
+    initCosmeticsShopEvents();
+  }
+
+  // 初始化所有元件與點擊綁定
+  function initAll() {
+    initTabs();
+    initAllSettingsElements();
+    
+    const themeForm = document.querySelector('.theme-grid');
+    if (themeForm) {
+      themeForm.onsubmit = function(e) {
+        e.preventDefault();
+        return false;
+      };
+      const themeButtons = themeForm.querySelectorAll('button[type="submit"]');
+      themeButtons.forEach(btn => {
+        bindThemeButton(btn);
+      });
+    }
+    bindThemePurchaseButtons();
+  }
+
+  // 頁面初次載入
+  initAll();
+
+  // 支援 Hotwire Turbo 重新綁定事件
+  document.addEventListener('turbo:load', () => {
+    initAll();
+  });
+})();
+</script>
+
+{% endblock %}

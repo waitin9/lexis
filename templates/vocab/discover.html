@@ -17,11 +17,56 @@
   /* 3D 卡片容器 */
   .card-perspective {
     perspective: 1000px;
-    width: 100%;
-    max-width: 480px;
-    height: 380px;
+    width: 95%;
+    max-width: 860px;
+    height: 520px;
     margin-bottom: 30px;
     position: relative;
+    transition: all 0.3s ease;
+  }
+
+  /* 響應式網頁 (Responsive Web Design) 媒體查詢 */
+  @media (max-width: 992px) {
+    .card-perspective {
+      max-width: 720px;
+      height: 500px;
+    }
+  }
+
+  @media (max-width: 768px) {
+    .card-perspective {
+      max-width: 100%;
+      height: 460px;
+    }
+    .word-text {
+      font-size: 2.6rem;
+    }
+    .card-face {
+      padding: 20px;
+    }
+    .sense-chinese {
+      font-size: 1.15rem;
+    }
+  }
+
+  @media (max-width: 480px) {
+    .card-perspective {
+      height: 430px;
+      margin-bottom: 20px;
+    }
+    .word-text {
+      font-size: 2.1rem;
+    }
+    .card-face {
+      padding: 16px;
+    }
+    .sense-chinese {
+      font-size: 1.05rem;
+    }
+    .action-btn {
+      padding: 10px 14px;
+      font-size: 0.8rem;
+    }
   }
 
   .discover-card {
@@ -50,16 +95,16 @@
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-    background: rgba(22, 22, 26, 0.75);
-    border: 1px solid var(--border);
+    background: var(--card-face-bg, rgba(22, 22, 26, 0.75));
+    border: 1px solid var(--card-border, var(--border));
     backdrop-filter: blur(12px);
     -webkit-backdrop-filter: blur(12px);
-    box-shadow: var(--shadow-card);
+    box-shadow: var(--card-shadow, var(--shadow-card));
     transition: border-color var(--transition);
   }
 
   .card-face:hover {
-    border-color: rgba(108, 99, 255, 0.4);
+    border-color: var(--accent-glow-color, rgba(108, 99, 255, 0.4));
   }
 
   /* 雙重保險：藉由動態 z-index 交換來解決 Chrome/Chromium 3D 深度排序 Bug */
@@ -68,7 +113,7 @@
   }
   .card-back {
     transform: rotateY(180deg);
-    background: rgba(26, 26, 32, 0.85);
+    background: var(--card-back-bg, rgba(26, 26, 32, 0.85));
     z-index: 1;
   }
 
@@ -90,7 +135,7 @@
     font-size: 3.2rem;
     font-weight: 800;
     letter-spacing: -0.04em;
-    background: linear-gradient(135deg, #fff 30%, var(--accent) 100%);
+    background: var(--front-word-gradient, linear-gradient(135deg, #fff 30%, var(--accent) 100%));
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     margin-bottom: 10px;
@@ -107,24 +152,26 @@
     font-size: 1.1rem;
   }
 
-  .audio-play-btn {
-    background: rgba(108, 99, 255, 0.1);
-    color: var(--accent);
-    border: 1px solid rgba(108, 99, 255, 0.2);
-    border-radius: 50%;
-    width: 32px;
-    height: 32px;
-    display: flex;
+  .front-audio-btn {
+    background: rgba(255, 255, 255, 0.03);
+    color: var(--text-secondary);
+    border: 1px solid var(--border);
+    border-radius: 18px;
+    padding: 4px 12px;
+    cursor: pointer;
+    font-size: 0.72rem;
+    transition: all var(--transition);
+    display: inline-flex;
     align-items: center;
     justify-content: center;
-    cursor: pointer;
-    font-size: 0.8rem;
-    transition: all var(--transition);
+    gap: 4px;
+    line-height: 1;
   }
-  .audio-play-btn:hover {
-    background: var(--accent);
-    color: #fff;
-    transform: scale(1.1);
+  .front-audio-btn:hover {
+    background: var(--accent-glow, rgba(108, 99, 255, 0.15));
+    border-color: var(--accent);
+    color: var(--accent);
+    transform: translateY(-1px);
   }
 
   .flip-hint {
@@ -162,16 +209,7 @@
     padding-bottom: 0;
   }
 
-  .sense-pos-tag {
-    display: inline-block;
-    font-size: 0.72rem;
-    font-weight: 700;
-    padding: 2px 8px;
-    border-radius: 4px;
-    background: var(--accent-dim);
-    color: #a8a4ff;
-    margin-bottom: 8px;
-  }
+  /* .sense-pos-tag style removed in favor of global .pos-badge */
 
   .sense-chinese {
     font-size: 1.25rem;
@@ -323,6 +361,19 @@
   .card-enter-anim {
     animation: cardEnter 0.35s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
   }
+  @keyframes spin {
+    to { transform: rotate(360deg); }
+  }
+
+  .btn-with-icon-anim {
+    display: inline-flex !important;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+  }
+  .btn-with-icon-anim:hover .btn-play-icon {
+    transform: translateX(3px);
+  }
 </style>
 {% endblock %}
 
@@ -340,19 +391,19 @@
     <div class="discover-card" id="discover-card">
       
       <!-- 正面 -->
-      <div class="card-face card-front">
+      <div class="card-face card-front {% if user_profile and user_profile.card_border_style == 'platinum' %}card-border-platinum{% endif %}">
         <div class="word-header">
           <div class="word-text" id="word-text">Loading...</div>
           <div class="word-phonetic-wrap">
-            <span id="word-phonetic"></span>
-            <button class="audio-play-btn" id="speak-btn" title="語音朗讀">🔊</button>
+            <button class="front-audio-btn" id="discover-speak-us" title="美式發音">US 🔊</button>
+            <button class="front-audio-btn" id="discover-speak-uk" title="英式發音">UK 🔊</button>
           </div>
         </div>
         <div class="flip-hint">點擊卡片或按 Space 翻看釋義</div>
       </div>
 
       <!-- 背面 -->
-      <div class="card-face card-back">
+      <div class="card-face card-back {% if user_profile and user_profile.card_border_style == 'platinum' %}card-border-platinum{% endif %}">
         <div class="meanings-scroll" id="meanings-container">
           <!-- 由 JS 動態生成 -->
         </div>
@@ -364,7 +415,7 @@
 
   <!-- 控制按鈕 -->
   <div class="action-buttons" id="action-buttons">
-    <button class="action-btn btn-skip" id="btn-skip" title="暫時略過此字，稍後再出現 (快捷鍵: Space/S)">
+    <button class="action-btn btn-skip" id="btn-skip" title="暫時略過此字，稍後再出現 (快捷鍵: S 或 3)">
       <div class="action-btn-shortcut">S</div>
       <div class="action-btn-icon">↺</div>
       <div class="action-btn-label">略過</div>
@@ -411,29 +462,31 @@
 <script>
 (function() {
   const card = document.getElementById('discover-card');
-  const speakBtn = document.getElementById('speak-btn');
+  const speakUsBtn = document.getElementById('discover-speak-us');
+  const speakUkBtn = document.getElementById('discover-speak-uk');
   const btnSkip = document.getElementById('btn-skip');
   const btnKnown = document.getElementById('btn-known');
   const btnAdd = document.getElementById('btn-add');
   const container = document.getElementById('meanings-container');
   const wordText = document.getElementById('word-text');
-  const wordPhonetic = document.getElementById('word-phonetic');
   const actionButtons = document.getElementById('action-buttons');
   const emptyState = document.getElementById('empty-state');
   
   let currentWord = null;
   let isAnimating = false;
   let wordsDiscoveredCount = 0;
+  const userAutoPronounce = {{ user_profile.auto_pronounce|yesno:"true,false" }};
+  const userPronunciationPref = "{{ user_profile.pronunciation_pref|default:'US' }}";
 
   function updateCounter() {
     document.getElementById('session-counter').innerText = `已過濾 ${wordsDiscoveredCount} 個字`;
   }
 
-  function speak(text) {
+  function speak(text, lang = 'en-US') {
     if ('speechSynthesis' in window) {
       window.speechSynthesis.cancel();
       const utterance = new SpeechSynthesisUtterance(text);
-      utterance.lang = 'en-US';
+      utterance.lang = lang;
       utterance.rate = 0.85;
       window.speechSynthesis.speak(utterance);
     }
@@ -450,15 +503,25 @@
     toggleFlip();
   });
 
-  speakBtn.addEventListener('click', (e) => {
+  speakUsBtn.addEventListener('click', (e) => {
     e.stopPropagation();
-    if (currentWord) speak(currentWord.text);
+    if (currentWord) speak(currentWord.text, 'en-US');
+  });
+
+  speakUkBtn.addEventListener('click', (e) => {
+    e.stopPropagation();
+    if (currentWord) speak(currentWord.text, 'en-GB');
   });
 
   async function loadNextWord() {
     try {
       const resp = await fetch('{% url "vocab:get_next_discover_word" %}');
       const data = await resp.json();
+      
+      if (data.limit_reached) {
+        showLimitState(data.message);
+        return;
+      }
       
       if (data.finished) {
         showEmptyState();
@@ -468,8 +531,20 @@
       currentWord = data;
       
       wordText.innerText = data.text;
-      wordPhonetic.innerText = data.phonetic ? `/${data.phonetic}/` : '';
       
+      const phoneticWrap = document.querySelector('.word-phonetic-wrap');
+      const oldPhoneticSpan = phoneticWrap.querySelector('span');
+      if (oldPhoneticSpan) oldPhoneticSpan.remove();
+      
+      if (data.phonetic) {
+        const span = document.createElement('span');
+        span.style.opacity = '0.8';
+        span.style.marginRight = '4px';
+        span.innerText = `/${data.phonetic}/`;
+        phoneticWrap.insertBefore(span, speakUsBtn);
+      }
+      
+      let needsEnrichment = false;
       container.innerHTML = '';
       data.senses.forEach(sense => {
         const senseDiv = document.createElement('div');
@@ -480,26 +555,42 @@
           exHtml = `<div class="sense-ex-sentence">"${sense.examples[0].sentence}"<br><span style="font-size:0.75rem; color:var(--text-muted);">${sense.examples[0].translation}</span></div>`;
         }
         
+        let posHtml = '';
+        if (sense.part_of_speech && sense.part_of_speech !== 'unknown') {
+          posHtml = `<span class="pos-badge pos-${sense.pos_class}" style="margin-bottom: 8px;">${sense.pos_display}</span>`;
+        }
+        
+        let defHtml = '';
+        if (sense.definition) {
+          defHtml = `<div class="sense-eng-def">${sense.definition}</div>`;
+        }
+        
         senseDiv.innerHTML = `
-          <span class="sense-pos-tag">${sense.part_of_speech}</span>
+          ${posHtml}
           <div class="sense-chinese">${sense.translation}</div>
-          <div class="sense-eng-def">${sense.definition}</div>
+          ${defHtml}
           ${exHtml}
         `;
         container.appendChild(senseDiv);
       });
       
+      // 重置背面滾動位置至頂部（避免上一張卡滾到下面後殘留位置）
+      container.scrollTop = 0;
+
       // 套用進入動畫
       card.classList.remove('flipped');
       card.className = 'discover-card card-enter-anim';
-      
+
       // 動畫播放完畢 (350ms) 後，立即將 card-enter-anim 移除，避免 CSS forwards 鎖死 transform 屬性！
       setTimeout(() => {
         card.classList.remove('card-enter-anim');
       }, 360);
       
       setTimeout(() => {
-        speak(data.text);
+        if (userAutoPronounce) {
+          const prefLang = userPronunciationPref === 'UK' ? 'en-GB' : 'en-US';
+          speak(data.text, prefLang);
+        }
       }, 300);
 
     } catch (e) {
@@ -549,10 +640,24 @@
     }, 400);
   }
 
+
+
   function showEmptyState() {
     card.style.display = 'none';
     actionButtons.style.display = 'none';
     emptyState.style.display = 'block';
+    emptyState.className = 'loading-overlay card-enter-anim';
+  }
+
+  function showLimitState(msg) {
+    card.style.display = 'none';
+    actionButtons.style.display = 'none';
+    emptyState.style.display = 'block';
+    
+    emptyState.querySelector('.empty-state-icon').innerText = '🧠';
+    emptyState.querySelector('.empty-state-title').innerText = '今日探索已達上限！';
+    emptyState.querySelector('.empty-state-text').innerHTML = msg;
+    
     emptyState.className = 'loading-overlay card-enter-anim';
   }
 
@@ -577,7 +682,8 @@
     } else if (key === 's' || key === '3') {
       submitAction('skipped');
     } else if (key === 'v') {
-      speak(currentWord.text);
+      const prefLang = userPronunciationPref === 'UK' ? 'en-GB' : 'en-US';
+      speak(currentWord.text, prefLang);
     }
   });
 

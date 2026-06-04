@@ -12,6 +12,37 @@ class UserProfile(models.Model):
     last_study_date = models.DateField(null=True, blank=True)
     total_reviews = models.IntegerField(default=0)   # 累計複習次數
     total_learned = models.IntegerField(default=0)   # 累計學會的單字數
+    theme = models.CharField(max_length=50, default='deep-space')  # 主題設定
+    phonetic_pref = models.CharField(max_length=20, default='kk')  # 'kk', 'ipa', 'hide'
+    daily_target = models.IntegerField(default=20)                 # 每日新探索上限
+    auto_pronounce = models.BooleanField(default=False)            # 是否自動朗讀發音
+    pronunciation_pref = models.CharField(max_length=10, choices=[('US', '美音'), ('UK', '英音')], default='US') # 發音偏好 (美音/英音)
+    particle_effect = models.BooleanField(default=True)            # 是否啟用背景粒子特效
+    card_border_style = models.CharField(max_length=20, default='default') # 'default', 'platinum'
+    show_gold_badge = models.BooleanField(default=False)
+    background_effect = models.CharField(max_length=50, default='none')
+    user_badge = models.CharField(max_length=50, default='none')
+    challenges_played = models.IntegerField(default=0)
+    coins = models.IntegerField(default=100)
+    unlocked_items = models.TextField(default="theme:deep-space,theme:aurora,border:default,effect:none")
+
+    def get_badge_info(self):
+        """獲取當前啟用頭銜的顯示名稱與樣式"""
+        badges = {
+            'sprout': {'emoji': '👶', 'name': '幼嫩萌芽', 'class': 'badge-sprout'},
+            'novice': {'emoji': '🧭', 'name': '冒險新手', 'class': 'badge-novice'},
+            'iron': {'emoji': '🛡️', 'name': '鋼鐵意志', 'class': 'badge-iron'},
+            'star': {'emoji': '⭐', 'name': '勤奮之星', 'class': 'badge-star'},
+            'walker': {'emoji': '🚶', 'name': '溫故行者', 'class': 'badge-walker'},
+            'start': {'emoji': '🚀', 'name': '挑戰起點', 'class': 'badge-start'},
+            'time-traveler': {'emoji': '⏳', 'name': '時間旅者', 'class': 'badge-time'},
+            'wisdom': {'emoji': '💡', 'name': '智慧啟蒙', 'class': 'badge-wisdom'},
+            'master': {'emoji': '👑', 'name': '黃金學習者', 'class': 'badge-master'},
+            'sage': {'emoji': '🧙', 'name': '單字賢者', 'class': 'badge-sage'},
+            'survivor': {'emoji': '🩸', 'name': '浴血倖存者', 'class': 'badge-survivor'},
+            'explorer': {'emoji': '🧭', 'name': '新詞探索家', 'class': 'badge-explorer'},
+        }
+        return badges.get(self.user_badge, None)
 
     def __str__(self):
         return f"{self.user.username}'s profile"
@@ -44,6 +75,7 @@ class UserVocab(models.Model):
     custom_translation = models.CharField(max_length=300, blank=True)
     custom_example = models.TextField(blank=True)
     # 共用欄位
+    ai_mnemonic = models.TextField(blank=True)  # AI 生成的專屬迷因記憶鉤子
     note = models.TextField(blank=True)   # 個人記憶備註
     added_at = models.DateTimeField(auto_now_add=True)
 

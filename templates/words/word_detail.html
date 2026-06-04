@@ -9,28 +9,20 @@
 <div class="card" style="max-width:680px;">
   <div style="display:flex;align-items:flex-start;justify-content:space-between;flex-wrap:wrap;gap:12px;">
     <div>
-      <h1 style="font-size:2.2rem;font-weight:800;letter-spacing:-0.04em;">{{ word.text }}</h1>
-      {% with p=word.phonetics.first %}
-      {% if p %}
-      <div style="font-family:var(--font-mono);color:var(--text-muted);font-size:1rem;margin-top:4px;">
-        /{{ p.notation }}/
-        <span style="font-size:0.75rem;color:var(--border-focus);margin-left:6px;">{{ p.notation_type }}</span>
+      <h1 style="font-size:2.2rem;font-weight:800;letter-spacing:-0.04em;margin-bottom:4px;">{{ word.text }}</h1>
+      {% if phonetic_display %}
+      <div style="font-family:var(--font-mono); font-size:1.1rem; color:var(--text-secondary); margin-bottom:12px; display:inline-flex; align-items:center; gap:8px;">
+        <span style="opacity:0.8; margin-right:4px;">/{{ phonetic_display }}/</span>
+        <button onclick="speak('{{ word.text }}', 'en-US')" class="btn btn-ghost btn-sm" style="padding: 2px 8px; font-size: 0.72rem; vertical-align:middle; height:24px; min-height:auto; border-color:rgba(255,255,255,0.1); background:rgba(255,255,255,0.02);" title="美式發音">🇺🇸 US 🔊</button>
+        <button onclick="speak('{{ word.text }}', 'en-GB')" class="btn btn-ghost btn-sm" style="padding: 2px 8px; font-size: 0.72rem; vertical-align:middle; height:24px; min-height:auto; border-color:rgba(255,255,255,0.1); background:rgba(255,255,255,0.02);" title="英式發音">🇬🇧 UK 🔊</button>
       </div>
       {% endif %}
-      {% endwith %}
     </div>
     <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
-      <span class="difficulty-badge diff-{{ word.difficulty }}">
-        {% if word.difficulty == 1 %}入門{% elif word.difficulty == 2 %}基礎{% elif word.difficulty == 3 %}進階{% elif word.difficulty == 4 %}困難{% else %}專家{% endif %}
-      </span>
       {% if in_vocab %}
       <span class="btn btn-ghost btn-sm" style="cursor:default;color:var(--green);">✓ 已在字庫</span>
       {% else %}
-      <form method="post" action="{% url 'vocab:add_to_vocab' word.id %}" style="margin:0">
-        {% csrf_token %}
-        <input type="hidden" name="next_url" value="/words/{{ word.id }}/" />
-        <button type="submit" class="btn btn-primary">＋ 加入字庫</button>
-      </form>
+      <button type="button" class="btn btn-primary word-detail-add-btn" onclick="ajaxAddToVocab('{{ word.id }}', this, false)">＋ 加入字庫</button>
       {% endif %}
     </div>
   </div>
@@ -38,19 +30,22 @@
   <hr class="divider" />
 
   {% for sense in word.senses.all %}
-  <div style="margin-bottom:24px;">
-    <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px;">
-      <span class="word-card-pos" style="font-size:0.78rem;">{{ sense.get_part_of_speech_display }}</span>
-      <span style="font-size:0.82rem;color:var(--text-muted);">義項 {{ forloop.counter }}</span>
-    </div>
-    <div style="font-size:1.1rem;font-weight:600;color:var(--text-primary);margin-bottom:6px;">
+  <div style="margin-bottom:28px; padding-bottom:24px; border-bottom:1px solid var(--border);">
+    <!-- 詞性 badge -->
+    {% if sense.part_of_speech != 'unknown' %}
+    <span class="pos-badge pos-{{ sense.pos_class }}" style="margin-bottom:10px;">{{ sense.pos_display }}</span>
+    {% endif %}
+    <!-- 中文翻譯 -->
+    <div style="font-size:1.15rem; font-weight:600; color:var(--text-primary); margin-bottom:8px; line-height:1.5;">
       {{ sense.translation }}
     </div>
+    <!-- 英文定義 -->
     {% if sense.definition %}
-    <div style="font-size:0.9rem;color:var(--text-secondary);margin-bottom:12px;">
+    <div style="font-size:0.88rem; color:var(--text-secondary); margin-bottom:12px; line-height:1.55;">
       {{ sense.definition }}
     </div>
     {% endif %}
+    <!-- 例句 -->
     {% for ex in sense.examples.all %}
     <div class="study-example">"{{ ex.sentence }}"
       {% if ex.translation %}
@@ -59,7 +54,29 @@
     </div>
     {% endfor %}
   </div>
+  {% empty %}
+  <div style="color:var(--text-muted); font-style:italic; font-size:0.9rem;">⏳ 定義載入中，請稍後…</div>
   {% endfor %}
+
+  {% with family=word.get_related_family_words %}
+  {% if family %}
+  <div style="margin-top: 10px; border-top: 1px solid var(--border); padding-top: 20px;">
+    <span style="font-size:0.88rem; color:var(--text-muted); font-weight:600; margin-right:8px; vertical-align:middle;">延伸字族：</span>
+    <div style="display:inline-flex; flex-wrap:wrap; gap:8px; align-items:center; vertical-align:middle;">
+      {% for fw in family %}
+        {% with primary=fw.get_primary_sense %}
+        <a href="{% url 'words:detail' fw.id %}" class="btn btn-ghost btn-sm" style="border-radius:12px; font-size:0.75rem; padding:4px 12px; display:inline-flex; align-items:center; gap:6px; border-color:rgba(255,255,255,0.1); background:rgba(255,255,255,0.01); height:24px; min-height:auto;" onmouseover="this.style.borderColor='var(--accent)'; this.style.color='var(--accent)';" onmouseout="this.style.borderColor='rgba(255,255,255,0.1)'; this.style.color='';">
+          {% if primary and primary.pos_display %}
+            <span class="pos-badge pos-{{ primary.pos_class }}" style="font-size:0.6rem; padding:0 4px; margin-bottom:0; height:14px; line-height:14px; border:none; background:rgba(255,255,255,0.05);">{{ primary.pos_display }}</span>
+          {% endif %}
+          <strong>{{ fw.text }}</strong>
+        </a>
+        {% endwith %}
+      {% endfor %}
+    </div>
+  </div>
+  {% endif %}
+  {% endwith %}
 
 </div>
 

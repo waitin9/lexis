@@ -7,46 +7,46 @@
 
 /* ── Tokens ─────────────────────────────────────────────── */
 :root {
-  --bg:          #0d0d0f;
-  --bg-card:     #16161a;
-  --bg-hover:    #1e1e24;
-  --border:      #2a2a33;
-  --border-focus:#5c6bc0;
+  --bg:          #000000;
+  --bg-card:     rgba(255, 255, 255, 0.02);
+  --bg-hover:    rgba(255, 255, 255, 0.05);
+  --border:      rgba(255, 255, 255, 0.08);
+  --border-focus: rgba(255, 255, 255, 0.15);
 
-  --text-primary:   #e8e8f0;
-  --text-secondary: #9090a8;
-  --text-muted:     #55556a;
+  --text-primary:   #ffffff;
+  --text-secondary: #a1a1a6;
+  --text-muted:     #6e6e73;
 
-  --accent:      #6c63ff;
-  --accent-dim:  #3d3880;
-  --accent-glow: rgba(108, 99, 255, 0.18);
+  --accent:      #ffffff;
+  --accent-dim:  rgba(255, 255, 255, 0.1);
+  --accent-glow: rgba(255, 255, 255, 0.05);
 
-  --green:  #4caf82;
-  --yellow: #e8b84b;
-  --red:    #e05c5c;
-  --blue:   #4a9eff;
+  --green:  #34d399;
+  --yellow: #fbbf24;
+  --red:    #f87171;
+  --blue:   #60a5fa;
 
-  --mastery-0: #55556a;
+  --mastery-0: var(--text-muted);
   --mastery-1: var(--yellow);
   --mastery-2: var(--blue);
   --mastery-3: var(--green);
 
-  --radius-sm: 6px;
-  --radius:    10px;
-  --radius-lg: 16px;
+  --radius-sm: 8px;
+  --radius:    14px;
+  --radius-lg: 24px;
 
-  --shadow: 0 2px 16px rgba(0,0,0,0.4);
-  --shadow-card: 0 4px 24px rgba(0,0,0,0.5);
+  --shadow: 0 4px 20px rgba(0,0,0,0.8);
+  --shadow-card: inset 0 1px 0 rgba(255,255,255,0.06), 0 10px 40px rgba(0,0,0,0.5);
 
-  --transition: 0.18s ease;
-  --font: 'Inter', sans-serif;
+  --transition: 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+  --font: 'Inter', system-ui, -apple-system, sans-serif;
   --font-mono: 'JetBrains Mono', monospace;
 }
 
 /* ── Reset ───────────────────────────────────────────────── */
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-html { font-size: 16px; scroll-behavior: smooth; }
+html { font-size: 16px; scroll-behavior: smooth; overflow-x: hidden; }
 
 body {
   font-family: var(--font);
@@ -55,6 +55,7 @@ body {
   line-height: 1.6;
   min-height: 100vh;
   -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
 }
 
 a { color: var(--accent); text-decoration: none; transition: color var(--transition); }
@@ -65,7 +66,7 @@ input, textarea, select, button { font-family: var(--font); }
 /* ── Layout ──────────────────────────────────────────────── */
 .app-layout {
   display: grid;
-  grid-template-columns: 220px 1fr;
+  grid-template-columns: 220px minmax(0, 1fr);
   grid-template-rows: auto 1fr;
   min-height: 100vh;
 }
@@ -111,8 +112,8 @@ input, textarea, select, button { font-family: var(--font); }
   align-items: center;
   gap: 10px;
   padding: 10px 20px;
-  color: var(--text-secondary);
-  font-size: 0.9rem;
+  color: #6e6e73;
+  font-size: 0.85rem;
   font-weight: 500;
   border-radius: 0;
   transition: all var(--transition);
@@ -128,6 +129,15 @@ input, textarea, select, button { font-family: var(--font); }
   border-left-color: var(--accent);
 }
 .sidebar-link .icon { width: 18px; text-align: center; }
+.sidebar-pixel-icon {
+  width: 16px;
+  height: 16px;
+  image-rendering: pixelated;
+  vertical-align: middle;
+  margin-right: 4px;
+  display: inline-block;
+  flex-shrink: 0;
+}
 
 .sidebar-section {
   padding: 16px 20px 4px;
@@ -141,6 +151,7 @@ input, textarea, select, button { font-family: var(--font); }
 .main-content {
   padding: 32px 36px;
   overflow-y: auto;
+  overflow-x: hidden;
 }
 
 /* ── Cards ───────────────────────────────────────────────── */
@@ -207,45 +218,91 @@ input, textarea, select, button { font-family: var(--font); }
 .btn {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
-  padding: 8px 18px;
+  gap: 8px;
+  padding: 10px 22px;
   border-radius: var(--radius);
   font-size: 0.875rem;
-  font-weight: 500;
+  font-weight: 600;
   cursor: pointer;
-  transition: all var(--transition);
+  transition: all 0.25s cubic-bezier(0.25, 0.8, 0.25, 1);
   border: 1px solid transparent;
   white-space: nowrap;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+}
+
+.btn::before {
+  content: '';
+  position: absolute;
+  top: 0; left: -100%; width: 100%; height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.15), transparent);
+  transition: none;
+}
+.btn:hover::before {
+  left: 100%;
+  transition: 0.6s ease;
 }
 
 .btn-primary {
-  background: var(--accent);
+  background: linear-gradient(135deg, var(--accent) 0%, var(--accent-dim) 100%);
   color: #fff;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  box-shadow: 0 4px 15px var(--accent-glow);
 }
-.btn-primary:hover { background: #7c74ff; color: #fff; }
+.btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px var(--accent-glow), 0 0 10px var(--accent-glow);
+  filter: brightness(1.1);
+}
+.btn-primary:active {
+  transform: translateY(1px);
+}
 
 .btn-ghost {
-  background: transparent;
+  background: rgba(255, 255, 255, 0.02);
   color: var(--text-secondary);
   border-color: var(--border);
 }
-.btn-ghost:hover { background: var(--bg-hover); color: var(--text-primary); border-color: var(--border-focus); }
+.btn-ghost:hover {
+  background: var(--bg-hover);
+  color: var(--text-primary);
+  border-color: var(--border-focus);
+  transform: translateY(-2px);
+}
+.btn-ghost:active {
+  transform: translateY(1px);
+}
 
 .btn-danger {
   background: transparent;
   color: var(--red);
-  border-color: var(--red);
+  border-color: rgba(242, 95, 95, 0.3);
 }
-.btn-danger:hover { background: rgba(224, 92, 92, 0.1); }
+.btn-danger:hover {
+  background: rgba(242, 95, 95, 0.1);
+  border-color: var(--red);
+  transform: translateY(-2px);
+}
+.btn-danger:active {
+  transform: translateY(1px);
+}
 
-.btn-sm { padding: 5px 12px; font-size: 0.8rem; }
+.btn-sm { padding: 6px 14px; font-size: 0.8rem; }
 
 .btn-green {
+  background: linear-gradient(135deg, var(--green) 0%, #2bb076 100%);
+  color: #0d1a12;
+  font-weight: 700;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 4px 15px rgba(62, 207, 142, 0.2);
+}
+.btn-green:hover {
   background: var(--green);
   color: #0d1a12;
-  font-weight: 600;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(62, 207, 142, 0.35);
 }
-.btn-green:hover { background: #5dc494; color: #0d1a12; }
 
 /* ── SRS Buttons ─────────────────────────────────────────── */
 .srs-buttons {
@@ -921,13 +978,13 @@ body {
   pointer-events: none;
 }
 .orb-1 {
-  background: radial-gradient(circle, var(--accent) 0%, transparent 80%);
+  background: radial-gradient(circle, var(--orb-glow-1, var(--accent)) 0%, transparent 80%);
   top: -10vw;
   left: -10vw;
   animation: floatOrb1 40s ease-in-out infinite alternate;
 }
 .orb-2 {
-  background: radial-gradient(circle, var(--blue) 0%, transparent 80%);
+  background: radial-gradient(circle, var(--orb-glow-2, var(--blue)) 0%, transparent 80%);
   bottom: -10vw;
   right: -10vw;
   animation: floatOrb2 45s ease-in-out infinite alternate;
@@ -941,4 +998,605 @@ body {
   100% { transform: translate(-6vw, -8vw) scale(1.1); }
 }
 
+/* ── 統一詞性標籤樣式 ── */
+.pos-badge {
+  display: inline-block;
+  font-size: 0.68rem;
+  font-weight: 700;
+  padding: 2px 7px;
+  border-radius: 4px;
+  text-transform: lowercase;
+  border: 1px solid transparent;
+  vertical-align: middle;
+}
+.pos-badge.pos-n {
+  background: rgba(74, 158, 255, 0.12);
+  color: #6db4ff;
+  border: 1px solid rgba(74, 158, 255, 0.2);
+}
+.pos-badge.pos-v {
+  background: rgba(76, 175, 130, 0.12);
+  color: #5ecfa0;
+  border: 1px solid rgba(76, 175, 130, 0.2);
+}
+.pos-badge.pos-adj {
+  background: rgba(232, 184, 75, 0.12);
+  color: #e8c75a;
+  border: 1px solid rgba(232, 184, 75, 0.2);
+}
+.pos-badge.pos-adv {
+  background: rgba(195, 120, 255, 0.12);
+  color: #cc88ff;
+  border: 1px solid rgba(195, 120, 255, 0.2);
+}
+.pos-badge.pos-prep,
+.pos-badge.pos-conj,
+.pos-badge.pos-pron,
+.pos-badge.pos-phrase {
+  background: rgba(255, 255, 255, 0.05);
+  color: var(--text-secondary);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+/* ── 主題切換與配色系統 (精緻化設計) ── */
+body[data-theme="deep-space"] {
+  --orb-glow-1: var(--accent);
+  --orb-glow-2: var(--blue);
+}
+
+/* 🌲 極光幻夜 (Aurora) */
+body[data-theme="aurora"] {
+  --bg:          #071410;
+  --bg-card:     #10211a;
+  --bg-hover:    #162f25;
+  --border:      #1f3d2f;
+  --border-focus:#00e676;
+  --accent:      #00e676;
+  --accent-dim:  #00793b;
+  --accent-glow: rgba(0, 230, 118, 0.15);
+  --orb-glow-1:  #00e676;
+  --orb-glow-2:  #00b0ff;
+  --text-primary:   #e0eee8;
+  --text-secondary: #8da399;
+  --text-muted:     #4d665b;
+  
+  --card-face-bg: rgba(16, 33, 26, 0.7);
+  --card-back-bg: rgba(16, 33, 26, 0.9);
+  --card-border:  rgba(0, 230, 118, 0.25);
+  --front-word-gradient: linear-gradient(135deg, #e0eee8 20%, #00e676 100%);
+  --accent-glow-color: rgba(0, 230, 118, 0.6);
+  --card-shadow: 0 12px 40px rgba(0, 230, 118, 0.1);
+  background: #040907;
+}
+body[data-theme="aurora"]::before {
+  content: "";
+  position: fixed;
+  top: 0; left: 0; width: 100%; height: 100%;
+  background-image: radial-gradient(ellipse at 80% 20%, rgba(0,230,118,0.12) 0%, transparent 50%),
+                    radial-gradient(ellipse at 20% 80%, rgba(0,176,255,0.08) 0%, transparent 50%);
+  pointer-events: none;
+  z-index: -2;
+}
+body[data-theme="aurora"]::after {
+  content: "";
+  position: fixed;
+  top: -50%; left: -50%; width: 200%; height: 200%;
+  background: conic-gradient(from 180deg at 50% 50%, rgba(0, 230, 118, 0.04) 0deg, transparent 60deg, rgba(0, 176, 255, 0.04) 120deg, transparent 180deg, rgba(0, 230, 118, 0.04) 240deg, transparent 300deg);
+  animation: aurora-spin 35s linear infinite;
+  pointer-events: none;
+  z-index: -1;
+  filter: blur(60px);
+}
+@keyframes aurora-spin {
+  100% { transform: rotate(360deg); }
+}
+
+/* 🌸 櫻花雨夜 (Cherry) */
+body[data-theme="cherry"] {
+  --bg:          #1b1115;
+  --bg-card:     #291a20;
+  --bg-hover:    #36222b;
+  --border:      #452a36;
+  --border-focus:#ff4081;
+  --accent:      #ff4081;
+  --accent-dim:  #a62151;
+  --accent-glow: rgba(255, 64, 129, 0.2);
+  --orb-glow-1:  #ff4081;
+  --orb-glow-2:  #ff8da1;
+  --text-primary:   #fae6ec;
+  --text-secondary: #c49ba9;
+  --text-muted:     #7a5966;
+  
+  --card-face-bg: rgba(41, 26, 32, 0.8);
+  --card-back-bg: rgba(41, 26, 32, 0.95);
+  --card-border:  rgba(255, 64, 129, 0.3);
+  --front-word-gradient: linear-gradient(135deg, #fff 20%, #ff4081 100%);
+  --accent-glow-color: rgba(255, 64, 129, 0.6);
+  --card-shadow: 0 10px 40px rgba(255, 64, 129, 0.15), inset 0 0 15px rgba(255, 141, 161, 0.05);
+  background: linear-gradient(135deg, #1f1217 0%, #0d070a 100%);
+}
+body[data-theme="cherry"]::before {
+  content: "";
+  position: fixed;
+  top: 0; left: 0; width: 100%; height: 100%;
+  background-image: radial-gradient(circle at 15% 70%, rgba(255, 64, 129, 0.06) 0%, transparent 50%),
+                    radial-gradient(circle at 85% 30%, rgba(255, 141, 161, 0.08) 0%, transparent 50%);
+  pointer-events: none;
+  z-index: -2;
+}
+/* 櫻花飄落特效 */
+body[data-theme="cherry"]::after {
+  content: "";
+  position: fixed;
+  top: -10%; left: 0; width: 12px; height: 12px;
+  background: rgba(255, 64, 129, 0.25);
+  border-radius: 50% 0 50% 50%;
+  box-shadow: 
+    15vw 15vh rgba(255, 141, 161, 0.3),
+    35vw 45vh rgba(255, 64, 129, 0.2),
+    50vw 25vh rgba(255, 141, 161, 0.25),
+    70vw 75vh rgba(255, 64, 129, 0.3),
+    85vw 15vh rgba(255, 141, 161, 0.2),
+    95vw 60vh rgba(255, 64, 129, 0.25);
+  animation: cherry-fall 18s linear infinite;
+  pointer-events: none;
+  z-index: -1;
+  filter: blur(1.5px);
+}
+@keyframes cherry-fall {
+  0% { transform: translateY(-10vh) translateX(0) rotate(0deg) scale(0.8); opacity: 0; }
+  10% { opacity: 1; }
+  90% { opacity: 1; }
+  100% { transform: translateY(110vh) translateX(10vw) rotate(360deg) scale(1.2); opacity: 0; }
+}
+
+/* 🤖 賽博霓虹 (Cyberpunk) */
+body[data-theme="cyberpunk"] {
+  --bg:          #090612;
+  --bg-card:     #140d24;
+  --bg-hover:    #211438;
+  --border:      #391b61;
+  --border-focus:#00e5ff;
+  --accent:      #00e5ff;
+  --accent-dim:  #00838f;
+  --accent-glow: rgba(0, 229, 255, 0.25);
+  --orb-glow-1:  #00e5ff;
+  --orb-glow-2:  #d500f9;
+  --text-primary:   #e7e3f2;
+  --text-secondary: #9c92b5;
+  --text-muted:     #5e5478;
+  
+  --green: #00ff88;
+  --red: #ff0055;
+  --yellow: #ffd900;
+  
+  --card-face-bg: rgba(16, 10, 31, 0.88);
+  --card-back-bg: rgba(16, 10, 31, 0.98);
+  --card-border:  rgba(0, 229, 255, 0.4);
+  --front-word-gradient: linear-gradient(90deg, #d500f9 0%, #00e5ff 100%);
+  --accent-glow-color: #00e5ff;
+  --radius: 0px;
+  --radius-lg: 0px;
+  --radius-sm: 0px;
+  background: repeating-linear-gradient(0deg, #090612, #090612 2px, #040208 2px, #040208 4px);
+}
+/* 掃描線特效 */
+body[data-theme="cyberpunk"]::before {
+  content: "";
+  position: fixed;
+  top: 0; left: 0; width: 100%; height: 100%;
+  background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.15) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.03), rgba(0, 255, 0, 0.01), rgba(0, 0, 255, 0.03));
+  background-size: 100% 4px, 6px 100%;
+  pointer-events: none;
+  z-index: 9999;
+  opacity: 0.2;
+}
+/* 螢光脈衝特效 */
+body[data-theme="cyberpunk"] .study-card-face, 
+body[data-theme="cyberpunk"] .card-face,
+body[data-theme="cyberpunk"] .theme-card.active,
+body[data-theme="cyberpunk"] #wqv-modal,
+body[data-theme="cyberpunk"] .modal-content {
+  animation: cyber-pulse 3s infinite alternate;
+}
+@keyframes cyber-pulse {
+  0% { box-shadow: 4px 4px 0px rgba(0, 229, 255, 0.1), -4px -4px 0px rgba(213, 0, 249, 0.1); }
+  100% { box-shadow: 6px 6px 0px rgba(0, 229, 255, 0.25), -6px -6px 0px rgba(213, 0, 249, 0.15), inset 0 0 10px rgba(0, 229, 255, 0.1); }
+}
+/* 切角多邊形 */
+body[data-theme="cyberpunk"] .study-card-face,
+body[data-theme="cyberpunk"] .card-face,
+body[data-theme="cyberpunk"] .card, 
+body[data-theme="cyberpunk"] .auth-card,
+body[data-theme="cyberpunk"] #wqv-modal,
+body[data-theme="cyberpunk"] .modal-content {
+  clip-path: polygon(0 0, 100% 0, 100% calc(100% - 25px), calc(100% - 25px) 100%, 0 100%);
+  border-bottom: 2px solid var(--accent);
+  border-right: 2px solid #d500f9;
+}
+
+/* 🍵 靜禪竹林 (Zen) */
+body[data-theme="zen"] {
+  --bg:          #131411;
+  --bg-card:     #1b1c18;
+  --bg-hover:    #242621;
+  --border:      #31332e;
+  --border-focus:#8bc34a;
+  --accent:      #8bc34a;
+  --accent-dim:  #558b2f;
+  --accent-glow: rgba(139, 195, 74, 0.12);
+  --orb-glow-1:  #8bc34a;
+  --orb-glow-2:  #009688;
+  --text-primary:   #e3e6e0;
+  --text-secondary: #97a195;
+  --text-muted:     #636b60;
+  
+  --card-face-bg: #1c1e19;
+  --card-back-bg: #1f211c;
+  --card-border:  #3d4538;
+  --front-word-gradient: linear-gradient(135deg, #e3e6e0 30%, #8bc34a 100%);
+  --accent-glow-color: rgba(139, 195, 74, 0.5);
+  --card-shadow: 0 20px 45px rgba(0,0,0,0.5), inset 0 2px 0 rgba(255,255,255,0.03);
+  background: radial-gradient(circle at center, #181a16 0%, #0b0c0a 100%);
+}
+/* 宣紙噪點 */
+body[data-theme="zen"]::before {
+  content: "";
+  position: fixed;
+  top: 0; left: 0; width: 100%; height: 100%;
+  background-image: url('data:image/svg+xml;utf8,<svg width="100" height="100" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><filter id="noise"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="3" stitchTiles="stitch"/></filter><rect width="100" height="100" filter="url(%23noise)" opacity="0.04"/></svg>');
+  pointer-events: none;
+  z-index: -2;
+}
+/* 底層微霧流動特效 */
+body[data-theme="zen"]::after {
+  content: "";
+  position: fixed;
+  bottom: 0; left: -50%; width: 200%; height: 45vh;
+  background: linear-gradient(to top, rgba(139, 195, 74, 0.05), transparent);
+  animation: zen-mist 22s ease-in-out infinite alternate;
+  pointer-events: none;
+  z-index: -1;
+  filter: blur(25px);
+}
+@keyframes zen-mist {
+  0% { transform: translateX(0) scaleY(1); }
+  100% { transform: translateX(5%) scaleY(1.4); }
+}
+/* 實體卡片質感，非毛玻璃 */
+body[data-theme="zen"] .study-card-face,
+body[data-theme="zen"] .card-face {
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+}
+
+/* 白金流光邊框 (Platinum Shimmer Border) */
+.card-border-platinum {
+  border: 2px solid transparent !important;
+  background: 
+    linear-gradient(var(--bg-card), var(--bg-card)) padding-box,
+    linear-gradient(135deg, #cfcfd3 0%, #ffffff 25%, #9d9da6 50%, #ffffff 75%, #cfcfd3 100%) border-box !important;
+  background-size: 200% 200% !important;
+  animation: platinum-shimmer 8s linear infinite !important;
+  box-shadow: 
+    0 0 25px rgba(230, 230, 240, 0.15),
+    0 8px 32px 0 rgba(0, 0, 0, 0.5),
+    inset 0 0 20px rgba(255, 255, 255, 0.05) !important;
+  position: relative;
+  overflow: hidden;
+}
+
+@keyframes platinum-shimmer {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+/* 越過卡面的白金流光掃描 (Sweeping diagonal reflection) */
+.card-border-platinum::after {
+  content: '';
+  position: absolute;
+  top: -150%;
+  left: -150%;
+  width: 300%;
+  height: 300%;
+  background: linear-gradient(
+    45deg,
+    transparent 45%,
+    rgba(255, 255, 255, 0.12) 50%,
+    transparent 55%
+  );
+  transform: rotate(45deg);
+  animation: platinum-sweep 7s ease-in-out infinite;
+  pointer-events: none;
+  z-index: 5;
+}
+
+@keyframes platinum-sweep {
+  0% { transform: translate(-30%, -30%) rotate(45deg); }
+  30%, 100% { transform: translate(30%, 30%) rotate(45deg); }
+}
+
+/* 黃金學習者徽章 (Gold Learner Badge) */
+.gold-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  background: linear-gradient(135deg, #ffe082 0%, #ffb300 50%, #ffa000 100%);
+  border: 1px solid rgba(255, 215, 0, 0.5);
+  color: #5d4037;
+  font-weight: 700;
+  font-size: 0.72rem;
+  padding: 2px 8px;
+  border-radius: 20px;
+  box-shadow: 
+    0 0 10px rgba(255, 179, 0, 0.4),
+    inset 0 1px 0 rgba(255, 255, 255, 0.4);
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.3);
+  margin-right: 8px;
+  animation: gold-glow 2s infinite alternate;
+  vertical-align: middle;
+}
+
+.gold-badge-icon {
+  font-size: 0.8rem;
+  filter: drop-shadow(0 1px 1px rgba(0,0,0,0.2));
+  animation: gold-crown-float 1.5s ease-in-out infinite alternate;
+}
+
+@keyframes gold-glow {
+  0% { box-shadow: 0 0 5px rgba(255, 179, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.4); }
+  100% { box-shadow: 0 0 15px rgba(255, 179, 0, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.4); }
+}
+
+@keyframes gold-crown-float {
+  0% { transform: translateY(0) rotate(-5deg); }
+  100% { transform: translateY(-1.5px) rotate(5deg); }
+}
+
+/* ================================================================
+   擴充主題與外觀獎勵配色系統 (精緻化設計，無過多 Emoji)
+   ================================================================ */
+
+/* 🌊 深海幽光 (Abyss) */
+body[data-theme="abyss"] {
+  --bg:          #050b14;
+  --bg-card:     #0c1424;
+  --bg-hover:    #122038;
+  --border:      #1b2d4c;
+  --border-focus:#00d2ff;
+  --accent:      #00d2ff;
+  --accent-dim:  #007a99;
+  --accent-glow: rgba(0, 210, 255, 0.15);
+  --orb-glow-1:  #00d2ff;
+  --orb-glow-2:  #0055ff;
+  --text-primary:   #e1ecf7;
+  --text-secondary: #8da4be;
+  --text-muted:     #4d698c;
+  
+  --card-face-bg: rgba(12, 20, 36, 0.7);
+  --card-back-bg: rgba(12, 20, 36, 0.9);
+  --card-border:  rgba(0, 210, 255, 0.2);
+  --front-word-gradient: linear-gradient(135deg, #e1ecf7 20%, #00d2ff 100%);
+  --accent-glow-color: rgba(0, 210, 255, 0.5);
+  --card-shadow: 0 15px 40px rgba(0, 85, 255, 0.1);
+  background: #02050a;
+}
+
+/* 🌋 熔岩煉獄 (Lava) */
+body[data-theme="lava"] {
+  --bg:          #0f0707;
+  --bg-card:     #211010;
+  --bg-hover:    #2e1616;
+  --border:      #3d1f1f;
+  --border-focus:#ff5722;
+  --accent:      #ff5722;
+  --accent-dim:  #b73a11;
+  --accent-glow: rgba(255, 87, 34, 0.15);
+  --orb-glow-1:  #ff5722;
+  --orb-glow-2:  #ff9800;
+  --text-primary:   #fcebe6;
+  --text-secondary: #c29d93;
+  --text-muted:     #7a5a51;
+  
+  --card-face-bg: rgba(33, 16, 16, 0.7);
+  --card-back-bg: rgba(33, 16, 16, 0.9);
+  --card-border:  rgba(255, 87, 34, 0.25);
+  --front-word-gradient: linear-gradient(135deg, #fcebe6 20%, #ff5722 100%);
+  --accent-glow-color: rgba(255, 87, 34, 0.5);
+  --card-shadow: 0 15px 40px rgba(255, 87, 34, 0.12);
+  background: #070303;
+}
+
+/* 👑 璀璨黃金 (Gold) */
+body[data-theme="gold"] {
+  --bg:          #120e09;
+  --bg-card:     #211a10;
+  --bg-hover:    #2d2315;
+  --border:      #3b2f1c;
+  --border-focus:#ffd700;
+  --accent:      #ffd700;
+  --accent-dim:  #b89000;
+  --accent-glow: rgba(255, 215, 0, 0.15);
+  --orb-glow-1:  #ffd700;
+  --orb-glow-2:  #ff8c00;
+  --text-primary:   #fcf6e8;
+  --text-secondary: #c7b599;
+  --text-muted:     #80705a;
+  
+  --card-face-bg: rgba(33, 26, 16, 0.7);
+  --card-back-bg: rgba(33, 26, 16, 0.9);
+  --card-border:  rgba(255, 215, 0, 0.25);
+  --front-word-gradient: linear-gradient(135deg, #fcf6e8 20%, #ffd700 100%);
+  --accent-glow-color: rgba(255, 215, 0, 0.5);
+  --card-shadow: 0 15px 40px rgba(255, 215, 0, 0.12);
+  background: #0a0805;
+}
+
+/* 💎 鑽石星辰 (Diamond) */
+body[data-theme="diamond"] {
+  --bg:          #0e1216;
+  --bg-card:     #161c24;
+  --bg-hover:    #202934;
+  --border:      #2c3947;
+  --border-focus:#b9f2ff;
+  --accent:      #b9f2ff;
+  --accent-dim:  #689ea8;
+  --accent-glow: rgba(185, 242, 255, 0.15);
+  --orb-glow-1:  #b9f2ff;
+  --orb-glow-2:  #00e5ff;
+  --text-primary:   #ebf8fc;
+  --text-secondary: #9db2ba;
+  --text-muted:     #63757d;
+  
+  --card-face-bg: rgba(22, 28, 36, 0.7);
+  --card-back-bg: rgba(22, 28, 36, 0.9);
+  --card-border:  rgba(185, 242, 255, 0.25);
+  --front-word-gradient: linear-gradient(135deg, #ebf8fc 20%, #b9f2ff 100%);
+  --accent-glow-color: rgba(185, 242, 255, 0.5);
+  --card-shadow: 0 15px 40px rgba(185, 242, 255, 0.1);
+  background: #080b0d;
+}
+
+/* ── 新卡片流光邊框 (Card Border Styles) ────────────────────────── */
+
+/* 黃金熔岩 (Golden Lava) */
+.card-border-golden-lava {
+  border: 2px solid transparent !important;
+  background: 
+    linear-gradient(var(--bg-card), var(--bg-card)) padding-box,
+    linear-gradient(135deg, #ffd700 0%, #ff5722 50%, #ffd700 100%) border-box !important;
+  background-size: 200% 200% !important;
+  animation: shimmer-effect 6s linear infinite !important;
+  box-shadow: 0 0 20px rgba(255, 87, 34, 0.2), 0 8px 32px 0 rgba(0, 0, 0, 0.5) !important;
+}
+
+/* 炫彩霓虹 (Rainbow Neon) */
+.card-border-rainbow-neon {
+  border: 2px solid transparent !important;
+  background: 
+    linear-gradient(var(--bg-card), var(--bg-card)) padding-box,
+    linear-gradient(135deg, #ff007f 0%, #00e5ff 33%, #ffd700 66%, #ff007f 100%) border-box !important;
+  background-size: 200% 200% !important;
+  animation: shimmer-effect 5s linear infinite !important;
+  box-shadow: 0 0 20px rgba(0, 229, 255, 0.2), 0 8px 32px 0 rgba(0, 0, 0, 0.5) !important;
+}
+
+/* 虛空暗影 (Shadow Void) */
+.card-border-shadow-void {
+  border: 2px solid transparent !important;
+  background: 
+    linear-gradient(var(--bg-card), var(--bg-card)) padding-box,
+    linear-gradient(135deg, #2c1a4d 0%, #0d0614 50%, #2c1a4d 100%) border-box !important;
+  background-size: 200% 200% !important;
+  animation: shimmer-effect 8s linear infinite !important;
+  box-shadow: 0 0 30px rgba(44, 26, 77, 0.6), 0 8px 32px 0 rgba(0, 0, 0, 0.6) !important;
+}
+
+/* 翡翠微光 (Emerald Glow) */
+.card-border-emerald-glow {
+  border: 2px solid transparent !important;
+  background: 
+    linear-gradient(var(--bg-card), var(--bg-card)) padding-box,
+    linear-gradient(135deg, #00e676 0%, #00793b 50%, #00e676 100%) border-box !important;
+  background-size: 200% 200% !important;
+  animation: shimmer-effect 7s linear infinite !important;
+  box-shadow: 0 0 20px rgba(0, 230, 118, 0.2), 0 8px 32px 0 rgba(0, 0, 0, 0.5) !important;
+}
+
+@keyframes shimmer-effect {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+/* ── 新稱號徽章樣式 (精緻扁平風，無 Emoji 多餘色塊) ────────────────────────── */
+.custom-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-weight: 700;
+  font-size: 0.72rem;
+  padding: 3px 10px;
+  border-radius: 12px;
+  margin-right: 8px;
+  vertical-align: middle;
+  border: 1px solid transparent;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+}
+
+.custom-badge .badge-icon {
+  font-size: 0.8rem;
+}
+
+/* 稱號特定細部樣式 */
+.badge-sprout {
+  background: rgba(139, 195, 74, 0.12);
+  color: #9ccc65;
+  border-color: rgba(139, 195, 74, 0.3);
+}
+.badge-novice {
+  background: rgba(0, 188, 212, 0.12);
+  color: #26c6da;
+  border-color: rgba(0, 188, 212, 0.3);
+}
+.badge-iron {
+  background: rgba(144, 164, 174, 0.15);
+  color: #b0bec5;
+  border-color: rgba(144, 164, 174, 0.35);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.05);
+}
+.badge-star {
+  background: rgba(255, 235, 59, 0.1);
+  color: #fdd835;
+  border-color: rgba(255, 235, 59, 0.25);
+}
+.badge-walker {
+  background: rgba(244, 81, 30, 0.1);
+  color: #ff7043;
+  border-color: rgba(244, 81, 30, 0.25);
+}
+.badge-start {
+  background: rgba(156, 39, 176, 0.12);
+  color: #ba68c8;
+  border-color: rgba(156, 39, 176, 0.3);
+}
+.badge-time {
+  background: rgba(3, 169, 244, 0.12);
+  color: #4fc3f7;
+  border-color: rgba(3, 169, 244, 0.3);
+}
+.badge-wisdom {
+  background: rgba(255, 152, 0, 0.12);
+  color: #ffb74d;
+  border-color: rgba(255, 152, 0, 0.3);
+}
+.badge-master {
+  background: linear-gradient(135deg, rgba(255,215,0,0.15) 0%, rgba(255,140,0,0.15) 100%);
+  color: #ffd700;
+  border-color: rgba(255, 215, 0, 0.4);
+  box-shadow: 0 0 12px rgba(255, 215, 0, 0.2);
+  animation: badge-pulse 2s infinite alternate;
+}
+.badge-sage {
+  background: rgba(224, 64, 251, 0.12);
+  color: #ea80fc;
+  border-color: rgba(224, 64, 251, 0.35);
+  box-shadow: 0 0 10px rgba(224, 64, 251, 0.15);
+}
+.badge-survivor {
+  background: rgba(229, 57, 53, 0.12);
+  color: #ef5350;
+  border-color: rgba(229, 57, 53, 0.35);
+}
+.badge-explorer {
+  background: rgba(30, 136, 229, 0.12);
+  color: #42a5f5;
+  border-color: rgba(30, 136, 229, 0.3);
+}
+
+@keyframes badge-pulse {
+  0% { box-shadow: 0 0 6px rgba(255, 215, 0, 0.1); }
+  100% { box-shadow: 0 0 14px rgba(255, 215, 0, 0.35); }
+}
 

@@ -1,0 +1,315 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}挑戰與特訓中心 — Lexis{% endblock %}
+
+{% block extra_head %}
+<style>
+  .select-container {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 20px 10px;
+  }
+
+  .select-header {
+    text-align: center;
+    margin-bottom: 40px;
+  }
+
+  .select-title {
+    font-size: 2.6rem;
+    font-weight: 900;
+    letter-spacing: -0.03em;
+    background: linear-gradient(130deg, #fff 20%, var(--accent) 70%, #a8a4ff 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    margin-bottom: 0;
+  }
+
+  .select-subtitle {
+    color: var(--text-secondary);
+    font-size: 1rem;
+    max-width: 600px;
+    margin: 0 auto;
+    line-height: 1.5;
+  }
+
+  /* 模式卡片網格 */
+  .mode-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px;
+    margin-bottom: 40px;
+  }
+
+  @media (max-width: 900px) {
+    .mode-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  @media (max-width: 600px) {
+    .mode-grid {
+      grid-template-columns: 1fr;
+    }
+    .select-title {
+      font-size: 1.8rem;
+    }
+  }
+
+  /* 模式卡片 */
+  .mode-card {
+    position: relative;
+    border-radius: 20px;
+    background: rgba(30, 30, 40, 0.55);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    padding: 36px 28px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    min-height: 400px;
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3), inset 0 1px 2px rgba(255, 255, 255, 0.05);
+    transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    overflow: hidden;
+    cursor: pointer;
+  }
+
+  /* 卡片發光背景裝飾 */
+  .mode-card::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(circle, var(--glow-color, rgba(108, 99, 255, 0.2)) 0%, transparent 60%);
+    opacity: 0.12;
+    transition: opacity 0.4s ease;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .mode-card:hover {
+    transform: translateY(-8px) scale(1.01);
+    border-color: var(--accent-color);
+    box-shadow: 0 20px 45px rgba(0, 0, 0, 0.45), 0 0 25px var(--accent-glow-alpha);
+  }
+
+  .mode-card:hover::before {
+    opacity: 0.25;
+  }
+
+  .mode-card-content {
+    position: relative;
+    z-index: 1;
+  }
+
+  /* 像素圖示 */
+  .mode-pixel-icon {
+    width: 64px;
+    height: 64px;
+    image-rendering: pixelated;
+    margin-bottom: 20px;
+    display: inline-block;
+    filter: drop-shadow(0 0 8px var(--accent-glow-alpha));
+    transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), filter 0.4s ease;
+  }
+
+  .mode-card:hover .mode-pixel-icon {
+    transform: scale(1.22) rotate(6deg);
+    filter: drop-shadow(0 0 15px var(--accent-color));
+  }
+
+  /* 標題與標籤 */
+  .mode-title-wrap {
+    margin-bottom: 14px;
+  }
+
+  .mode-title {
+    font-size: 1.45rem;
+    font-weight: 800;
+    color: #fff;
+    margin: 0;
+    letter-spacing: 0.5px;
+    text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+  }
+
+  .mode-count {
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    color: var(--accent-color);
+    background: var(--accent-bg-alpha);
+    border: 1px solid var(--accent-border-alpha);
+    padding: 3px 10px;
+    border-radius: 20px;
+    display: inline-block;
+    margin-top: 8px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+  }
+
+  .mode-desc {
+    font-size: 0.88rem;
+    color: var(--text-secondary);
+    line-height: 1.6;
+    margin-bottom: 24px;
+  }
+
+  /* 按鈕 */
+  .mode-btn {
+    position: relative;
+    z-index: 1;
+    width: 100%;
+    padding: 13px;
+    border-radius: 12px;
+    border: 1px solid var(--accent-border-alpha);
+    background: linear-gradient(135deg, rgba(255,255,255,0.02) 0%, rgba(255,255,255,0.06) 100%);
+    color: var(--text-primary);
+    font-weight: 800;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.25);
+  }
+
+  .btn-play-icon {
+    width: 10px;
+    height: 10px;
+    fill: currentColor;
+    display: inline-block;
+    transition: transform 0.2s ease;
+  }
+
+  .mode-btn:hover .btn-play-icon {
+    transform: translateX(3px);
+  }
+
+  .mode-card:hover .mode-btn {
+    background: linear-gradient(135deg, var(--accent-color) 0%, var(--accent-border-alpha) 100%);
+    color: #fff;
+    border-color: var(--accent-color);
+    box-shadow: 0 6px 20px var(--accent-glow-alpha);
+    transform: translateY(-1px);
+  }
+
+  /* 呼吸發光霓虹線條 */
+  .neon-line {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    height: 3px;
+    width: 0%;
+    background: var(--accent-color);
+    box-shadow: 0 0 10px var(--accent-color);
+    transition: width 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+  }
+
+  .mode-card:hover .neon-line {
+    width: 100%;
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="select-container">
+  
+  <div class="select-header">
+    <!-- 頂部裝飾線 -->
+    <div style="display: flex; align-items: center; justify-content: center; gap: 16px; margin-bottom: 20px;">
+      <div style="flex: 1; max-width: 80px; height: 1px; background: linear-gradient(90deg, transparent, rgba(255,255,255,0.12));"></div>
+      <span style="font-size: 0.72rem; font-weight: 800; letter-spacing: 0.18em; color: var(--accent); text-transform: uppercase; opacity: 0.8;">Training Center</span>
+      <div style="flex: 1; max-width: 80px; height: 1px; background: linear-gradient(90deg, rgba(255,255,255,0.12), transparent);"></div>
+    </div>
+
+    <h1 class="select-title">挑戰與特訓中心</h1>
+
+    <!-- 規則說明卡 -->
+    <div style="display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; margin-top: 18px; max-width: 720px; margin-left: auto; margin-right: auto;">
+      <div style="display: flex; align-items: center; gap: 8px; padding: 8px 16px; background: rgba(108, 99, 255, 0.06); border: 1px solid rgba(108, 99, 255, 0.18); border-radius: 30px; font-size: 0.8rem; color: var(--text-secondary); white-space: nowrap;">
+        <span style="color: #a8a4ff;">📖</span> 溫故 &amp; 弱點特訓 — 無時間壓力，答錯重排隊尾
+      </div>
+      <div style="display: flex; align-items: center; gap: 8px; padding: 8px 16px; background: rgba(0, 242, 254, 0.06); border: 1px solid rgba(0, 242, 254, 0.18); border-radius: 30px; font-size: 0.8rem; color: var(--text-secondary); white-space: nowrap;">
+        <span style="color: #00f2fe;">⚡</span> 生存戰 — 5 Hearts 限時 6 秒，連 5 題回血
+      </div>
+    </div>
+  </div>
+
+  <div class="mode-grid">
+    
+    <!-- 今日溫故特訓 -->
+    <div class="mode-card" 
+         style="--accent-color: #6C63FF; --glow-color: rgba(108, 99, 255, 0.2); --accent-bg-alpha: rgba(108, 99, 255, 0.05); --accent-border-alpha: rgba(108, 99, 255, 0.2); --accent-glow-alpha: rgba(108, 99, 255, 0.35);"
+         onclick="window.location.href='{% url 'vocab:study_challenge' %}?mode=today'">
+      <div class="mode-card-content">
+        <img src="{% static 'images/pixel_book.png' %}" class="mode-pixel-icon" alt="Book" />
+        <div class="mode-title-wrap">
+          <h3 class="mode-title">今日溫故特訓</h3>
+          <span class="mode-count">今日複習：{{ today_count }} 字</span>
+        </div>
+        <p class="mode-desc">
+          從今日複習紀錄中<strong style="color:#a8a4ff;">隨機抽取最多 10 題</strong>強化特訓。答錯單字重新排隊，直到全數答對通關。
+        </p>
+
+      </div>
+      <div>
+        <button class="mode-btn">開始特訓 <svg class="btn-play-icon" viewBox="0 0 24 24"><polygon points="6 3 20 12 6 21 6 3"/></svg></button>
+      </div>
+      <div class="neon-line"></div>
+    </div>
+
+    <!-- 弱點/星標特訓 -->
+    <div class="mode-card" 
+         style="--accent-color: #FF8D1A; --glow-color: rgba(255, 141, 26, 0.2); --accent-bg-alpha: rgba(255, 141, 26, 0.05); --accent-border-alpha: rgba(255, 141, 26, 0.2); --accent-glow-alpha: rgba(255, 141, 26, 0.35);"
+         onclick="window.location.href='{% url 'vocab:study_challenge' %}?mode=starred'">
+      <div class="mode-card-content">
+        <img src="{% static 'images/pixel_star.png' %}" class="mode-pixel-icon" alt="Star" />
+        <div class="mode-title-wrap">
+          <h3 class="mode-title">弱點/星標特訓</h3>
+          <span class="mode-count">弱點庫：{{ starred_count }} 字</span>
+        </div>
+        <p class="mode-desc">
+          專攻「生疏」與「學習中」的難背詞彙。每次從弱點庫<strong style="color:#ffb266;">隨機抽取 25 題</strong>進行集中特訓，多輪練習逐步清零弱點。
+        </p>
+
+      </div>
+      <div>
+        <button class="mode-btn">開始特訓 <svg class="btn-play-icon" viewBox="0 0 24 24"><polygon points="6 3 20 12 6 21 6 3"/></svg></button>
+      </div>
+      <div class="neon-line"></div>
+    </div>
+
+    <!-- 隨機字庫生存戰 -->
+    <div class="mode-card" 
+         style="--accent-color: #00F2FE; --glow-color: rgba(0, 242, 254, 0.2); --accent-bg-alpha: rgba(0, 242, 254, 0.05); --accent-border-alpha: rgba(0, 242, 254, 0.2); --accent-glow-alpha: rgba(0, 242, 254, 0.35);"
+         onclick="window.location.href='{% url 'vocab:study_challenge' %}?mode=random'">
+      <div class="mode-card-content">
+        <img src="{% static 'images/pixel_lightning.png' %}" class="mode-pixel-icon" alt="Lightning" />
+        <div class="mode-title-wrap">
+          <h3 class="mode-title">隨機字庫生存戰</h3>
+          <span class="mode-count">全字庫：{{ total_official_count }} 字</span>
+        </div>
+        <p class="mode-desc">
+          測試您的真材實料！擁有 5 點生命值（Hearts），每題限時 6 秒作答，答錯或超時扣除生命值，連續答對 5 題可回復 1 點生命。生命值歸零則對決結束。
+        </p>
+      </div>
+      <div>
+        <button class="mode-btn">開火對決 <svg class="btn-play-icon" viewBox="0 0 24 24"><polygon points="6 3 20 12 6 21 6 3"/></svg></button>
+      </div>
+      <div class="neon-line"></div>
+    </div>
+
+  </div>
+
+  <div style="text-align: center;">
+    <a href="{% url 'vocab:dashboard' %}" class="btn btn-ghost" style="padding: 10px 30px;">
+      ← 返回首頁
+    </a>
+  </div>
+
+</div>
+{% endblock %}

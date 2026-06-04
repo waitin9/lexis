@@ -44,3 +44,9 @@ venv.bak/
 .vscode/
 *.swp
 *.swo
+
+# Local scratch and logs
+scratch/
+offline_cleanup_report.txt
+words_to_delete.json
+scratch_views_history.txt

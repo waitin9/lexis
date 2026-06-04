@@ -1,0 +1,1424 @@
+
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>成就殿堂 — Lexis</title>
+  <meta name="description" content="Lexis 英文單字學習系統，SM-2 間隔重複，幫你真正記住單字。" />
+  <link rel="stylesheet" href="/static/css/main.css" />
+  
+<style>
+  .achievements-header {
+    background: linear-gradient(135deg, rgba(22, 22, 26, 0.75) 0%, rgba(108, 99, 255, 0.08) 100%);
+    border: 1px solid rgba(108, 99, 255, 0.2);
+    border-radius: var(--radius-lg);
+    padding: 24px 30px;
+    margin-bottom: 30px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    box-shadow: var(--shadow-card);
+  }
+
+  .achievement-progress-text {
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: #a8a4ff;
+    letter-spacing: 0.02em;
+    margin-bottom: 6px;
+  }
+
+  .achievement-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 24px;
+    margin-bottom: 40px;
+  }
+
+  .achievement-card {
+    background: rgba(22, 22, 26, 0.7);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 24px;
+    display: flex;
+    gap: 16px;
+    position: relative;
+    overflow: hidden;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    transition: transform 0.22s ease, border-color 0.22s ease, box-shadow 0.22s ease;
+  }
+
+  .achievement-card:hover {
+    transform: translateY(-4px);
+    border-color: rgba(108, 99, 255, 0.35);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+  }
+
+  .achievement-card.locked {
+    opacity: 0.65;
+    border-color: rgba(255, 255, 255, 0.03);
+    background: rgba(18, 18, 22, 0.5);
+  }
+
+  .achievement-card.locked:hover {
+    border-color: rgba(255, 255, 255, 0.1);
+  }
+
+  .achievement-icon-wrap {
+    width: 52px;
+    height: 52px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.6rem;
+    flex-shrink: 0;
+    box-shadow: inset 0 2px 5px rgba(255, 255, 255, 0.05);
+    transition: all var(--transition);
+  }
+
+  .achievement-card:not(.locked) .achievement-icon-wrap {
+    background: rgba(108, 99, 255, 0.12);
+    border-color: rgba(108, 99, 255, 0.4);
+    box-shadow: 0 0 15px rgba(108, 99, 255, 0.2);
+    animation: pulse-glow 2.5s infinite alternate;
+  }
+
+  @keyframes pulse-glow {
+    0% { box-shadow: 0 0 8px rgba(108, 99, 255, 0.15); }
+    100% { box-shadow: 0 0 18px rgba(108, 99, 255, 0.35); }
+  }
+
+  .achievement-info {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .achievement-title {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-bottom: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .achievement-card.locked .achievement-title {
+    color: var(--text-secondary);
+  }
+
+  .achievement-desc {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    line-height: 1.45;
+    margin-bottom: 12px;
+  }
+
+  .achievement-reward-tag {
+    font-size: 0.72rem;
+    font-weight: 600;
+    padding: 3px 8px;
+    border-radius: 6px;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+  }
+
+  .achievement-card.locked .achievement-reward-tag {
+    background: rgba(255,255,255,0.03);
+    color: var(--text-muted);
+    border: 1px solid rgba(255,255,255,0.05);
+  }
+
+  .achievement-card:not(.locked) .achievement-reward-tag {
+    background: rgba(76, 175, 130, 0.1);
+    color: var(--green);
+    border: 1px solid rgba(76, 175, 130, 0.25);
+  }
+
+  /* 主題預覽縮圖 */
+  .theme-preview-card {
+    width: 90px;
+    height: 54px;
+    border-radius: var(--radius-sm);
+    border: 1px solid rgba(255,255,255,0.08);
+    position: relative;
+    overflow: hidden;
+    margin-top: 10px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.4);
+    display: block;
+  }
+  
+  .theme-preview-card::before {
+    content: '';
+    position: absolute;
+    width: 46px;
+    height: 46px;
+    border-radius: 50%;
+    filter: blur(10px);
+  }
+
+  .aurora-preview {
+    background: #0d1e13;
+  }
+  .aurora-preview::before {
+    background: #4CAF50;
+    top: -12px; right: -12px;
+  }
+
+  .cherry-preview {
+    background: #1b1618;
+  }
+  .cherry-preview::before {
+    background: #FF8DA1;
+    bottom: -12px; left: -12px;
+  }
+
+  .cyberpunk-preview {
+    background: #18181c;
+  }
+  .cyberpunk-preview::before {
+    background: #FF007F;
+    top: -12px; right: -12px;
+  }
+  .cyberpunk-preview::after {
+    content: '';
+    position: absolute;
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    filter: blur(7px);
+    background: #FFEB3B;
+    bottom: -6px; left: -6px;
+  }
+
+  .zen-preview {
+    background: #111a14;
+  }
+  .zen-preview::before {
+    background: #8BC34A;
+    top: -12px; left: -12px;
+  }
+  .zen-preview::after {
+    content: '';
+    position: absolute;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    filter: blur(8px);
+    background: #CDDC39;
+    bottom: -12px; right: -12px;
+  }
+
+  /* 非主題類的通用預覽樣式 */
+  .preview-generic {
+    background: rgba(255,255,255,0.02);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.1rem;
+    color: rgba(255,255,255,0.15);
+  }
+  
+  .achievement-card:not(.locked) .preview-generic {
+    color: var(--accent);
+    border-color: rgba(108,99,255,0.2);
+  }
+
+  /* 進度條 */
+  .progress-container {
+    width: 100%;
+    background: rgba(255,255,255,0.04);
+    height: 5px;
+    border-radius: 3px;
+    overflow: hidden;
+    margin-top: 8px;
+    margin-bottom: 8px;
+  }
+
+  .progress-bar-fill {
+    height: 100%;
+    background: var(--accent);
+    border-radius: 3px;
+    transition: width 0.3s ease;
+  }
+
+  .achievement-card:not(.locked) .progress-bar-fill {
+    background: var(--green);
+  }
+
+  .progress-numbers {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.72rem;
+    color: var(--text-muted);
+  }
+
+  /* ── Tabs Styling ────────────────────────────────────────── */
+  .achievement-tabs {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 28px;
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 8px;
+    overflow-x: auto;
+  }
+  .tab-btn {
+    background: none;
+    border: none;
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+    font-weight: 500;
+    padding: 8px 16px;
+    cursor: pointer;
+    border-radius: 6px;
+    transition: all 0.2s ease;
+    border: 1px solid transparent;
+    white-space: nowrap;
+  }
+  .tab-btn:hover {
+    color: var(--text-primary);
+    background: var(--bg-hover);
+  }
+  .tab-btn.active {
+    color: var(--accent);
+    background: var(--accent-glow);
+    border-color: rgba(108, 99, 255, 0.2);
+    font-weight: 600;
+  }
+</style>
+
+  <!-- 引入 Hotwire Turbo 實現 SPA 級秒開與無閃爍體驗 -->
+  <script src="https://unpkg.com/@hotwired/turbo@7.3.0/dist/turbo.es2017-umd.js"></script>
+  
+  <style>
+    /* 閃爍星光背景 */
+    .stars-layer {
+      position: fixed;
+      top: 0; left: 0; width: 100%; height: 100%;
+      pointer-events: none;
+      z-index: -1;
+      opacity: 0.55;
+    }
+    .star {
+      position: absolute;
+      width: 2px;
+      height: 2px;
+      background: #fff;
+      border-radius: 50%;
+      box-shadow: 0 0 3px #fff;
+      animation: star-blink 3.5s infinite ease-in-out;
+    }
+    @keyframes star-blink {
+      0%, 100% { opacity: 0.15; transform: scale(0.8); }
+      50% { opacity: 1; transform: scale(1.4); box-shadow: 0 0 6px #fff; }
+    }
+  </style>
+</head>
+<body data-theme="deep-space">
+  <!-- 飄浮光暈與星光背景 (data-turbo-permanent 確保跨頁面切換時動畫不中斷、不重置) -->
+  <div id="orb-permanent-1" class="orb orb-1" data-turbo-permanent></div>
+  <div id="orb-permanent-2" class="orb orb-2" data-turbo-permanent></div>
+  
+  <canvas id="ambient-effect-canvas" data-turbo-permanent data-effect="none" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: -2;"></canvas>
+
+
+<div class="app-layout">
+
+  <!-- 頂部導覽 -->
+  <header class="topbar">
+    <span class="topbar-brand">Le<span>x</span>is</span>
+    
+    
+    <form action="/words/" method="get" class="global-search-form" style="flex: 1; max-width: 400px; margin: 0 20px;">
+      <input type="text" name="q" placeholder="🔍 搜尋或加入新單字..." class="form-control" style="border-radius: 20px; padding: 6px 16px; font-size: 0.9rem; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: #fff;" autocomplete="off" />
+    </form>
+    
+
+    <div class="topbar-actions">
+      
+        
+        <span class="text-muted text-sm">demo</span>
+        <form method="post" action="/accounts/logout/" style="margin:0">
+          
+          <button type="submit" class="btn btn-ghost btn-sm">登出</button>
+        </form>
+      
+    </div>
+  </header>
+
+  <!-- 側邊欄 -->
+  
+  <nav class="sidebar">
+    <span class="sidebar-section">學習</span>
+    <a href="/dashboard/"
+       class="sidebar-link ">
+      <span class="icon">⊞</span> 主頁
+    </a>
+    <a href="/discover/"
+       class="sidebar-link ">
+      <span class="icon">✦</span> 探索新詞
+    </a>
+    <a href="/study/" data-turbo="false"
+       class="sidebar-link ">
+      <span class="icon">▶</span> 開始複習
+    </a>
+    <a href="/study/challenge/select/"
+       class="sidebar-link ">
+      <img src="/static/images/pixel_lightning.png?v=7" class="sidebar-pixel-icon" /> 極速挑戰
+    </a>
+
+    <span class="sidebar-section">字庫</span>
+    <a href="/my/"
+       class="sidebar-link ">
+      <img src="/static/images/pixel_star.png?v=7" class="sidebar-pixel-icon" /> 我的字庫
+    </a>
+    <a href="/words/"
+       class="sidebar-link ">
+      <img src="/static/images/pixel_book.png?v=7" class="sidebar-pixel-icon" /> 全部單字
+    </a>
+    <a href="/library/" class="sidebar-link ">
+      <span class="icon">▩</span> 字庫大廳
+    </a>
+
+    <span class="sidebar-section">個人化</span>
+    <a href="/achievements/"
+       class="sidebar-link ">
+      <img src="/static/images/pixel_trophy.png?v=7" class="sidebar-pixel-icon" /> 成就殿堂
+    </a>
+    <a href="/settings/"
+       class="sidebar-link ">
+      <img src="/static/images/pixel_gear.png?v=7" class="sidebar-pixel-icon" /> 設定中心
+    </a>
+  </nav>
+  
+
+  <!-- 主要內容 -->
+  <main class="main-content">
+    
+
+    
+<!-- 浮動即時預覽列 -->
+<div id="theme-preview-bar" style="
+  display: none;
+  position: sticky;
+  top: 70px;
+  z-index: 1000;
+  margin-bottom: 20px;
+  background: linear-gradient(90deg, rgba(108, 99, 255, 0.95) 0%, rgba(76, 175, 130, 0.95) 100%);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 12px;
+  padding: 10px 20px;
+  align-items: center;
+  justify-content: space-between;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  color: #fff;
+  font-weight: 600;
+  animation: slideDown-preview 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+">
+  <div style="display: flex; align-items: center; gap: 8px;">
+    <span>正在體驗預覽：<strong id="preview-theme-title" style="text-decoration: underline;">主題名稱</strong> ── 點擊右側可還原。</span>
+  </div>
+  <button id="close-preview-btn" style="
+    background: rgba(255,255,255,0.18);
+    border: 1px solid rgba(255,255,255,0.25);
+    color: #fff;
+    padding: 4px 12px;
+    border-radius: 8px;
+    font-size: 0.8rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  " onmouseover="this.style.background='rgba(255,255,255,0.3)';" onmouseout="this.style.background='rgba(255,255,255,0.18)';">
+    關閉預覽
+  </button>
+</div>
+
+<style>
+@keyframes slideDown-preview {
+  from { transform: translateY(-20px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+</style>
+
+<div class="page-header">
+  <div>
+    <h1 class="page-title creative-glow-title">成就殿堂</h1>
+    <p class="page-subtitle">挑戰自我，累積學習里程碑，解鎖專屬視覺風格！</p>
+  </div>
+</div>
+
+<div class="achievements-header">
+  <div>
+    <div class="achievement-progress-text">成就完成進度：5 / 30 (已精通 10 字)</div>
+    <div style="font-size: 0.88rem; color: var(--text-secondary);">
+      累積單字量：<strong>100</strong> 字 · 當前連續學習：<strong>3</strong> 天
+    </div>
+  </div>
+  <div style="font-size: 2.2rem; font-weight: 800; opacity: 0.85; letter-spacing: -0.05em; color: var(--accent); text-shadow: 0 0 20px var(--accent-glow);">HALL OF FAME</div>
+</div>
+
+<!-- 分頁 Tabs -->
+<div class="achievement-tabs">
+  <button class="tab-btn active" data-tab="all">全部</button>
+  <button class="tab-btn" data-tab="badge">稱號頭銜</button>
+  <button class="tab-btn" data-tab="theme">視覺主題</button>
+  <button class="tab-btn" data-tab="style">卡片邊框</button>
+  <button class="tab-btn" data-tab="effect">背景特效</button>
+</div>
+
+<div class="achievement-grid">
+  
+  <div class="achievement-card locked" data-category="">
+    <div class="achievement-icon-wrap">
+      <img src="/static/images/achievements/.png" style="width: 32px; height: 32px; image-rendering: pixelated;" />
+    </div>
+    <div class="achievement-info">
+      <div class="achievement-title">
+        <span></span>
+        
+        <span style="font-size: 0.75rem; color: var(--text-muted); font-weight: 500;">未解鎖</span>
+        
+      </div>
+      
+      <div class="achievement-desc"></div>
+
+      <!-- 進度條 -->
+      
+      <div class="progress-container">
+        <div class="progress-bar-fill" style="width: %;"></div>
+      </div>
+      <div class="progress-numbers">
+        <span>進度</span>
+        <span> / </span>
+      </div>
+      
+
+      <div style="margin-top: 12px; display: flex; align-items: flex-start; justify-content: space-between; flex-wrap: wrap; gap: 10px;">
+        <div>
+          <div style="font-size: 0.68rem; color: var(--text-muted); margin-bottom: 4px; text-transform: uppercase;">解鎖獎勵</div>
+          <span class="achievement-reward-tag">
+            
+          </span>
+        </div>
+        
+        <!-- 透露主題的長相 preview -->
+        
+      </div>
+    </div>
+  </div>
+
+  <div class="achievement-card locked" data-category="">
+    <div class="achievement-icon-wrap">
+      <img src="/static/images/achievements/.png" style="width: 32px; height: 32px; image-rendering: pixelated;" />
+    </div>
+    <div class="achievement-info">
+      <div class="achievement-title">
+        <span></span>
+        
+        <span style="font-size: 0.75rem; color: var(--text-muted); font-weight: 500;">未解鎖</span>
+        
+      </div>
+      
+      <div class="achievement-desc"></div>
+
+      <!-- 進度條 -->
+      
+      <div class="progress-container">
+        <div class="progress-bar-fill" style="width: %;"></div>
+      </div>
+      <div class="progress-numbers">
+        <span>進度</span>
+        <span> / </span>
+      </div>
+      
+
+      <div style="margin-top: 12px; display: flex; align-items: flex-start; justify-content: space-between; flex-wrap: wrap; gap: 10px;">
+        <div>
+          <div style="font-size: 0.68rem; color: var(--text-muted); margin-bottom: 4px; text-transform: uppercase;">解鎖獎勵</div>
+          <span class="achievement-reward-tag">
+            
+          </span>
+        </div>
+        
+        <!-- 透露主題的長相 preview -->
+        
+      </div>
+    </div>
+  </div>
+
+  <div class="achievement-card locked" data-category="">
+    <div class="achievement-icon-wrap">
+      <img src="/static/images/achievements/.png" style="width: 32px; height: 32px; image-rendering: pixelated;" />
+    </div>
+    <div class="achievement-info">
+      <div class="achievement-title">
+        <span></span>
+        
+        <span style="font-size: 0.75rem; color: var(--text-muted); font-weight: 500;">未解鎖</span>
+        
+      </div>
+      
+      <div class="achievement-desc"></div>
+
+      <!-- 進度條 -->
+      
+      <div class="progress-container">
+        <div class="progress-bar-fill" style="width: %;"></div>
+      </div>
+      <div class="progress-numbers">
+        <span>進度</span>
+        <span> / </span>
+      </div>
+      
+
+      <div style="margin-top: 12px; display: flex; align-items: flex-start; justify-content: space-between; flex-wrap: wrap; gap: 10px;">
+        <div>
+          <div style="font-size: 0.68rem; color: var(--text-muted); margin-bottom: 4px; text-transform: uppercase;">解鎖獎勵</div>
+          <span class="achievement-reward-tag">
+            
+          </span>
+        </div>
+        
+        <!-- 透露主題的長相 preview -->
+        
+      </div>
+    </div>
+  </div>
+
+  <div class="achievement-card locked" data-category="">
+    <div class="achievement-icon-wrap">
+      <img src="/static/images/achievements/.png" style="width: 32px; height: 32px; image-rendering: pixelated;" />
+    </div>
+    <div class="achievement-info">
+      <div class="achievement-title">
+        <span></span>
+        
+        <span style="font-size: 0.75rem; color: var(--text-muted); font-weight: 500;">未解鎖</span>
+        
+      </div>
+      
+      <div class="achievement-desc"></div>
+
+      <!-- 進度條 -->
+      
+      <div class="progress-container">
+        <div class="progress-bar-fill" style="width: %;"></div>
+      </div>
+      <div class="progress-numbers">
+        <span>進度</span>
+        <span> / </span>
+      </div>
+      
+
+      <div style="margin-top: 12px; display: flex; align-items: flex-start; justify-content: space-between; flex-wrap: wrap; gap: 10px;">
+        <div>
+          <div style="font-size: 0.68rem; color: var(--text-muted); margin-bottom: 4px; text-transform: uppercase;">解鎖獎勵</div>
+          <span class="achievement-reward-tag">
+            
+          </span>
+        </div>
+        
+        <!-- 透露主題的長相 preview -->
+        
+      </div>
+    </div>
+  </div>
+
+</div>
+
+  </main>
+
+</div>
+
+
+
+<!-- ── Word Quick View Modal (全域) ──────────────────────── -->
+<div id="wqv-overlay" style="
+  display:none; position:fixed; inset:0; z-index:9000;
+  background:rgba(0,0,0,0.65); backdrop-filter:blur(4px); -webkit-backdrop-filter:blur(4px);
+  align-items:center; justify-content:center; padding:20px;
+" onclick="if(event.target===this)closeWordModal()">
+  <div id="wqv-modal" class="theme-modal " style="
+    background:var(--card-face-bg, var(--bg-card)); border:1px solid var(--card-border, var(--border));
+    border-radius:var(--radius-lg, 18px); width:100%; max-width:540px;
+    max-height:82vh; display:flex; flex-direction:column;
+    box-shadow:var(--card-shadow, 0 24px 60px rgba(0,0,0,0.7));
+    backdrop-filter:blur(12px); -webkit-backdrop-filter:blur(12px);
+    animation:wqvIn 0.22s cubic-bezier(0.34,1.56,0.64,1);
+  ">
+    <!-- Header -->
+    <div style="padding:22px 24px 0; flex-shrink:0;">
+      <div style="display:flex; align-items:center; justify-content:space-between; gap:12px; margin-bottom:4px;">
+        <div style="display:flex; align-items:center; flex-wrap:wrap; gap:4px;">
+          <span id="wqv-word" style="font-size:1.9rem; font-weight:800; letter-spacing:-0.04em; color:var(--text-primary); line-height:1.2;"></span>
+          <span id="wqv-phonetic" style="font-family:var(--font-mono); font-size:1rem; color:var(--text-secondary); margin-left:4px; vertical-align:middle;"></span>
+          <button id="wqv-speak-us" class="btn btn-ghost btn-sm" style="display:none; padding: 2px 6px; font-size: 0.72rem; vertical-align:middle; margin-left:6px; height:24px; min-height:auto; border-color:rgba(255,255,255,0.1); background:rgba(255,255,255,0.02);" title="美式發音">US 🔊</button>
+          <button id="wqv-speak-uk" class="btn btn-ghost btn-sm" style="display:none; padding: 2px 6px; font-size: 0.72rem; vertical-align:middle; margin-left:4px; height:24px; min-height:auto; border-color:rgba(255,255,255,0.1); background:rgba(255,255,255,0.02);" title="英式發音">UK 🔊</button>
+        </div>
+        <div style="display:flex; align-items:center; gap:12px; flex-shrink:0;">
+          <div id="wqv-action-row" style="display:inline-flex; align-items:center;"></div>
+          <button onclick="closeWordModal()" style="background:none; border:none; color:var(--text-muted); font-size:1.2rem; cursor:pointer; padding:4px; line-height:1; display:flex; align-items:center; justify-content:center;">✕</button>
+        </div>
+      </div>
+      <div id="wqv-family-row" style="margin-top:12px; margin-bottom:0; display:flex; flex-wrap:wrap; gap:6px; align-items:center;"></div>
+    </div>
+
+    <!-- Divider -->
+    <div style="height:1px; background:var(--border); margin:16px 0 0; flex-shrink:0;"></div>
+
+    <!-- Senses 滾動區 -->
+    <div id="wqv-body" style="overflow-y:auto; flex:1; padding:4px 24px 24px;">
+      <div id="wqv-loading" style="text-align:center; padding:40px; color:var(--text-secondary); font-size:0.9rem;">載入中…</div>
+      <div id="wqv-senses"></div>
+    </div>
+  </div>
+</div>
+
+<style>
+@keyframes wqvIn {
+  from { transform:scale(0.92) translateY(12px); opacity:0; }
+  to   { transform:scale(1) translateY(0); opacity:1; }
+}
+#wqv-overlay { display:none; }
+#wqv-overlay.open { display:flex; }
+.wqv-sense {
+  padding:16px 0;
+  border-bottom:1px solid var(--border);
+}
+.wqv-sense:last-child { border-bottom:none; }
+/* .wqv-pos styling removed to use unified .pos-badge */
+.wqv-translation {
+  font-size:1.05rem; font-weight:600; color:var(--text-primary);
+  margin-bottom:5px; line-height:1.4;
+}
+.wqv-definition {
+  font-size:0.82rem; color:var(--text-secondary);
+  line-height:1.55; margin-bottom:8px;
+}
+.wqv-example {
+  border-left:2px solid var(--accent); padding:8px 12px;
+  border-radius:0 var(--radius-sm, 6px) var(--radius-sm, 6px) 0; background:var(--bg-hover, rgba(255,255,255,0.025));
+  font-size:0.8rem; font-style:italic; color:var(--text-secondary); line-height:1.5;
+}
+.wqv-example-tr { font-style:normal; color:var(--text-muted); font-size:0.75rem; margin-top:3px; }
+.wqv-btn {
+  display:inline-flex; align-items:center; gap:6px;
+  padding:5px 12px; border-radius:var(--radius-sm, 6px); font-size:0.75rem;
+  font-weight:600; cursor:pointer; border:1px solid;
+  transition:all 0.15s ease; text-decoration:none;
+  line-height:1;
+}
+.wqv-btn-add {
+  background:var(--accent-glow, rgba(108,99,255,0.12)); color:var(--accent);
+  border-color:var(--accent);
+}
+.wqv-btn-add:hover { background:var(--accent); color:#fff; }
+.wqv-btn-remove {
+  background:rgba(224,92,92,0.1); color:#e05c5c;
+  border-color:rgba(224,92,92,0.3);
+}
+.wqv-btn-remove:hover { background:rgba(224,92,92,0.2); }
+.wqv-btn-detail {
+  background:var(--bg-hover); color:var(--text-secondary);
+  border-color:var(--border);
+}
+.wqv-btn-detail:hover { background:var(--border); color:var(--text-primary); }
+
+@keyframes toastIn {
+  from { transform: translateY(20px) scale(0.9); opacity: 0; }
+  to   { transform: translateY(0) scale(1); opacity: 1; }
+}
+@keyframes toastOut {
+  from { transform: translateY(0) scale(1); opacity: 1; }
+  to   { transform: translateY(-20px) scale(0.9); opacity: 0; }
+}
+</style>
+
+<script>
+(function() {
+  const userAutoPronounce = false;
+  const userPronunciationPref = "US";
+  let _currentWordId = null;
+  let _currentInVocab = false;
+  let _currentVocabId = null;
+
+  window.speak = function(text, lang = 'en-US') {
+    if ('speechSynthesis' in window) {
+      window.speechSynthesis.cancel();
+      const utterance = new SpeechSynthesisUtterance(text);
+      utterance.lang = lang;
+      utterance.rate = 0.85;
+      window.speechSynthesis.speak(utterance);
+    }
+  };
+
+  window.openWordModal = async function(wordId) {
+    _currentWordId = wordId;
+    const overlay = document.getElementById('wqv-overlay');
+    const loading = document.getElementById('wqv-loading');
+    const sensesDiv = document.getElementById('wqv-senses');
+    const wordSpan = document.getElementById('wqv-word');
+    const phoneticSpan = document.getElementById('wqv-phonetic');
+    const speakUsBtn = document.getElementById('wqv-speak-us');
+    const speakUkBtn = document.getElementById('wqv-speak-uk');
+    const actionRow = document.getElementById('wqv-action-row');
+
+    // Reset
+    wordSpan.textContent = '';
+    phoneticSpan.textContent = '';
+    speakUsBtn.style.display = 'none';
+    speakUsBtn.onclick = null;
+    speakUkBtn.style.display = 'none';
+    speakUkBtn.onclick = null;
+    sensesDiv.innerHTML = '';
+    actionRow.innerHTML = '';
+    const familyRow = document.getElementById('wqv-family-row');
+    if (familyRow) familyRow.innerHTML = '';
+    loading.style.display = 'block';
+    document.getElementById('wqv-body').scrollTop = 0;
+    overlay.style.display = 'flex';
+    document.body.style.overflow = 'hidden';
+
+    try {
+      const resp = await fetch(`/words/${wordId}/json/`);
+      const d = await resp.json();
+      _currentInVocab = d.in_vocab;
+      _currentVocabId = d.vocab_id;
+
+      wordSpan.textContent = d.text;
+      if (d.phonetic) {
+        phoneticSpan.textContent = '/' + d.phonetic + '/';
+        speakUsBtn.style.display = 'inline-flex';
+        speakUsBtn.onclick = () => window.speak(d.text, 'en-US');
+        speakUkBtn.style.display = 'inline-flex';
+        speakUkBtn.onclick = () => window.speak(d.text, 'en-GB');
+        
+        if (userAutoPronounce) {
+          const prefLang = userPronunciationPref === 'UK' ? 'en-GB' : 'en-US';
+          window.speak(d.text, prefLang);
+        }
+      } else {
+        phoneticSpan.textContent = '';
+        speakUsBtn.style.display = 'none';
+        speakUkBtn.style.display = 'none';
+      }
+      loading.style.display = 'none';
+
+      // Word Family
+      const familyRow = document.getElementById('wqv-family-row');
+      familyRow.innerHTML = '';
+      if (d.family && d.family.length > 0) {
+        const label = document.createElement('span');
+        label.style = "font-size:0.75rem; color:var(--text-muted); font-weight:600; margin-right:4px;";
+        label.innerText = "延伸字族：";
+        familyRow.appendChild(label);
+
+        d.family.forEach(f => {
+          const tag = document.createElement('span');
+          tag.className = "wqv-family-tag";
+          tag.style = "cursor:pointer; font-size:0.75rem; background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.08); padding:3px 10px; border-radius:12px; display:inline-flex; align-items:center; gap:5px; color:var(--text-secondary); transition:all 0.15s ease;";
+          let badgeHtml = '';
+          if (f.pos_display) {
+            badgeHtml = `<span class="pos-badge pos-${f.pos_class}" style="font-size:0.6rem; padding:0 4px; margin-bottom:0; height:14px; line-height:14px; border:none; background:rgba(255,255,255,0.05);">${f.pos_display}</span>`;
+          }
+          tag.innerHTML = `${badgeHtml} <strong>${f.text}</strong>`;
+          tag.onclick = () => window.openWordModal(f.id);
+          tag.onmouseover = () => {
+            tag.style.borderColor = 'var(--accent)';
+            tag.style.background = 'rgba(108, 99, 255, 0.05)';
+            tag.style.color = 'var(--accent)';
+          };
+          tag.onmouseout = () => {
+            tag.style.borderColor = 'rgba(255,255,255,0.08)';
+            tag.style.background = 'rgba(255,255,255,0.03)';
+            tag.style.color = 'var(--text-secondary)';
+          };
+          familyRow.appendChild(tag);
+        });
+      }
+
+      // 操作按鈕列
+      _renderActionRow(actionRow, d);
+
+      // Senses
+      d.senses.forEach(s => {
+        const div = document.createElement('div');
+        div.className = 'wqv-sense';
+        let html = '';
+        if (s.part_of_speech && s.part_of_speech !== 'unknown') {
+          html += `<span class="pos-badge pos-${s.pos_class}" style="margin-bottom:7px;">${s.pos_display}</span>`;
+        }
+        html += `<div class="wqv-translation">${s.translation}</div>`;
+        if (s.definition) {
+          html += `<div class="wqv-definition">${s.definition}</div>`;
+        }
+        if (s.examples && s.examples.length > 0) {
+          const ex = s.examples[0];
+          html += `<div class="wqv-example">"${ex.sentence}"`;
+          if (ex.translation) html += `<div class="wqv-example-tr">${ex.translation}</div>`;
+          html += `</div>`;
+        }
+        div.innerHTML = html;
+        sensesDiv.appendChild(div);
+      });
+    } catch(e) {
+      loading.textContent = '載入失敗，請稍後再試。';
+    }
+  };
+
+  function _renderActionRow(actionRow, d) {
+    actionRow.innerHTML = '';
+    if (d.in_vocab) {
+      const rmBtn = document.createElement('button');
+      rmBtn.className = 'wqv-btn wqv-btn-remove';
+      rmBtn.innerHTML = '✕ 移出字庫';
+      rmBtn.onclick = () => _removeFromVocab(d.id, actionRow);
+      actionRow.appendChild(rmBtn);
+    } else {
+      const addBtn = document.createElement('button');
+      addBtn.className = 'wqv-btn wqv-btn-add';
+      addBtn.innerHTML = '＋ 加入學習';
+      addBtn.onclick = () => _addToVocab(d.id, actionRow);
+      actionRow.appendChild(addBtn);
+    }
+  }
+
+  async function _addToVocab(wordId, actionRow) {
+    const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]') 
+                   || document.cookie.match(/csrftoken=([^;]+)/);
+    const csrf = csrfToken ? (csrfToken.value || csrfToken[1]) : '';
+    const fd = new FormData();
+    fd.append('next_url', window.location.pathname);
+    try {
+      const resp = await fetch(`/add/word/${wordId}/`, {
+        method: 'POST',
+        headers: { 'X-CSRFToken': csrf },
+        body: fd,
+      });
+      if (resp.ok || resp.redirected) {
+        _currentInVocab = true;
+        _renderActionRow(actionRow, { id: wordId, in_vocab: true });
+        
+        // 同步更新頁面上相同單字的卡片狀態
+        if (window.updateCardStatus) {
+          window.updateCardStatus(wordId, true);
+        }
+      }
+    } catch(e) {}
+  }
+
+  async function _removeFromVocab(wordId, actionRow) {
+    // 需要 vocab_id，先重抓
+    try {
+      const resp = await fetch(`/words/${wordId}/json/`);
+      const d = await resp.json();
+      if (!d.vocab_id) return;
+      const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]')
+                     || document.cookie.match(/csrftoken=([^;]+)/);
+      const csrf = csrfToken ? (csrfToken.value || csrfToken[1]) : '';
+      const fd = new FormData();
+      fd.append('next_url', window.location.pathname);
+      const r2 = await fetch(`/remove/${d.vocab_id}/`, {
+        method: 'POST',
+        headers: { 'X-CSRFToken': csrf },
+        body: fd,
+      });
+      if (r2.ok || r2.redirected) {
+        _currentInVocab = false;
+        _renderActionRow(actionRow, { id: wordId, in_vocab: false });
+        
+        // 同步更新頁面上相同單字的卡片狀態
+        if (window.updateCardStatus) {
+          window.updateCardStatus(wordId, false);
+        }
+      }
+    } catch(e) {}
+  }
+
+  window.closeWordModal = function() {
+    document.getElementById('wqv-overlay').style.display = 'none';
+    document.body.style.overflow = '';
+    _currentWordId = null;
+  };
+
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape') {
+      closeWordModal();
+      if (window.closeCustomModal) window.closeCustomModal();
+    }
+  });
+
+  // 全域 Toast 顯示函數
+  window.showToast = function(message, type = 'success') {
+    const container = document.getElementById('toast-container');
+    if (!container) return;
+    
+    const toast = document.createElement('div');
+    toast.style = `
+      padding: 12px 20px;
+      border-radius: 10px;
+      font-size: 0.88rem;
+      font-weight: 500;
+      color: #fff;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      animation: toastIn 0.3s ease forwards;
+      border: 1px solid;
+      pointer-events: auto;
+    `;
+    
+    if (type === 'success') {
+      toast.style.background = 'rgba(76, 175, 130, 0.9)';
+      toast.style.borderColor = 'rgba(76, 175, 130, 0.4)';
+      toast.innerHTML = `🟢 ${message}`;
+    } else if (type === 'error') {
+      toast.style.background = 'rgba(224, 92, 92, 0.9)';
+      toast.style.borderColor = 'rgba(224, 92, 92, 0.4)';
+      toast.innerHTML = `🔴 ${message}`;
+    } else {
+      toast.style.background = 'rgba(26, 26, 34, 0.9)';
+      toast.style.borderColor = 'rgba(255, 255, 255, 0.1)';
+      toast.innerHTML = `⚪ ${message}`;
+    }
+    
+    container.appendChild(toast);
+    
+    setTimeout(() => {
+      toast.style.animation = 'toastOut 0.3s ease forwards';
+      setTimeout(() => {
+        toast.remove();
+      }, 300);
+    }, 3000);
+  };
+
+  // 全域卡片狀態同步函數 (同步更新頁面中相同單字的按鈕與標記)
+  window.updateCardStatus = function(wordId, inVocab) {
+    const cards = document.querySelectorAll(`[data-word-id="${wordId}"]`);
+    cards.forEach(card => {
+      // 1. 更新右上角「✓ 已加入」標記容器 (針對一般 word-card)
+      const badgeContainer = card.querySelector('.word-card-badge-container');
+      if (badgeContainer) {
+        if (inVocab) {
+          badgeContainer.innerHTML = `<span style="font-size:0.7rem;color:var(--green);font-weight:600;">✓ 已加入</span>`;
+        } else {
+          badgeContainer.innerHTML = '';
+        }
+      }
+      
+      // 2. 更新下方 word-card-actions / word-action 按鈕或狀態
+      const actionsDiv = card.querySelector('.word-card-actions') || card.querySelector('.word-action');
+      if (actionsDiv) {
+        const isMyVocabPage = window.location.pathname.includes('/my-vocab/');
+        if (isMyVocabPage) {
+          if (!inVocab) {
+            // 移出字庫後，讓卡片優雅消失
+            card.style.transition = 'opacity 0.25s ease, transform 0.25s ease';
+            card.style.opacity = '0';
+            card.style.transform = 'scale(0.95)';
+            setTimeout(() => {
+              card.remove();
+              const grid = document.querySelector('.word-grid');
+              if (grid && grid.children.length === 0) {
+                window.location.reload();
+              }
+            }, 250);
+          }
+        } else {
+          // 官方字庫、字庫大廳分類詳情或探索頁面
+          if (inVocab) {
+            if (card.classList.contains('word-row-card') || actionsDiv.classList.contains('word-action')) {
+              actionsDiv.innerHTML = `<span style="color: var(--green); font-size: 0.82rem; background: rgba(76, 175, 130, 0.1); padding: 4px 10px; border-radius: var(--radius-sm); white-space: nowrap;">✓ 已加入</span>`;
+              card.classList.add('added');
+            } else {
+              // 2.2 針對一般的 word-card，底部 actions 設為空，只用右上角的 badgeContainer 顯示「✓ 已加入」，使卡片維持精緻且乾淨無重複
+              actionsDiv.innerHTML = '';
+            }
+          } else {
+            if (card.classList.contains('word-row-card') || actionsDiv.classList.contains('word-action')) {
+              actionsDiv.innerHTML = `<button type="button" class="btn btn-ghost btn-sm" onclick="ajaxAddToVocab('${wordId}', this, true)">+ 加入</button>`;
+              card.classList.remove('added');
+            } else {
+              actionsDiv.innerHTML = `<button type="button" class="btn btn-primary btn-sm" onclick="ajaxAddToVocab('${wordId}', this, true)">＋ 加入</button>`;
+            }
+          }
+        }
+      }
+    });
+  };
+
+  // 全域卡片點擊處理函數 (支援官方與自建單字)
+  window.handleCardClick = function(cardEl) {
+    const isOfficial = cardEl.getAttribute('data-is-official') === 'true';
+    if (isOfficial) {
+      const wordId = cardEl.getAttribute('data-word-id');
+      openWordModal(wordId);
+    } else {
+      const vocabId = cardEl.getAttribute('data-vocab-id');
+      const wordText = cardEl.getAttribute('data-word-text');
+      const phonetic = cardEl.getAttribute('data-word-phonetic');
+      const pos = cardEl.getAttribute('data-word-pos');
+      const translation = cardEl.getAttribute('data-word-translation');
+      const definition = cardEl.getAttribute('data-word-definition');
+      const example = cardEl.getAttribute('data-word-example');
+      const note = cardEl.getAttribute('data-word-note');
+      showCustomDetail(vocabId, wordText, phonetic, pos, translation, definition, example, note, cardEl);
+    }
+  };
+
+  // 全域異步加入字庫函數
+  window.ajaxAddToVocab = async function(wordId, buttonEl, isSm = true) {
+    const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]') 
+                   || document.cookie.match(/csrftoken=([^;]+)/);
+    const csrf = csrfToken ? (csrfToken.value || csrfToken[1]) : '';
+    
+    try {
+      buttonEl.disabled = true;
+      const originalText = buttonEl.innerText;
+      buttonEl.innerText = '...';
+      
+      const resp = await fetch(`/add/word/${wordId}/?ajax=1`, {
+        method: 'POST',
+        headers: { 'X-CSRFToken': csrf }
+      });
+      const d = await resp.json();
+      
+      if (d.success) {
+        showToast(d.message, 'success');
+        if (window.updateCardStatus) {
+          window.updateCardStatus(wordId, true);
+        }
+      } else {
+        buttonEl.disabled = false;
+        buttonEl.innerText = originalText;
+        showToast(d.message || '加入失敗，請重試。', 'error');
+      }
+    } catch(e) {
+      buttonEl.disabled = false;
+      buttonEl.innerText = '＋ 加入';
+      showToast('網路錯誤，請重試。', 'error');
+    }
+  };
+
+  // --- Canvas 全域背景特效繪製程式 ---
+  (function() {
+    const canvas = document.getElementById('ambient-effect-canvas');
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    let animationFrameId = null;
+    let particles = [];
+    let currentEffect = 'none';
+
+    function resizeCanvas() {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    }
+    window.addEventListener('resize', resizeCanvas);
+    resizeCanvas();
+
+    function initEffect(effect) {
+      currentEffect = effect;
+      particles = [];
+      if (effect === 'meteor') {
+        for (let i = 0; i < 45; i++) {
+          particles.push({
+            x: Math.random() * canvas.width,
+            y: Math.random() * canvas.height,
+            size: Math.random() * 1.5 + 0.5,
+            alpha: Math.random(),
+            speed: Math.random() * 0.01 + 0.005,
+            type: 'star'
+          });
+        }
+        particles.push({ type: 'meteor_timer', next: Date.now() + 1000 });
+      } else if (effect === 'cherry') {
+        for (let i = 0; i < 20; i++) {
+          particles.push({
+            x: Math.random() * canvas.width,
+            y: Math.random() * -canvas.height,
+            r: Math.random() * 4 + 3,
+            d: Math.random() * canvas.width,
+            alpha: Math.random() * 0.4 + 0.3,
+            speedY: Math.random() * 1 + 0.5,
+            speedX: Math.random() * 0.5 - 0.25,
+            angle: Math.random() * 360,
+            spin: Math.random() * 2 - 1,
+            type: 'cherry'
+          });
+        }
+      } else if (effect === 'matrix') {
+        const columns = Math.floor(canvas.width / 20);
+        for (let i = 0; i < columns; i++) {
+          particles.push({
+            x: i * 20,
+            y: Math.random() * -canvas.height,
+            speed: Math.random() * 2 + 1,
+            type: 'matrix'
+          });
+        }
+      } else if (effect === 'snow') {
+        for (let i = 0; i < 35; i++) {
+          particles.push({
+            x: Math.random() * canvas.width,
+            y: Math.random() * -canvas.height,
+            r: Math.random() * 3 + 1,
+            speedY: Math.random() * 0.8 + 0.4,
+            speedX: Math.random() * 0.4 - 0.2,
+            type: 'snow'
+          });
+        }
+      } else if (effect === 'bubbles') {
+        for (let i = 0; i < 15; i++) {
+          particles.push({
+            x: Math.random() * canvas.width,
+            y: canvas.height + Math.random() * 100,
+            r: Math.random() * 8 + 4,
+            speedY: Math.random() * 0.8 + 0.4,
+            speedX: Math.random() * 0.2 - 0.1,
+            alpha: Math.random() * 0.3 + 0.1,
+            type: 'bubble'
+          });
+        }
+      }
+    }
+
+    function tick() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      if (currentEffect === 'none') {
+        animationFrameId = requestAnimationFrame(tick);
+        return;
+      }
+
+      if (currentEffect === 'meteor') {
+        particles.forEach(p => {
+          if (p.type === 'star') {
+            p.alpha += p.speed;
+            if (p.alpha > 1 || p.alpha < 0) p.speed = -p.speed;
+            ctx.fillStyle = `rgba(255, 255, 255, ${Math.max(0, Math.min(1, p.alpha))})`;
+            ctx.beginPath();
+            ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+            ctx.fill();
+          } else if (p.type === 'meteor_timer' && Date.now() > p.next) {
+            p.next = Date.now() + Math.random() * 8000 + 4000;
+            particles.push({
+              x: Math.random() * (canvas.width * 0.6),
+              y: 0,
+              len: Math.random() * 80 + 40,
+              dx: Math.random() * 4 + 4,
+              dy: Math.random() * 3 + 3,
+              alpha: 1,
+              type: 'meteor'
+            });
+          } else if (p.type === 'meteor') {
+            p.x += p.dx;
+            p.y += p.dy;
+            p.alpha -= 0.02;
+            if (p.alpha <= 0) {
+              p.dead = true;
+            } else {
+              ctx.strokeStyle = `rgba(255, 255, 255, ${p.alpha})`;
+              ctx.lineWidth = 1.5;
+              ctx.beginPath();
+              ctx.moveTo(p.x, p.y);
+              ctx.lineTo(p.x - p.len * (p.dx / (p.dx + p.dy)), p.y - p.len * (p.dy / (p.dx + p.dy)));
+              ctx.stroke();
+            }
+          }
+        });
+        particles = particles.filter(p => !p.dead);
+      } else if (currentEffect === 'cherry') {
+        particles.forEach(p => {
+          p.y += p.speedY;
+          p.x += p.speedX + Math.sin(p.y / 30) * 0.2;
+          p.angle += p.spin;
+          if (p.y > canvas.height + 20) {
+            p.y = -20;
+            p.x = Math.random() * canvas.width;
+          }
+          ctx.save();
+          ctx.translate(p.x, p.y);
+          ctx.rotate(p.angle * Math.PI / 180);
+          ctx.fillStyle = `rgba(255, 141, 161, ${p.alpha})`;
+          ctx.beginPath();
+          ctx.moveTo(0, 0);
+          ctx.bezierCurveTo(-p.r, -p.r * 1.5, -p.r * 2, -p.r / 2, 0, p.r);
+          ctx.bezierCurveTo(p.r * 2, -p.r / 2, p.r, -p.r * 1.5, 0, 0);
+          ctx.fill();
+          ctx.restore();
+        });
+      } else if (currentEffect === 'matrix') {
+        ctx.font = '14px monospace';
+        ctx.fillStyle = 'rgba(0, 255, 136, 0.15)';
+        particles.forEach(p => {
+          p.y += p.speed;
+          if (p.y > canvas.height) {
+            p.y = Math.random() * -100;
+            p.speed = Math.random() * 2 + 1;
+          }
+          const char = String.fromCharCode(33 + Math.floor(Math.random() * 93));
+          ctx.fillText(char, p.x, p.y);
+        });
+      } else if (currentEffect === 'snow') {
+        ctx.fillStyle = 'rgba(255, 255, 255, 0.6)';
+        particles.forEach(p => {
+          p.y += p.speedY;
+          p.x += p.speedX;
+          if (p.y > canvas.height + 10) {
+            p.y = -10;
+            p.x = Math.random() * canvas.width;
+          }
+          ctx.beginPath();
+          ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+          ctx.fill();
+        });
+      } else if (currentEffect === 'bubbles') {
+        particles.forEach(p => {
+          p.y -= p.speedY;
+          p.x += p.speedX + Math.sin(p.y / 20) * 0.1;
+          if (p.y < -20) {
+            p.y = canvas.height + 20;
+            p.x = Math.random() * canvas.width;
+          }
+          ctx.strokeStyle = `rgba(185, 242, 255, ${p.alpha})`;
+          ctx.lineWidth = 1;
+          ctx.beginPath();
+          ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+          ctx.stroke();
+          ctx.fillStyle = `rgba(255, 255, 255, ${p.alpha * 0.5})`;
+          ctx.beginPath();
+          ctx.arc(p.x - p.r * 0.3, p.y - p.r * 0.3, p.r * 0.2, 0, Math.PI * 2);
+          ctx.fill();
+        });
+      }
+
+      animationFrameId = requestAnimationFrame(tick);
+    }
+
+    function updateEffect() {
+      const effect = canvas.getAttribute('data-effect') || 'none';
+      if (effect !== currentEffect) {
+        initEffect(effect);
+      }
+    }
+
+    document.addEventListener('turbo:load', () => {
+      updateEffect();
+    });
+
+    const observer = new MutationObserver(mutations => {
+      mutations.forEach(m => {
+        if (m.attributeName === 'data-effect') {
+          updateEffect();
+        }
+      });
+    });
+    observer.observe(canvas, { attributes: true });
+
+    updateEffect();
+    tick();
+  })();
+})();
+</script>
+
+<!-- Toast 容器 -->
+<div id="toast-container" style="
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  z-index: 10000;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  pointer-events: none;
+"></div>
+
+
+<script>
+(function() {
+  const originalTheme = "deep-space";
+  const triggers = document.querySelectorAll('.theme-preview-trigger');
+  const previewBar = document.getElementById('theme-preview-bar');
+  const previewTitle = document.getElementById('preview-theme-title');
+  const closeBtn = document.getElementById('close-preview-btn');
+
+  triggers.forEach(t => {
+    // 懸停縮放效果
+    t.addEventListener('mouseenter', function() {
+      t.style.transform = 'scale(1.1) rotate(2deg)';
+      t.style.boxShadow = '0 8px 25px rgba(0,0,0,0.5), 0 0 10px var(--accent)';
+    });
+    t.addEventListener('mouseleave', function() {
+      t.style.transform = 'none';
+      t.style.boxShadow = '';
+    });
+
+    t.addEventListener('click', function() {
+      const themeId = t.getAttribute('data-theme-id');
+      const themeName = t.getAttribute('data-theme-name');
+      
+      // 切換 body 的主題屬性
+      document.body.setAttribute('data-theme', themeId);
+      
+      // 更新預覽列
+      if (previewTitle) previewTitle.textContent = themeName;
+      if (previewBar) {
+        previewBar.style.display = 'flex';
+        // 滾動到頂部讓預覽列被看見
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }
+      
+      window.showToast(`✨ 已切換至「${themeName}」即時預覽體驗！`, 'info');
+    });
+  });
+
+  if (closeBtn) {
+    closeBtn.addEventListener('click', function() {
+      // 還原主題
+      document.body.setAttribute('data-theme', originalTheme);
+      if (previewBar) previewBar.style.display = 'none';
+      window.showToast('已還原為您的設定主題。', 'success');
+    });
+  }
+
+  // ── Tabs 邏輯 ──────────────────────────────────────────
+  const tabButtons = document.querySelectorAll('.tab-btn');
+  const cards = document.querySelectorAll('.achievement-card');
+
+  tabButtons.forEach(btn => {
+    btn.addEventListener('click', () => {
+      // 移除所有 active 狀態
+      tabButtons.forEach(b => {
+        b.classList.remove('active');
+      });
+
+      // 加上 active 到當前按鈕
+      btn.classList.add('active');
+
+      const filter = btn.getAttribute('data-tab');
+      cards.forEach(card => {
+        if (filter === 'all' || card.getAttribute('data-category') === filter) {
+          card.style.display = 'flex';
+        } else {
+          card.style.display = 'none';
+        }
+      });
+    });
+  });
+})();
+</script>
+
+</body>
+</html>

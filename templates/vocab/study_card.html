@@ -6,7 +6,21 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>複習單字 — Lexis</title>
   <link rel="stylesheet" href="{% static 'css/main.css' %}" />
+  <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet" />
   <style>
+    :root {
+      --font-serif: 'Lora', Georgia, serif;
+    }
+
+    /* 英文內容字型覆寫 (襯線體學術風) */
+    .front-word,
+    #word-text,
+    .back-word-title,
+    .back-example-sentence,
+    .back-definition {
+      font-family: var(--font-serif) !important;
+    }
+
     /* 複習介面專屬樣式 */
     .study-container {
       min-height: 100vh;
@@ -20,11 +34,60 @@
 
     .study-card-perspective {
       perspective: 1000px;
-      width: 100%;
-      max-width: 540px;
-      height: 420px;
+      width: 95%;
+      max-width: 860px;
+      height: 540px;
       margin-top: 20px;
       margin-bottom: 24px;
+      transition: all 0.3s ease;
+    }
+
+    /* 響應式網頁 (Responsive Web Design) 媒體查詢 */
+    @media (max-width: 992px) {
+      .study-card-perspective {
+        max-width: 720px;
+        height: 520px;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .study-card-perspective {
+        max-width: 100%;
+        height: 480px;
+      }
+      .front-word {
+        font-size: 2.8rem;
+      }
+      .study-card-face {
+        padding: 24px;
+      }
+      .back-translation {
+        font-size: 1.3rem;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .study-card-perspective {
+        height: 450px;
+        margin-top: 10px;
+        margin-bottom: 16px;
+      }
+      .front-word {
+        font-size: 2.2rem;
+      }
+      .study-card-face {
+        padding: 16px;
+      }
+      .back-word-title {
+        font-size: 1.35rem;
+      }
+      .study-srs-btn {
+        padding: 8px 4px;
+        font-size: 0.72rem;
+      }
+      .study-srs-btn .btn-srs-label {
+        font-size: 0.85rem;
+      }
     }
 
     .study-flip-card {
@@ -52,16 +115,16 @@
       display: flex;
       flex-direction: column;
       justify-content: space-between;
-      background: rgba(22, 22, 26, 0.75);
-      border: 1px solid var(--border);
+      background: var(--card-face-bg, rgba(22, 22, 26, 0.75));
+      border: 1px solid var(--card-border, var(--border));
       backdrop-filter: blur(12px);
       -webkit-backdrop-filter: blur(12px);
-      box-shadow: var(--shadow-card);
+      box-shadow: var(--card-shadow, var(--shadow-card));
       transition: border-color var(--transition);
     }
 
     .study-card-face:hover {
-      border-color: rgba(108, 99, 255, 0.3);
+      border-color: var(--accent-glow-color, rgba(108, 99, 255, 0.3));
     }
 
     /* 雙重保險：動態 z-index 交換解決 Chrome 渲染層級問題 */
@@ -73,7 +136,7 @@
 
     .face-back {
       transform: rotateY(180deg);
-      background: rgba(26, 26, 32, 0.85);
+      background: var(--card-back-bg, rgba(26, 26, 32, 0.85));
       z-index: 1;
     }
 
@@ -89,7 +152,7 @@
       font-size: 3.5rem;
       font-weight: 800;
       letter-spacing: -0.04em;
-      background: linear-gradient(135deg, #fff 40%, var(--accent) 100%);
+      background: var(--front-word-gradient, linear-gradient(135deg, #fff 40%, var(--accent) 100%));
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
       margin-bottom: 12px;
@@ -108,23 +171,25 @@
     }
 
     .front-audio-btn {
-      background: rgba(108, 99, 255, 0.1);
-      color: var(--accent);
-      border: 1px solid rgba(108, 99, 255, 0.25);
-      border-radius: 50%;
-      width: 36px;
-      height: 36px;
-      display: flex;
+      background: rgba(255, 255, 255, 0.03);
+      color: var(--text-secondary);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 4px 12px;
+      cursor: pointer;
+      font-size: 0.72rem;
+      transition: all var(--transition);
+      display: inline-flex;
       align-items: center;
       justify-content: center;
-      cursor: pointer;
-      font-size: 0.9rem;
-      transition: all var(--transition);
+      gap: 4px;
+      line-height: 1;
     }
     .front-audio-btn:hover {
-      background: var(--accent);
-      color: #fff;
-      transform: scale(1.1);
+      background: var(--accent-glow, rgba(108, 99, 255, 0.15));
+      border-color: var(--accent);
+      color: var(--accent);
+      transform: translateY(-1px);
     }
 
     .reveal-hint-text {
@@ -139,6 +204,7 @@
     .back-content-scroll {
       overflow-y: auto;
       flex: 1;
+      min-height: 0; /* CRITICAL for flexbox scrolling */
       padding-right: 6px;
       margin-bottom: 16px;
     }
@@ -267,7 +333,22 @@
     .study-srs-easy:hover .btn-srs-shortcut { background: var(--green); color: #0d1a12; }
   </style>
 </head>
-<body>
+<body data-theme="{{ user_theme|default:'deep-space' }}">
+  <!-- 飄浮光暈與星光背景 -->
+  <div id="orb-permanent-1" class="orb orb-1"></div>
+  <div id="orb-permanent-2" class="orb orb-2"></div>
+  <div class="stars-layer" id="stars-permanent" style="display: {% if user_profile and user_profile.particle_effect %}block{% elif user_profile is None %}block{% else %}none{% endif %};">
+    <div class="star" style="top: 15%; left: 20%; animation-delay: 0.2s;"></div>
+    <div class="star" style="top: 40%; left: 85%; animation-delay: 1.5s;"></div>
+    <div class="star" style="top: 75%; left: 8%; animation-delay: 0.7s;"></div>
+    <div class="star" style="top: 62%; left: 32%; animation-delay: 2.1s;"></div>
+    <div class="star" style="top: 22%; left: 68%; animation-delay: 1.1s;"></div>
+    <div class="star" style="top: 82%; left: 74%; animation-delay: 0.4s;"></div>
+    <div class="star" style="top: 50%; left: 52%; animation-delay: 1.8s;"></div>
+    <div class="star" style="top: 12%; left: 90%; animation-delay: 2.5s;"></div>
+    <div class="star" style="top: 88%; left: 28%; animation-delay: 1.3s;"></div>
+    <div class="star" style="top: 28%; left: 44%; animation-delay: 0.9s;"></div>
+  </div>
 
 <!-- 頂部資訊列 -->
 <div class="study-topbar">
@@ -285,55 +366,78 @@
     <div class="study-flip-card" id="study-flip-card">
       
       <!-- 正面：只顯示單字與音標 -->
-      <div class="study-card-face face-front">
+      <div class="study-card-face face-front {% if user_profile and user_profile.card_border_style == 'platinum' %}card-border-platinum{% endif %}">
         <div class="front-word" id="word-text">{{ card.user_vocab.display_text }}</div>
         
         <div class="front-phonetic-wrap">
-          {% with phonetics=card.user_vocab.word.phonetics.all %}
-          <span id="phonetic-span">{% if phonetics %}/{{ phonetics.0.notation }}/{% endif %}</span>
-          {% endwith %}
-          <button class="front-audio-btn" id="study-speak-btn" title="朗讀發音">🔊</button>
+          {% if phonetic_display %}
+            <span style="font-size: 0.95rem; opacity: 0.8; margin-right: 4px;">/{{ phonetic_display }}/</span>
+          {% endif %}
+          <button class="front-audio-btn" id="study-speak-us" title="美式發音">US 🔊</button>
+          <button class="front-audio-btn" id="study-speak-uk" title="英式發音">UK 🔊</button>
         </div>
         
         <div class="reveal-hint-text">點擊卡片或按 Space 查看答案</div>
       </div>
-
+ 
       <!-- 背面：顯示釋義與 SRS 按鈕 -->
-      <div class="study-card-face face-back">
+      <div class="study-card-face face-back {% if user_profile and user_profile.card_border_style == 'platinum' %}card-border-platinum{% endif %}">
         <div class="back-content-scroll">
           <div class="back-word-title">{{ card.user_vocab.display_text }}</div>
-          {% with phonetics=card.user_vocab.word.phonetics.all %}
-          <div class="back-phonetic">{% if phonetics %}/{{ phonetics.0.notation }}/{% endif %}</div>
-          {% endwith %}
-          
-          <!-- 中文翻譯 -->
-          <div class="back-translation">{{ card.user_vocab.display_translation }}</div>
-          
-          <!-- 英文解釋 -->
-          {% with def=card.user_vocab.display_definition %}
-          {% if def %}
-          <div class="back-definition">{{ def }}</div>
+          {% if phonetic_display %}
+            <div class="back-phonetic" style="margin-top: 2px; margin-bottom: 12px; display: flex; gap: 8px;">
+              <span>/{{ phonetic_display }}/</span>
+            </div>
           {% endif %}
-          {% endwith %}
-          
-          <!-- 例句 -->
-          {% with ex=card.user_vocab.display_example %}
-          {% if ex %}
-          <div class="back-example-card">
-            <div class="back-example-sentence">"{{ ex }}"</div>
-            {% if card.user_vocab.word %}
-              {% with primary=card.user_vocab.word.get_primary_sense %}
-                {% if primary and primary.examples.all %}
-                  <div class="back-example-translation">{{ primary.examples.first.translation }}</div>
-                {% endif %}
-              {% endwith %}
+
+          {% if not card.user_vocab.word or not card.user_vocab.word.senses.exists %}
+            <!-- 自建單字或無多重義項時的相容顯示 -->
+            <div class="back-translation">{{ card.user_vocab.display_translation }}</div>
+            
+            {% with def=card.user_vocab.display_definition %}
+            {% if def %}
+            <div class="back-definition">{{ def }}</div>
             {% endif %}
-          </div>
+            {% endwith %}
+            
+            {% with ex=card.user_vocab.display_example %}
+            {% if ex %}
+            <div class="back-example-card">
+              <div class="back-example-sentence">"{{ ex }}"</div>
+            </div>
+            {% endif %}
+            {% endwith %}
+          {% else %}
+            <!-- 官方單字多重義項與例句完整呈現 -->
+            {% for sense in card.user_vocab.word.senses.all %}
+            <div style="margin-bottom: 20px;">
+              <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;">
+                <span class="pos-badge pos-{{ sense.pos_class }}">{{ sense.pos_display }}</span>
+                <span style="font-size:0.8rem;color:var(--text-muted);">義項 {{ forloop.counter }}</span>
+              </div>
+              <div style="font-size:1.3rem;font-weight:600;color:var(--text-primary);margin-bottom:6px;">
+                {{ sense.translation }}
+              </div>
+              {% if sense.definition %}
+              <div class="back-definition" style="margin-bottom:10px; line-height: 1.5;">{{ sense.definition }}</div>
+              {% endif %}
+              {% for ex in sense.examples.all %}
+              <div class="back-example-card" style="margin-bottom:10px;">
+                <div class="back-example-sentence">"{{ ex.sentence }}"</div>
+                {% if ex.translation %}
+                <div class="back-example-translation">{{ ex.translation }}</div>
+                {% endif %}
+              </div>
+              {% endfor %}
+            </div>
+            {% if not forloop.last %}
+            <hr style="border: 0; border-top: 1px solid rgba(255,255,255,0.05); margin: 16px 0;" />
+            {% endif %}
+            {% endfor %}
           {% endif %}
-          {% endwith %}
           
           <!-- 個人備註 (Inplace 編輯) -->
-          <div style="margin-top: 14px; display: inline-block; width: 100%;">
+          <div style="margin-top: 10px; display: inline-block; width: 100%;">
             <div id="note-display-wrapper" class="back-note" style="cursor: pointer; display: {% if card.user_vocab.note %}inline-flex{% else %}none{% endif %}; align-items: center; gap: 6px;" title="點擊編輯備註">
               <span>💡</span>
               <span id="note-text-content">{{ card.user_vocab.note }}</span>
@@ -358,6 +462,7 @@
         <!-- SRS 表單 -->
         <form method="post" action="{% url 'vocab:submit_review' card.id %}" id="srs-form" style="width:100%">
           {% csrf_token %}
+          <input type="hidden" name="quality" id="srs-quality-input" />
           <div class="study-srs-buttons">
             <button type="submit" name="quality" value="0" class="study-srs-btn study-srs-again" title="快速複習 (快捷鍵: 1)">
               <span class="btn-srs-shortcut">1</span>
@@ -396,49 +501,70 @@
   const progressBar = document.getElementById('study-progress-bar');
   const srsForm = document.getElementById('srs-form');
   const dueCount = {{ due_count }};
+  const totalCount = {{ total_count|default:due_count }};
   const wordText = "{{ card.user_vocab.display_text|escapejs }}";
+  const userAutoPronounce = {{ user_profile.auto_pronounce|yesno:"true,false" }};
+  const userPronunciationPref = "{{ user_profile.pronunciation_pref|default:'US' }}";
 
-  if (dueCount > 0) {
-    const pct = Math.max(5, Math.min(95, (1 / (dueCount + 1)) * 100));
+  if (totalCount > 0) {
+    const completed = totalCount - dueCount;
+    // 計算真實複習進度，完成越多進度條越長，起點給予 5% 的引導，最大為 100%
+    const pct = Math.max(5, Math.min(100, (completed / totalCount) * 100));
     progressBar.style.width = pct + '%';
   }
 
-  function speak(text) {
+  function speak(text, lang = 'en-US') {
     if ('speechSynthesis' in window) {
       window.speechSynthesis.cancel();
       const utterance = new SpeechSynthesisUtterance(text);
-      utterance.lang = 'en-US';
+      utterance.lang = lang;
       utterance.rate = 0.85;
       window.speechSynthesis.speak(utterance);
     }
   }
 
   setTimeout(() => {
-    speak(wordText);
+    if (userAutoPronounce) {
+      const prefLang = userPronunciationPref === 'UK' ? 'en-GB' : 'en-US';
+      speak(wordText, prefLang);
+    }
   }, 300);
 
-  speakBtn.addEventListener('click', (e) => {
+  const speakUsBtn = document.getElementById('study-speak-us');
+  const speakUkBtn = document.getElementById('study-speak-uk');
+
+  speakUsBtn.addEventListener('click', (e) => {
     e.stopPropagation();
-    speak(wordText);
+    speak(wordText, 'en-US');
+  });
+
+  speakUkBtn.addEventListener('click', (e) => {
+    e.stopPropagation();
+    speak(wordText, 'en-GB');
   });
 
   function toggleFlip() {
     flipCard.classList.toggle('flipped');
     if (flipCard.classList.contains('flipped')) {
       // 翻面到背面時也再次朗讀單字，加深聽覺印象
-      setTimeout(() => speak(wordText), 200);
+      setTimeout(() => {
+        if (userAutoPronounce) {
+          const prefLang = userPronunciationPref === 'UK' ? 'en-GB' : 'en-US';
+          speak(wordText, prefLang);
+        }
+      }, 200);
     }
   }
 
   // ── 例句單字高亮 ──
-  const exSentenceDiv = document.querySelector('.back-example-sentence');
-  if (exSentenceDiv) {
-    let text = exSentenceDiv.innerHTML;
+  const exSentences = document.querySelectorAll('.back-example-sentence');
+  exSentences.forEach(div => {
+    let text = div.innerHTML;
     const escapedWord = wordText.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&');
     const regex = new RegExp(`\\b(${escapedWord}[a-zA-Z]*)\\b`, 'gi');
     text = text.replace(regex, `<strong style="color:var(--accent); font-weight:700;">$1</strong>`);
-    exSentenceDiv.innerHTML = text;
-  }
+    div.innerHTML = text;
+  });
 
   // ── 原地備註快速編輯 ──
   const noteDisplay = document.getElementById('note-display-wrapper');
@@ -531,7 +657,7 @@
   }
 
   flipCard.addEventListener('click', (e) => {
-    if (e.target.closest('#study-speak-btn') || e.target.closest('.study-srs-btn') || e.target.closest('#note-edit-wrapper') || e.target.closest('#note-add-btn-wrapper') || e.target.closest('#note-display-wrapper')) return;
+    if (e.target.closest('#study-speak-us') || e.target.closest('#study-speak-uk') || e.target.closest('.study-srs-btn') || e.target.closest('#note-edit-wrapper') || e.target.closest('#note-add-btn-wrapper') || e.target.closest('#note-display-wrapper')) return;
     toggleFlip();
   });
 
@@ -552,8 +678,54 @@
         button.click();
       }
     } else if (key.toLowerCase() === 'v') {
-      speak(wordText);
+      const prefLang = userPronunciationPref === 'UK' ? 'en-GB' : 'en-US';
+      speak(wordText, prefLang);
     }
+  });
+
+  // 監聽 SRS 表單提交，加入精緻的點擊按壓反饋與卡片漸隱動畫，解決切換不直觀的體驗問題
+  srsForm.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const submitter = e.submitter;
+    if (!submitter) {
+      srsForm.submit();
+      return;
+    }
+
+    const qualityVal = submitter.value;
+    document.getElementById('srs-quality-input').value = qualityVal;
+
+    // 禁用所有按鈕防止重複點擊，並給予極強的選取回饋
+    const buttons = srsForm.querySelectorAll('.study-srs-btn');
+    buttons.forEach(btn => {
+      btn.style.pointerEvents = 'none';
+      if (btn !== submitter) {
+        btn.style.opacity = '0.15';
+        btn.style.filter = 'grayscale(100%)';
+        btn.style.transform = 'scale(0.96)';
+      } else {
+        btn.style.transform = 'scale(0.93)';
+        btn.style.borderColor = 'var(--accent, currentColor)';
+        btn.style.boxShadow = '0 0 15px var(--accent-glow, rgba(108, 99, 255, 0.2))';
+        const label = btn.querySelector('.btn-srs-label');
+        if (label && !label.innerText.startsWith('✓')) {
+          label.innerHTML = `✓ ${label.innerText}`;
+        }
+      }
+    });
+
+    // 讓卡片的外層透視容器產生漸隱與縮小動畫，避免直接修改 3D 翻轉卡片的 transform 導致 Y 軸旋轉被干擾而產生鏡像翻轉 Bug
+    const perspectiveContainer = document.querySelector('.study-card-perspective');
+    if (perspectiveContainer) {
+      perspectiveContainer.style.transition = 'all 0.22s cubic-bezier(0.4, 0, 0.2, 1)';
+      perspectiveContainer.style.opacity = '0';
+      perspectiveContainer.style.transform = 'scale(0.96) translateY(12px)';
+    }
+
+    // 延遲 220ms 等待動畫結束後再正式提交
+    setTimeout(() => {
+      srsForm.submit();
+    }, 220);
   });
 
 })();

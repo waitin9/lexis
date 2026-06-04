@@ -1,761 +1,1171 @@
 {% extends 'base.html' %}
-{% block title %}首頁{% endblock %}
+{% load static %}
+{% block title %}詞彙學習儀表板{% endblock %}
 
 {% block content %}
-<div class="page-header fade-in">
-  <div>
-    <h1 class="page-title creative-glow-title">今天，繼續學。</h1>
-    <p class="page-subtitle">
-      {% if profile.streak > 0 %}
-        🔥 連續學習 {{ profile.streak }} 天 ·
-      {% endif %}
-      個人字庫共 {{ total_vocab }} 個單字
-    </p>
-  </div>
-</div>
 
-<!-- 新手引導 (Onboarding) 卡片 -->
-<div id="onboarding-card" class="card fade-in" style="display: none; position: relative; margin-bottom: 24px; border-color: rgba(108,99,255,0.3); background: linear-gradient(135deg, rgba(22,22,26,0.85) 0%, rgba(108,99,255,0.06) 100%); padding: 24px 28px;">
-  <button id="dismiss-onboarding" style="position: absolute; top: 16px; right: 20px; background: transparent; border: none; color: var(--text-muted); font-size: 1.25rem; cursor: pointer; transition: color var(--transition);">&times;</button>
-  
-  <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 18px;">
-    <span style="font-size: 1.4rem;">🚀</span>
-    <h3 style="font-size: 1.12rem; font-weight: 700; margin: 0; color: #a8a4ff; letter-spacing: 0.02em;">快速入門：3 步開啟高效單字記憶旅程</h3>
-  </div>
-
-  <div class="onboarding-steps" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; margin-bottom: 20px;">
-    <div style="background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.04); border-radius: var(--radius); padding: 16px;">
-      <div style="font-size: 0.95rem; font-weight: 700; color: var(--accent); margin-bottom: 6px;">1. 探索新詞 ✦</div>
-      <p style="font-size: 0.78rem; color: var(--text-muted); line-height: 1.45; margin: 0;">
-        瀏覽官方單字。認識的「滑過」，不認識的一鍵「加入學習」。這是您背單字的起點。
-      </p>
+<!-- ─── 頂部：學術概覽控制面板 (Academic Redesign) ─── -->
+<section class="db-hero fade-in">
+  <div class="db-hero__left">
+    <!-- 精度校準圓環：今日進度 -->
+    <div class="db-hero__ring" title="今日任務進度 {{ progress_percent }}%">
+      <svg width="115" height="115" viewBox="0 0 120 120">
+        <circle cx="60" cy="60" r="52" class="db-ring-bg" stroke-width="5" />
+        <circle cx="60" cy="60" r="52"
+                class="db-ring-fg"
+                stroke-dasharray="326.73"
+                stroke-dashoffset="{{ stroke_dashoffset }}"
+                stroke="url(#heroGrad)"
+                stroke-width="5" />
+        <defs>
+          <linearGradient id="heroGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="var(--accent)" />
+            <stop offset="100%" stop-color="var(--green)" />
+          </linearGradient>
+        </defs>
+      </svg>
+      <div class="db-ring-label">
+        {% if user_profile and user_profile.user_badge != 'none' %}
+          <img src="{% static 'images/badges/badge_' %}{{ user_profile.user_badge }}.png" class="db-hero-pixel-badge" title="目前裝備稱號" />
+        {% else %}
+          <img src="{% static 'images/pixel_star.png' %}" class="db-hero-pixel-badge" title="尚未裝備稱號" />
+        {% endif %}
+        <span class="db-ring-pct" style="font-size: 0.95rem; margin-top: -2px;">{{ progress_percent }}%</span>
+      </div>
     </div>
-    <div style="background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.04); border-radius: var(--radius); padding: 16px;">
-      <div style="font-size: 0.95rem; font-weight: 700; color: var(--green); margin-bottom: 6px;">2. 每日複習 ▶</div>
-      <p style="font-size: 0.78rem; color: var(--text-muted); line-height: 1.45; margin: 0;">
-        基於 SM-2 科學演算法在即將遺忘時提醒複習。這是鞏固長期記憶的關鍵。
-      </p>
-    </div>
-    <div style="background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.04); border-radius: var(--radius); padding: 16px;">
-      <div style="font-size: 0.95rem; font-weight: 700; color: var(--yellow); margin-bottom: 6px;">3. 掌握度升級 ◈</div>
-      <p style="font-size: 0.78rem; color: var(--text-muted); line-height: 1.45; margin: 0;">
-        答對會拉長下次複習時間，單字從「生疏」升級到「精通」，並點亮首頁的打卡標章。
-      </p>
-    </div>
-  </div>
 
-  <div style="display: flex; gap: 12px; align-items: center; flex-wrap: wrap;">
-    <a href="{% url 'vocab:discover_session' %}" class="btn btn-primary" style="background: var(--accent); border-color: var(--accent); padding: 8px 18px; font-size: 0.82rem; font-weight: 600;">
-      第一步：探索新詞 ✦
-    </a>
-    <button id="dismiss-onboarding-btn" class="btn btn-ghost" style="padding: 8px 18px; font-size: 0.82rem; border-color: rgba(255,255,255,0.08); background: transparent;">
-      我已了解，隱藏說明
-    </button>
-  </div>
-</div>
-
-<!-- 雙核心模式入口卡片 (Glassmorphism Cards) -->
-<div class="stats-grid fade-in" style="grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 20px; margin-bottom: 32px;">
-  
-  <!-- 入口 1：新詞探索 -->
-  <div class="card tilt-card {% if today_total > 0 %}subordinate-card{% else %}priority-card-purple{% endif %}" style="position: relative; display: flex; flex-direction: column; justify-content: space-between;">
-    <div>
-      <div style="font-size: 2.2rem; margin-bottom: 12px; color: var(--accent);">✦</div>
-      <h3 style="font-size: 1.25rem; font-weight: 700; margin-bottom: 6px; color: #a8a4ff;">探索新詞</h3>
-      <p class="text-muted text-sm" style="line-height: 1.4; margin-bottom: 20px;">
-        用流暢的卡片流（Tinder 模式）快速過濾單字。認識的直接標記，不熟的一鍵加入複習庫。
-      </p>
-    </div>
-    <a href="{% url 'vocab:discover_session' %}" class="btn {% if today_total > 0 %}btn-ghost{% else %}btn-primary{% endif %}" style="width: 100%; justify-content: center; {% if today_total == 0 %}background: var(--accent);{% endif %}">
-      開始探索
-    </a>
-  </div>
-
-  <!-- 入口 2：間隔重複複習 -->
-  <div class="card tilt-card {% if today_total > 0 %}priority-card-green{% else %}completed-card{% endif %}" style="position: relative; display: flex; flex-direction: column; justify-content: space-between;">
-    <div>
-      <div style="font-size: 2.2rem; margin-bottom: 12px; color: {% if today_total > 0 %}var(--green){% else %}var(--text-muted){% endif %};">▶</div>
-      <h3 style="font-size: 1.25rem; font-weight: 700; margin-bottom: 6px; color: {% if today_total > 0 %}var(--green){% else %}var(--text-secondary){% endif %};">每日複習</h3>
-      <p class="text-muted text-sm" style="line-height: 1.4; margin-bottom: 20px;">
-        基於 SM-2 間隔重複演算法，鞏固你的長期記憶。今日共有 <strong style="color:var(--text-primary);">{{ today_total }}</strong> 個單字待複習。
-      </p>
-    </div>
-    {% if today_total > 0 %}
-      <a href="{% url 'vocab:study_session' %}" class="btn btn-green" style="width: 100%; justify-content: center; box-shadow: 0 0 12px rgba(76, 175, 130, 0.2);" data-turbo="false">
-        開始複習 ({{ today_total }})
-      </a>
-    {% else %}
-      <button class="btn btn-ghost" style="width: 100%; justify-content: center; cursor: not-allowed; border-color: rgba(255,255,255,0.04);" disabled>
-        今日已全部複習完畢 ✓
-      </button>
-    {% endif %}
-  </div>
-
-</div>
-
-<!-- 學習狀態詳細數據 -->
-<div class="stats-grid fade-in">
-  <div class="stat-card">
-    <div class="stat-label">待複習卡片</div>
-    <div class="stat-value {% if due_count > 0 %}accent{% endif %}">{{ due_count }}</div>
-    <div class="stat-sub">到期需要複習</div>
-  </div>
-  <div class="stat-card">
-    <div class="stat-label">新學習單字</div>
-    <div class="stat-value" style="color: var(--blue);">{{ new_count }}</div>
-    <div class="stat-sub">尚未進行第一次複習</div>
-  </div>
-  <div class="stat-card">
-    <div class="stat-label">學習 Streak</div>
-    <div class="stat-value yellow">{{ profile.streak }}</div>
-    <div class="stat-sub">連續學習天數</div>
-  </div>
-  <div class="stat-card">
-    <div class="stat-label">累計複習次數</div>
-    <div class="stat-value">{{ profile.total_reviews }}</div>
-    <div class="stat-sub">總卡片點擊數</div>
-  </div>
-</div>
-
-<!-- CSS 呼吸燈、排版動畫與 3D 創意視覺樣式 -->
-<style>
-  .progress-streak-container {
-    display: grid;
-    grid-template-columns: 1.2fr 1px 2fr;
-    gap: 32px;
-    align-items: center;
-  }
-  .progress-divider {
-    background: rgba(255, 255, 255, 0.08);
-    height: 90px;
-    width: 1px;
-    justify-self: center;
-  }
-  @keyframes badge-pulse {
-    0% {
-      box-shadow: 0 0 0 0 rgba(108, 99, 255, 0.4);
-      border-color: rgba(108, 99, 255, 0.6);
-    }
-    70% {
-      box-shadow: 0 0 0 8px rgba(108, 99, 255, 0);
-      border-color: rgba(108, 99, 255, 0.3);
-    }
-    100% {
-      box-shadow: 0 0 0 0 rgba(108, 99, 255, 0);
-      border-color: rgba(108, 99, 255, 0.6);
-    }
-  }
-  @media (max-width: 768px) {
-    .progress-streak-container {
-      grid-template-columns: 1fr;
-      gap: 24px;
-    }
-    .progress-divider {
-      display: none;
-    }
-  }
-
-  /* 3D 傾斜卡片設計 */
-  .tilt-card {
-    position: relative;
-    overflow: hidden;
-    transform-style: preserve-3d;
-    will-change: transform;
-    transition: transform 0.5s cubic-bezier(0.25, 1, 0.5, 1), opacity 0.4s ease, border-color 0.4s ease;
-  }
-  .tilt-card > * {
-    transform: translateZ(24px);
-  }
-  .tilt-card .btn {
-    transform: translateZ(45px);
-  }
-  /* 卡片滑鼠跟隨高光 */
-  .tilt-card::after {
-    content: '';
-    position: absolute;
-    top: 0; left: 0; width: 100%; height: 100%;
-    pointer-events: none;
-    background: radial-gradient(400px circle at var(--mouse-x, 50%) var(--mouse-y, 50%), rgba(108, 99, 255, 0.12), transparent 75%);
-    opacity: 0;
-    transition: opacity 0.35s ease;
-    z-index: 1;
-  }
-  .tilt-card:hover::after {
-    opacity: 1;
-  }
-
-  /* 雙入口卡片：動態視覺權重 */
-  .priority-card-purple {
-    border-color: rgba(108, 99, 255, 0.45) !important;
-    background: linear-gradient(135deg, rgba(22, 22, 26, 0.85) 0%, rgba(108, 99, 255, 0.08) 100%) !important;
-    box-shadow: 0 8px 32px rgba(108, 99, 255, 0.08) !important;
-  }
-  .priority-card-green {
-    border-color: rgba(76, 175, 130, 0.45) !important;
-    background: linear-gradient(135deg, rgba(22, 22, 26, 0.85) 0%, rgba(76, 175, 130, 0.08) 100%) !important;
-    box-shadow: 0 8px 32px rgba(76, 175, 130, 0.08) !important;
-    animation: green-glow-pulse 3s infinite ease-in-out;
-  }
-  @keyframes green-glow-pulse {
-    0%, 100% { border-color: rgba(76, 175, 130, 0.45); box-shadow: 0 8px 32px rgba(76, 175, 130, 0.08); }
-    50% { border-color: rgba(76, 175, 130, 0.7); box-shadow: 0 8px 32px rgba(76, 175, 130, 0.22); }
-  }
-  .subordinate-card {
-    opacity: 0.58;
-    border-color: rgba(255, 255, 255, 0.03) !important;
-    background: rgba(22, 22, 26, 0.6) !important;
-  }
-  .subordinate-card:hover {
-    opacity: 1;
-    border-color: rgba(255, 255, 255, 0.08) !important;
-  }
-  .completed-card {
-    opacity: 0.85;
-    border-color: rgba(255, 255, 255, 0.05) !important;
-    background: rgba(22, 22, 26, 0.7) !important;
-  }
-
-  /* 記憶山脈 (Memory Peaks) */
-  @keyframes peak-pulse-dot {
-    0%, 100% { transform: translateY(0) scale(1); opacity: 0.35; }
-    50% { transform: translateY(-6px) scale(1.4); opacity: 1; }
-  }
-  .mountain-path {
-    cursor: pointer;
-    transition: opacity 0.4s cubic-bezier(0.25, 0.8, 0.25, 1), stroke-width 0.4s ease, transform 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
-    opacity: 0.38;
-    transform-origin: bottom;
-  }
-  .mountain-path:hover,
-  .mountain-path.active {
-    opacity: 0.95 !important;
-    stroke-width: 2.5px;
-    transform: scaleY(1.04);
-  }
-  .mastery-bar-item-interactive {
-    position: relative;
-    background: rgba(255, 255, 255, 0.01);
-    border: 1px solid rgba(255, 255, 255, 0.04);
-    border-radius: var(--radius);
-    padding: 12px 16px;
-    cursor: pointer;
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    text-align: center;
-  }
-  .mastery-bar-item-interactive.active {
-    background: rgba(255, 255, 255, 0.04) !important;
-    border-color: rgba(255, 255, 255, 0.12) !important;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-    transform: translateY(-2px);
-  }
-  .mastery-bar-item-interactive.active .mastery-bar-count {
-    transform: scale(1.08);
-  }
-
-  /* 霓虹漸變流光標題 (收斂版：載入前 3.5s 流動，後過渡為 35s 極緩慢流光) */
-  .creative-glow-title {
-    font-size: 2.2rem;
-    font-weight: 800;
-    background: linear-gradient(120deg, #ffffff 0%, var(--accent) 30%, #a8a4ff 70%, #ffffff 100%);
-    background-size: 200% auto;
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    animation: title-glow-flow 3.5s cubic-bezier(0.25, 1, 0.5, 1) 1 forwards, title-glow-slow 35s linear infinite 3.5s;
-    letter-spacing: -0.01em;
-  }
-  @keyframes title-glow-flow {
-    0% { background-position: 0% 50%; }
-    100% { background-position: 100% 50%; }
-  }
-  @keyframes title-glow-slow {
-    0% { background-position: 100% 50%; }
-    100% { background-position: 300% 50%; }
-  }
-
-  /* 今日進度環懸停動態 */
-  .progress-ring-hover-effect {
-    transition: transform 0.45s cubic-bezier(0.25, 1, 0.5, 1);
-  }
-  .progress-ring-hover-effect:hover {
-    transform: scale(1.06) rotate(6deg);
-  }
-
-  /* 數據面板易讀性與防眩文字陰影 */
-  .stat-card {
-    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.6);
-  }
-  .stat-label {
-    color: var(--text-secondary) !important;
-    font-weight: 600 !important;
-  }
-  .stat-sub {
-    color: rgba(144, 144, 168, 0.82) !important;
-    font-weight: 500 !important;
-  }
-  .stat-value {
-    font-weight: 800 !important;
-    letter-spacing: -0.04em;
-  }
-
-  /* 本週學習打卡：發光連接軌道 (Streak Connectors) */
-  .weekly-badge-wrapper {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 8px;
-    flex: 1;
-    position: relative;
-  }
-  /* 連接線軌道 (往左連線) */
-  .weekly-badge-wrapper::before {
-    content: '';
-    position: absolute;
-    top: 21px; /* 42px 徽章的高度一半 */
-    right: calc(50% + 21px); /* 圓圈邊緣向左跨越 */
-    width: calc(100% - 42px + 8px); /* flex gap = 8px */
-    height: 2px;
-    background: rgba(255, 255, 255, 0.04);
-    z-index: 1;
-    transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
-  }
-  .weekly-badge-wrapper:first-child::before {
-    display: none;
-  }
-  /* 連續打卡亮起連接軌道 + 流光動畫 */
-  .weekly-badge-wrapper.badge-reviewed + .weekly-badge-wrapper.badge-reviewed::before {
-    background: linear-gradient(90deg, rgba(129, 199, 132, 0.25) 0%, #81c784 50%, rgba(129, 199, 132, 0.25) 100%);
-    background-size: 200% auto;
-    box-shadow: 0 0 6px rgba(129, 199, 132, 0.4);
-    animation: connector-glow-flow 2.2s linear infinite;
-  }
-  @keyframes connector-glow-flow {
-    0% { background-position: 0% 50%; }
-    100% { background-position: 200% 50%; }
-  }
-</style>
-
-<!-- 今日進度與本週打卡卡片 -->
-<div class="card fade-in" style="margin-bottom: 24px; padding: 24px 28px;">
-  <div class="progress-streak-container">
-    
-    <!-- 左側：今日目標進度環 -->
-    <div style="display: flex; align-items: center; gap: 24px;">
-      <div class="progress-ring-hover-effect" style="position: relative; width: 110px; height: 110px; flex-shrink: 0; cursor: pointer;">
-        <svg width="110" height="110" viewBox="0 0 120 120" style="transform: rotate(-90deg);">
-          <!-- 背景灰色環 -->
-          <circle cx="60" cy="60" r="50" stroke="rgba(255,255,255,0.04)" stroke-width="9" fill="transparent" />
-          <!-- 前景發光進度環 -->
-          <circle cx="60" cy="60" r="50" 
-                  stroke="url(#progress-grad)" 
-                  stroke-width="9" 
-                  fill="transparent"
-                  stroke-dasharray="314.16"
-                  stroke-dashoffset="{{ stroke_dashoffset }}"
-                  stroke-linecap="round"
-                  style="transition: stroke-dashoffset 0.8s cubic-bezier(0.4, 0, 0.2, 1);" />
-          <defs>
-            <linearGradient id="progress-grad" x1="0%" y1="0%" x2="100%" y2="100%">
-              <stop offset="0%" stop-color="var(--accent)" />
-              <stop offset="100%" stop-color="var(--green)" />
-            </linearGradient>
-          </defs>
-        </svg>
-        <!-- 圓環中心的百分比文字 -->
-        <div style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: flex; flex-direction: column; justify-content: center; align-items: center;">
-          <span style="font-size: 1.55rem; font-weight: 800; color: var(--text-primary); line-height: 1;">{{ progress_percent }}%</span>
-          <span style="font-size: 0.65rem; color: var(--text-muted); margin-top: 3px; letter-spacing: 0.05em; text-transform: uppercase;">今日任務</span>
+    <!-- 個人學術落點評估與進度 -->
+    <div class="db-hero__text">
+      <div class="db-hero__greeting">
+        <h1 class="db-hero__title">{{ greeting_title }}</h1>
+        <p class="db-hero__subtitle" style="font-size: 1.05rem; color: var(--text-secondary); margin-bottom: 12px; margin-top: -4px;">{{ greeting_subtitle }}</p>
+      </div>
+      
+      <!-- 字庫學習進度里程碑 -->
+      <div class="academic-milestone-wrap">
+        <div class="academic-milestone-info">
+          <span class="academic-milestone-label">字庫詞彙學習進度</span>
+          <span class="academic-milestone-target">已掌握: {{ learning_count }} / {{ total_vocab }} 字</span>
+        </div>
+        <div class="academic-milestone-bar">
+          <div class="academic-milestone-fill" style="width: {{ learning_percent }}%;"></div>
+        </div>
+        <div class="academic-milestone-footer">
+          <span class="academic-milestone-pct">{{ learning_percent }}% 學習率</span>
+          <span class="academic-milestone-total">字庫規模: {{ total_vocab }} 字</span>
         </div>
       </div>
-      <div>
-        <h4 style="font-size: 1.05rem; font-weight: 700; margin: 0 0 6px 0; color: var(--text-primary); letter-spacing: 0.02em;">今日複習進度</h4>
-        {% if today_target == 0 %}
-          <p style="font-size: 0.85rem; color: var(--green); margin: 0; font-weight: 500;">✓ 今日暫無到期單字</p>
-          <p style="font-size: 0.72rem; color: var(--text-muted); margin: 3px 0 0 0;">可探索新詞或主動複習字庫</p>
-        {% else %}
-          <p style="font-size: 0.82rem; color: var(--text-secondary); margin: 0; line-height: 1.4;">
-            已複習 <strong style="color: var(--green); font-size: 0.95rem;">{{ today_done }}</strong> 次 / 目標 {{ today_target }} 次
-          </p>
-          {% if progress_percent == 100 %}
-            <p style="font-size: 0.72rem; color: var(--green); margin: 4px 0 0 0; font-weight: 500; display: flex; align-items: center; gap: 3px;">
-              <span>✨ 今日複習任務已達成！</span>
-            </p>
-          {% else %}
-            <p style="font-size: 0.72rem; color: var(--text-muted); margin: 4px 0 0 0;">完成卡片即可點亮今日打卡</p>
-          {% endif %}
-        {% endif %}
-      </div>
     </div>
+  </div>
 
-    <!-- 中間：垂直分隔線 -->
-    <div class="progress-divider"></div>
+  <div class="db-hero__right">
+    <div class="db-hero-btn-group">
+      {% if today_total > 0 %}
+        <a href="{% url 'vocab:study_session' %}" class="db-hero-btn db-hero-btn--primary" data-turbo="false" title="開啟每日複習">
+          <img src="{% if user_profile.theme in 'cherry,cyberpunk,zen' %}{% static 'images/themes/' %}{{ user_profile.theme }}/pixel_book.png{% else %}{% static 'images/pixel_book.png' %}{% endif %}?v=7" class="db-hero-btn__pixel-icon" />
+          <span class="db-hero-btn__text">每日複習</span>
+          <span class="db-hero-btn__badge">{{ today_total }}</span>
+        </a>
+      {% else %}
+        <div class="db-hero-btn db-hero-btn--disabled" title="今日複習已達標">
+          <img src="{% if user_profile.theme in 'cherry,cyberpunk,zen' %}{% static 'images/themes/' %}{{ user_profile.theme }}/pixel_book.png{% else %}{% static 'images/pixel_book.png' %}{% endif %}?v=7" class="db-hero-btn__pixel-icon" style="filter: grayscale(1); opacity: 0.4;" />
+          <span class="db-hero-btn__text" style="color:var(--text-muted);">複習已達標</span>
+        </div>
+      {% endif %}
 
-    <!-- 右側：本週打卡徽章 -->
-    <div>
-      <div style="margin-bottom: 14px; display: flex; align-items: center; justify-content: space-between;">
-        <div>
-          <h4 style="font-size: 0.95rem; font-weight: 600; color: var(--text-secondary); margin: 0; letter-spacing: 0.02em;">本週學習打卡</h4>
-          <p style="font-size: 0.72rem; color: var(--text-muted); margin: 2px 0 0 0;">每日複習至少一次以點亮徽章</p>
+      <a href="{% url 'vocab:discover_session' %}" class="db-hero-btn {% if today_total == 0 %}db-hero-btn--primary{% else %}db-hero-btn--secondary{% endif %}" title="探索新詞">
+        <div class="db-hero-btn__icon-wrapper">
+          <img src="{% static 'images/pixel_chest_closed.png' %}" class="db-hero-btn__pixel-icon db-hero-btn__pixel-icon--closed" />
+          <img src="{% static 'images/pixel_chest_open.png' %}" class="db-hero-btn__pixel-icon db-hero-btn__pixel-icon--open" style="display: none; opacity: 0;" />
+        </div>
+        <span class="db-hero-btn__text">探索新詞</span>
+      </a>
+
+      <a href="{% url 'vocab:challenge_select' %}" class="db-hero-btn db-hero-btn--secondary db-hero-btn--challenge" title="進入挑戰中心">
+        <img src="{% if user_profile.theme in 'cherry,cyberpunk,zen' %}{% static 'images/themes/' %}{{ user_profile.theme }}/pixel_lightning.png{% else %}{% static 'images/pixel_lightning.png' %}{% endif %}?v=7" class="db-hero-btn__pixel-icon" />
+        <span class="db-hero-btn__text">極速挑戰</span>
+      </a>
+    </div>
+  </div>
+
+  <div class="db-hero__glow db-hero__glow--1"></div>
+  <div class="db-hero__glow db-hero__glow--2"></div>
+</section>
+
+<!-- 雙欄控制台佈局 -->
+<div class="db-stats-grid" style="margin-bottom: 24px;">
+      <!-- Card 1: 待複習 -->
+      <div class="db-stats-card db-stats-card--due">
+        <div class="db-stats-card__main">
+          <div class="db-stats-card__icon-wrap">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="db-svg-icon db-svg-icon--accent">
+              <circle cx="12" cy="12" r="10"></circle>
+              <polyline points="12 6 12 12 16 14"></polyline>
+            </svg>
+          </div>
+          <div class="db-stats-card__body">
+            <span class="db-stats-card__value {% if due_count > 0 %}accent{% endif %}" style="display:inline-flex; align-items:center; gap:8px;">
+              {{ due_count }}
+              {% if due_count > 0 %}
+                <svg class="hourglass-neon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 2h14"></path><path d="M5 22h14"></path><path d="M19 2v4c0 4-3 7-7 7s-7-3-7-7V2"></path><path d="M5 22v-4c0-4 3-7 7-7s7 3 7 7v4"></path></svg>
+              {% endif %}
+            </span>
+            <span class="db-stats-card__label">待複習單字</span>
+          </div>
+        </div>
+        <div class="db-stats-card__meta">
+          {% if due_count > 0 %}
+            <span class="db-stats-badge db-stats-badge--due">需立即複習</span>
+            <p class="db-stats-hint" title="SM-2 演算法建議您立刻開始複習">SM-2 建議您立刻複習</p>
+          {% else %}
+            <span class="db-stats-badge db-stats-badge--cleared">任務清除</span>
+            <p class="db-stats-hint" title="今日複習進度完美，大腦已校正">今日進度完美已達標</p>
+          {% endif %}
         </div>
       </div>
       
-      <!-- 7天徽章網格 -->
-      <div style="display: flex; gap: 8px; justify-content: space-between; align-items: center; position: relative;">
-        {% for badge in weekly_badges %}
-          <div class="weekly-badge-wrapper {% if badge.has_reviewed %}badge-reviewed{% endif %}">
-            
-            <!-- 圓形打卡徽章 -->
-            <div class="weekly-badge-circle"
-                 title="{{ badge.date }}{% if badge.has_reviewed %} : 複習了 {{ badge.count }} 次{% else %} : 尚未複習{% endif %}"
-                 style="width: 42px; height: 42px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.88rem; font-weight: 700; transition: all 0.22s cubic-bezier(0.4, 0, 0.2, 1); cursor: pointer; position: relative; z-index: 5;
-                   {% if badge.has_reviewed %}
-                     background: linear-gradient(135deg, rgba(76, 175, 80, 0.18) 0%, rgba(46, 125, 50, 0.05) 100%);
-                     border: 1px solid rgba(76, 175, 80, 0.4);
-                     color: #81c784;
-                     box-shadow: 0 0 8px rgba(76, 175, 80, 0.12);
-                   {% else %}
-                     background: rgba(255, 255, 255, 0.02);
-                     border: 1px solid rgba(255, 255, 255, 0.06);
-                     color: var(--text-muted);
-                   {% endif %}
-                   {% if badge.is_today and not badge.has_reviewed %}
-                     border-color: var(--accent);
-                     animation: badge-pulse 2s infinite ease-in-out;
-                   {% endif %}"
-                 onmouseover="this.style.transform='translateY(-2px) scale(1.08)'; {% if badge.has_reviewed %}this.style.boxShadow='0 0 12px rgba(76, 175, 80, 0.25)';{% else %}this.style.borderColor='rgba(255,255,255,0.15)';{% endif %}"
-                 onmouseout="this.style.transform='none'; {% if badge.has_reviewed %}this.style.boxShadow='0 0 8px rgba(76, 175, 80, 0.12)';{% else %}this.style.borderColor='rgba(255, 255, 255, 0.06)';{% endif %}">
-              
-              {{ badge.weekday_name }}
-              
-              {% if badge.has_reviewed %}
-                <!-- 綠色發光打卡點 -->
-                <div style="position: absolute; bottom: -2px; width: 5px; height: 5px; border-radius: 50%; background: #81c784; box-shadow: 0 0 5px #81c784;"></div>
-              {% endif %}
-            </div>
-
-            <!-- 日期文字 -->
-            <span style="font-size: 0.65rem; font-weight: 600; z-index: 5;
-              {% if badge.is_today %}
-                color: var(--accent);
-              {% else %}
-                color: var(--text-muted);
-              {% endif %}">
-              {% if badge.is_today %}今天{% else %}{{ badge.date|slice:"5:" }}{% endif %}
-            </span>
+      <!-- Card 2: 字庫 -->
+      <div class="db-stats-card db-stats-card--vocab">
+        <div class="db-stats-card__main">
+          <div class="db-stats-card__icon-wrap">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="db-svg-icon db-svg-icon--blue">
+              <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
+              <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
+            </svg>
           </div>
+          <div class="db-stats-card__body">
+            <span class="db-stats-card__value" style="color:var(--blue);">{{ total_vocab }}</span>
+            <span class="db-stats-card__label">學術詞彙量</span>
+          </div>
+        </div>
+        <div class="db-stats-card__meta">
+          <span class="db-stats-badge db-stats-badge--vocab">{{ learning_percent }}% 學習率</span>
+          <p class="db-stats-hint" title="已開始學習: {{ learning_count }} 字">已開始學習: {{ learning_count }} 字</p>
+        </div>
+      </div>
+      
+      <!-- Card 3: 連續打卡 -->
+      <div class="db-stats-card db-stats-card--streak">
+        <div class="db-stats-card__main">
+          <div class="db-stats-card__icon-wrap">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="db-svg-icon db-svg-icon--yellow">
+              <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+              <polyline points="22 4 12 14.01 9 11.01"></polyline>
+            </svg>
+          </div>
+          <div class="db-stats-card__body">
+            <span class="db-stats-card__value" style="color:var(--yellow);">{{ profile.streak }}</span>
+            <span class="db-stats-card__label">學習連續性</span>
+          </div>
+        </div>
+        <div class="db-stats-card__meta">
+          {% if today_total == 0 %}
+            <span class="db-stats-badge db-stats-badge--active">今日已達標</span>
+          {% else %}
+            <span class="db-stats-badge db-stats-badge--pending-day">今日待複習</span>
+          {% endif %}
+          <p class="db-stats-hint" title="本週已連續穩定學習 {{ profile.streak }} 天">已連續學習 {{ profile.streak }} 天</p>
+        </div>
+      </div>
+      
+      <!-- Card 4: 精通 -->
+      <div class="db-stats-card db-stats-card--mastered">
+        <div class="db-stats-card__main">
+          <div class="db-stats-card__icon-wrap">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="db-svg-icon db-svg-icon--green">
+              <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"></path>
+            </svg>
+          </div>
+          <div class="db-stats-card__body">
+            <span class="db-stats-card__value" style="color:var(--green);">{{ mastered_count }}</span>
+            <span class="db-stats-card__label">永久記憶詞彙</span>
+          </div>
+        </div>
+        <div class="db-stats-card__meta">
+          <span class="db-stats-badge db-stats-badge--green">{{ mastery_percent }}% 精通率</span>
+          <p class="db-stats-hint" title="共有 {{ mastered_count }} 個單字大腦突觸長期固化">長期固化詞彙 {{ mastered_count }} 字</p>
+        </div>
+      </div>
+    </div>
+
+<div class="db-main-layout fade-in">
+  
+  <!-- 左側主要展示欄位 (每日詞彙 & 記憶光譜) -->
+  <div class="db-layout-left">
+    
+    <!-- 每日精選學術詞卡 (雙欄對稱與 Active Recall 設計) -->
+    {% if daily_word %}
+    <section class="db-daily-card">
+      
+      <div class="db-daily-card__header">
+        <h3 class="db-section-title">📊 每日精選學術詞彙</h3>
+        <button class="db-daily-explore-link" onclick="window.openWordModal('{{ daily_word.word.id }}')">
+          詳細分析 →
+        </button>
+      </div>
+      <div class="db-daily-card__body">
+        <!-- 左欄：單字基本資訊 -->
+        <div class="db-daily-card__word-section">
+          <div style="display:flex; align-items:baseline; gap:10px; margin-bottom: 8px;">
+            <h2 class="db-daily-card__word" onclick="window.openWordModal('{{ daily_word.word.id }}')">{{ daily_word.display_text }}</h2>
+            <span class="db-daily-card__pos">{{ daily_word.word.senses.first.part_of_speech }}</span>
+          </div>
+          
+          <div class="db-daily-card__phonetics">
+            {% if daily_word.word.phonetic_display %}
+              <span class="db-daily-card__phonetics-text">/{{ daily_word.word.phonetic_display }}/</span>
+            {% endif %}
+            <button class="db-daily-card__audio-btn" onclick="window.speak('{{ daily_word.display_text }}', 'en-US')" title="美音">🇺🇸</button>
+            <button class="db-daily-card__audio-btn" onclick="window.speak('{{ daily_word.display_text }}', 'en-GB')" title="英音">🇬🇧</button>
+          </div>
+          
+          <div style="margin-top: 14px; display: flex; align-items: center; flex-wrap: wrap;">
+            <span class="db-daily-card__translation active-recall-blur" title="點擊顯示中文翻譯">{{ daily_word.display_translation }}</span>
+            <span class="active-recall-hint">👁️ 點擊顯示翻譯</span>
+          </div>
+          
+          <p class="db-daily-card__definition" style="margin-top: 8px;">{{ daily_word.display_definition }}</p>
+        </div>
+        
+        <div class="db-daily-card__divider-v"></div>
+        
+        <!-- 右欄：學術語境例句 -->
+        <div class="db-daily-card__example-section">
+          <div class="db-daily-card__example-title">學術語境例句</div>
+          {% if daily_word.display_example %}
+            <div class="db-daily-card__example-box">
+              <p class="db-daily-card__example-sentence">"{{ daily_word.display_example }}"</p>
+              <div style="margin-top: 8px; display: flex; align-items: center; flex-wrap: wrap;">
+                <p class="db-daily-card__example-translation active-recall-blur" title="點擊顯示例句翻譯">{{ daily_word.word.senses.first.examples.first.translation }}</p>
+                <span class="active-recall-hint">👁️ 點擊解鎖翻譯</span>
+              </div>
+            </div>
+          {% else %}
+            <p class="db-daily-card__example-sentence" style="color:var(--text-muted); font-style:italic;">暫無精選學術例句</p>
+          {% endif %}
+        </div>
+      </div>
+    </section>
+    {% endif %}
+
+
+  </div>
+  
+  <!-- 右側輔助欄位 (2x2指標卡、打卡連續性、下一個解鎖目標) -->
+  <div class="db-layout-right">
+    
+    <!-- 2x2 數據分析控制台 (SaaS Academic Dash Grid) -->
+    
+
+    <!-- 學習規律性分析 (Weekly Calendar) -->
+    <div class="db-weekly">
+      <div class="db-weekly__header">
+        <h3 class="db-section-title">📊 學習規律性分析</h3>
+      </div>
+      <div class="db-weekly__badges">
+        {% for badge in weekly_badges %}
+        <div class="db-badge-col {% if badge.has_reviewed %}db-badge--done{% endif %}">
+          <div class="db-badge-circle
+            {% if badge.is_today and not badge.has_reviewed %}db-badge--today{% endif %}
+            {% if badge.has_reviewed %}db-badge--reviewed{% endif %}"
+               title="{{ badge.date }}{% if badge.has_reviewed %} : 複習了 {{ badge.count }} 次{% endif %}">
+            {{ badge.weekday_name }}
+            {% if badge.has_reviewed %}
+              <span class="db-badge-dot"></span>
+            {% endif %}
+          </div>
+          <span class="db-badge-date {% if badge.is_today %}db-badge-date--today{% endif %}">
+            {% if badge.is_today %}今天{% else %}{{ badge.date|slice:"5:" }}{% endif %}
+          </span>
+        </div>
         {% endfor %}
       </div>
     </div>
 
+    <!-- 下一個里程碑目標 -->
+    {% if next_achievement %}
+    <div class="db-next-goal">
+      <div class="db-next-goal__icon-wrap">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color:var(--accent);">
+          <circle cx="12" cy="8" r="7"></circle>
+          <polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88"></polyline>
+        </svg>
+      </div>
+      <div class="db-next-goal__body">
+        <div class="db-next-goal__top">
+          <span class="db-next-goal__tag">下一解鎖指標 ({{ next_achievement.percent }}%)</span>
+        </div>
+        <h4 class="db-next-goal__name">{{ next_achievement.name }}</h4>
+        <p class="db-next-goal__desc">{{ next_achievement.desc }}</p>
+        <div class="db-next-goal__bar-wrap">
+          <div class="db-next-goal__bar">
+            <div class="db-next-goal__bar-fill" style="width:{{ next_achievement.percent }}%;"></div>
+          </div>
+          <span class="db-next-goal__progress-text">{{ next_achievement.current }}/{{ next_achievement.target }}</span>
+        </div>
+      </div>
+      <a href="{% url 'vocab:achievements' %}" class="db-next-goal__link" title="前往里程碑殿堂">詳情</a>
+    </div>
+    {% endif %}
+
   </div>
 </div>
 
-
-<!-- 掌握度分佈圖 -->
-<div class="card fade-in" style="position: relative; overflow: hidden; background: linear-gradient(135deg, rgba(22,22,26,0.8) 0%, rgba(255,255,255,0.01) 100%);">
-  
-  <div style="margin-bottom: 20px; display: flex; align-items: center; justify-content: space-between; position: relative; z-index: 2;">
-    <div>
-      <span style="font-size: 0.85rem; font-weight: 600; color: var(--text-secondary); letter-spacing: 0.05em; text-transform: uppercase;">字庫熟練度分佈 · 記憶山脈</span>
-      <p style="font-size: 0.72rem; color: var(--text-muted); margin-top: 2px;">山脈高度代表各階段單字量，連綿起伏勾勒你的記憶版圖</p>
-    </div>
-    <button id="open-info-btn" class="btn btn-ghost btn-sm" style="padding: 2px 8px; font-size: 0.75rem; border-color: rgba(255,255,255,0.08); background: transparent;">
-      ⓘ 學習機制說明
-    </button>
-  </div>
-
-  <!-- 連動 Mastery Bar Grid -->
-  <div class="mastery-bar-grid" style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 24px; position: relative; z-index: 2;">
-    {% for label, count in mastery_data.items %}
-    {% with index=forloop.counter0 %}
-    <div class="mastery-bar-item-interactive" data-index="{{ index }}">
-      <div class="mastery-bar-count
-        {% if label == '生疏' %}text-muted" style="font-size: 1.6rem; font-weight: 700; transition: transform 0.3s ease;
-        {% elif label == '學習中' %}" style="color:var(--yellow); font-size: 1.6rem; font-weight: 700; transition: transform 0.3s ease;
-        {% elif label == '熟悉' %}" style="color:var(--blue); font-size: 1.6rem; font-weight: 700; transition: transform 0.3s ease;
-        {% else %}" style="color:var(--green); font-size: 1.6rem; font-weight: 700; transition: transform 0.3s ease;
-        {% endif %}">{{ count }}</div>
-      <div class="mastery-bar-label" style="font-size: 0.75rem; color: var(--text-secondary); margin-top: 4px; font-weight: 500;">{{ label }}</div>
-    </div>
-    {% endwith %}
-    {% endfor %}
-  </div>
-
-  <!-- SVG 記憶山脈繪製區域 -->
-  <div class="peaks-container" style="position: relative; width: 100%; height: 180px; background: rgba(255,255,255,0.002); border-radius: var(--radius); border: 1px solid rgba(255,255,255,0.02); overflow: hidden; display: flex; align-items: flex-end;">
-    <!-- 背景網格線，增強科技感 -->
-    <div class="peaks-grid-bg" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(rgba(255,255,255,0.015) 1px, transparent 1px) 0 0 / 100% 25px, linear-gradient(90deg, rgba(255,255,255,0.015) 1px, transparent 1px) 0 0 / 12.5% 100%; pointer-events: none; z-index: 1;"></div>
-    
-    <svg viewBox="0 0 800 180" preserveAspectRatio="none" style="width: 100%; height: 100%; position: relative; z-index: 2;">
-      <defs>
-        <!-- 漸變色定義 -->
-        <linearGradient id="grad-peak-0" x1="0%" y1="0%" x2="0%" y2="100%">
-          <stop offset="0%" stop-color="rgba(144, 144, 168, 0.45)" />
-          <stop offset="100%" stop-color="rgba(13, 13, 15, 0)" />
-        </linearGradient>
-        <linearGradient id="grad-peak-1" x1="0%" y1="0%" x2="0%" y2="100%">
-          <stop offset="0%" stop-color="rgba(232, 184, 75, 0.45)" />
-          <stop offset="100%" stop-color="rgba(13, 13, 15, 0)" />
-        </linearGradient>
-        <linearGradient id="grad-peak-2" x1="0%" y1="0%" x2="0%" y2="100%">
-          <stop offset="0%" stop-color="rgba(74, 158, 255, 0.45)" />
-          <stop offset="100%" stop-color="rgba(13, 13, 15, 0)" />
-        </linearGradient>
-        <linearGradient id="grad-peak-3" x1="0%" y1="0%" x2="0%" y2="100%">
-          <stop offset="0%" stop-color="rgba(76, 175, 130, 0.45)" />
-          <stop offset="100%" stop-color="rgba(13, 13, 15, 0)" />
-        </linearGradient>
-      </defs>
-
-      <!-- 四座山脈路徑 -->
-      <!-- 生疏 (X=160, 控制點 Y=peak_y.0) -->
-      <path class="mountain-path" data-index="0"
-            d="M -40 180 Q 160 {{ peak_y.0 }} 360 180 Z" 
-            fill="url(#grad-peak-0)" stroke="rgba(144, 144, 168, 0.55)" stroke-width="1.5" />
-      
-      <!-- 學習中 (X=320, 控制點 Y=peak_y.1) -->
-      <path class="mountain-path" data-index="1"
-            d="M 120 180 Q 320 {{ peak_y.1 }} 520 180 Z" 
-            fill="url(#grad-peak-1)" stroke="rgba(232, 184, 75, 0.55)" stroke-width="1.5" />
-      
-      <!-- 熟悉 (X=480, 控制點 Y=peak_y.2) -->
-      <path class="mountain-path" data-index="2"
-            d="M 280 180 Q 480 {{ peak_y.2 }} 680 180 Z" 
-            fill="url(#grad-peak-2)" stroke="rgba(74, 158, 255, 0.55)" stroke-width="1.5" />
-      
-      <!-- 精通 (X=640, 控制點 Y=peak_y.3) -->
-      <path class="mountain-path" data-index="3"
-            d="M 440 180 Q 640 {{ peak_y.3 }} 840 180 Z" 
-            fill="url(#grad-peak-3)" stroke="rgba(76, 175, 130, 0.55)" stroke-width="1.5" />
-
-      <!-- 基底發光橫線 -->
-      <line x1="0" y1="180" x2="800" y2="180" stroke="rgba(255,255,255,0.06)" stroke-width="1" />
-    </svg>
-
-    <!-- 粒子裝飾層 (漂浮星光，點亮山脈) -->
-    <div class="peaks-particles" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 3;">
-      <div class="peak-dot" style="position: absolute; left: 20%; bottom: calc(180px - {{ peak_y.0 }}px + 10px); width: 4px; height: 4px; background: rgba(144,144,168,0.7); border-radius: 50%; box-shadow: 0 0 8px rgba(144,144,168,0.8); animation: peak-pulse-dot 2.5s infinite ease-in-out;"></div>
-      <div class="peak-dot" style="position: absolute; left: 40%; bottom: calc(180px - {{ peak_y.1 }}px + 10px); width: 4px; height: 4px; background: rgba(232,184,75,0.7); border-radius: 50%; box-shadow: 0 0 8px rgba(232,184,75,0.8); animation: peak-pulse-dot 2.5s infinite ease-in-out; animation-delay: 0.5s;"></div>
-      <div class="peak-dot" style="position: absolute; left: 60%; bottom: calc(180px - {{ peak_y.2 }}px + 10px); width: 4px; height: 4px; background: rgba(74,158,255,0.7); border-radius: 50%; box-shadow: 0 0 8px rgba(74,158,255,0.8); animation: peak-pulse-dot 2.5s infinite ease-in-out; animation-delay: 1s;"></div>
-      <div class="peak-dot" style="position: absolute; left: 80%; bottom: calc(180px - {{ peak_y.3 }}px + 10px); width: 4px; height: 4px; background: rgba(76,175,130,0.7); border-radius: 50%; box-shadow: 0 0 8px rgba(76,175,130,0.8); animation: peak-pulse-dot 2.5s infinite ease-in-out; animation-delay: 1.5s;"></div>
-    </div>
-  </div>
-</div>
-
-<!-- 學習機制與演算法說明 Modal -->
-<div id="info-modal" class="modal-overlay" style="display: none;">
-  <div class="modal-content" style="max-width: 600px;">
+<!-- 新引導 modal 與 演算法說明 modal (保留功能，不影響版面高度) -->
+<div id="info-modal" class="modal-overlay" style="display:none;">
+  <div class="modal-content" style="max-width:600px;">
     <div class="modal-header">
-      <h3>ⓘ 學習機制與演算法說明</h3>
+      <h3>ⓘ 艾賓浩斯記憶機制與 SM-2 演算法說明</h3>
       <button id="close-info-btn" class="modal-close-btn">&times;</button>
     </div>
     <div class="modal-body">
       <div class="modal-section">
-        <h4>1. 字庫熟練度分佈標準</h4>
-        <p>系統根據每個單字的「當前複習間隔 (Interval)」來判定該單字在您腦中的熟練程度：</p>
+        <h4>1. 認知習得程度與複習天數分佈</h4>
+        <p>系統依據您的「下一次複習間隔 (Interval)」天數，精確劃分各單字在您腦中的記憶保留程度：</p>
         <table class="modal-table">
-          <thead>
-            <tr>
-              <th>熟練度等級</th>
-              <th>複習間隔天數 (Interval)</th>
-              <th>狀態說明</th>
-            </tr>
-          </thead>
+          <thead><tr><th>保留狀態</th><th>保留天數 (間隔)</th><th>認知狀態描述</th></tr></thead>
           <tbody>
-            <tr>
-              <td><span class="mastery-badge mastery-0">生疏</span></td>
-              <td>0 ~ 2 天</td>
-              <td>新學習、剛加入或回答「又忘了」的單字，需要密集複習。</td>
-            </tr>
-            <tr>
-              <td><span class="mastery-badge mastery-1">學習中</span></td>
-              <td>3 ~ 7 天</td>
-              <td>已初步記住，進入短期到中期記憶轉化階段。</td>
-            </tr>
-            <tr>
-              <td><span class="mastery-badge mastery-2">熟悉</span></td>
-              <td>8 ~ 21 天</td>
-              <td>已形成中期記憶，複習間隔逐步拉長。</td>
-            </tr>
-            <tr>
-              <td><span class="mastery-badge mastery-3">精通</span></td>
-              <td>&gt; 21 天</td>
-              <td>已鞏固為長期記憶，幾乎不再遺忘。</td>
-            </tr>
+            <tr><td><span class="mastery-badge mastery-0">短期記憶 / 新置</span></td><td>0 ~ 2 天</td><td>剛學會或最近回答「忘記」的單字。</td></tr>
+            <tr><td><span class="mastery-badge mastery-1">中期記憶 / 鞏固中</span></td><td>3 ~ 7 天</td><td>進入神經連結突觸鞏固階段。</td></tr>
+            <tr><td><span class="mastery-badge mastery-2">長期記憶 / 穩定</span></td><td>8 ~ 21 天</td><td>已在大腦皮層中穩定，複習間隔大幅拉長。</td></tr>
+            <tr><td><span class="mastery-badge mastery-3">永久記憶 / 牢固</span></td><td>&gt; 21 天</td><td>幾乎形成本能反應，屬於極難遺忘的單字。</td></tr>
           </tbody>
         </table>
       </div>
-
-      <div class="modal-section" style="margin-top: 24px;">
-        <h4>2. SM-2 間隔重複複習評估標準</h4>
-        <p>本系統使用經典的 <strong>SuperMemo-2 (SM-2)</strong> 演算法。當您在複習單字卡片時，系統會提供四個自我評估按鈕，並依此動態計算下一次的複習時間與掌握程度：</p>
+      <div class="modal-section" style="margin-top:24px;">
+        <h4>2. SM-2 間隔重複複習核心因子調整</h4>
+        <p>系統根據您的自我評估品質 (0~3) 來調節該詞彙在您腦中的認知難易度 (E-Factor)：</p>
         <table class="modal-table">
-          <thead>
-            <tr>
-              <th>評估選項</th>
-              <th>演算法運作邏輯與排程效果</th>
-            </tr>
-          </thead>
+          <thead><tr><th>自我評估</th><th>演算法底層決策</th></tr></thead>
           <tbody>
-            <tr>
-              <td><strong style="color: var(--red);">又忘了 (Again)</strong></td>
-              <td>答錯。複習間隔重置為 <strong>1 天</strong>，易忘因子降低（未來複習頻率提高）。</td>
-            </tr>
-            <tr>
-              <td><strong style="color: var(--yellow);">困難 (Hard)</strong></td>
-              <td>勉強答對。複習間隔乘以 <strong>1.2 倍</strong>，易忘因子降低（未來複習頻率提高）。</td>
-            </tr>
-            <tr>
-              <td><strong style="color: var(--blue);">記得 (Good)</strong></td>
-              <td>正常答對。複習間隔乘以 <strong>E-Factor（預設 2.5 左右）</strong>，易忘因子保持穩定。</td>
-            </tr>
-            <tr>
-              <td><strong style="color: var(--green);">輕鬆 (Easy)</strong></td>
-              <td>非常熟練。複習間隔乘以 <strong>E-Factor 再乘額外加成</strong>，且易忘因子增加（未來複習間隔會拉得更長）。</td>
-            </tr>
+            <tr><td><strong style="color:var(--red);">忘記</strong></td><td>複習間隔重新校準為 <strong>1 天</strong>，易忘因子大幅拉低。</td></tr>
+            <tr><td><strong style="color:var(--yellow);">困難</strong></td><td>間隔乘以 <strong>1.2 倍</strong>，易忘因子微調降低。</td></tr>
+            <tr><td><strong style="color:var(--blue);">記得</strong></td><td>間隔乘以當前 <strong>E-Factor (約 2.5)</strong>，因子保持穩定。</td></tr>
+            <tr><td><strong style="color:var(--green);">輕鬆</strong></td><td>間隔乘以 <strong>E-Factor 再加權</strong>，因子提升。</td></tr>
           </tbody>
         </table>
-        <p style="margin-top: 12px; font-size: 0.8rem; color: var(--text-muted); line-height: 1.4;">
-          ※ 註：初次複習新單字時，若選擇「記得」下一次將於 2 天後複習；選擇「輕鬆」則直接於 4 天後複習（直接進入「學習中」狀態），以此避免新詞過度重複。
+        <p style="margin-top:12px;font-size:.8rem;color:var(--text-muted);line-height:1.4;">
+          ※ 初次複習新單字時，「記得」=2 天後；「輕鬆」=4 天後。
         </p>
       </div>
     </div>
   </div>
 </div>
 
+<style>
+/* ─── 學術與 SaaS 科技美學 ─── */
+.db-section-title {
+  font-size: .82rem; font-weight: 700; color: var(--text-secondary);
+  letter-spacing: .04em; text-transform: uppercase; margin: 0;
+}
+.db-section-sub {
+  font-size: .68rem; color: var(--text-muted); margin: 2px 0 0 0;
+}
+
+/* ─── HERO SECTION (更加緊湊) ─── */
+.db-hero {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  padding: 20px 32px;
+  margin: -20px 0 16px;
+  border-radius: 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  background: transparent;
+  overflow: hidden;
+}
+
+.db-hero__left {
+  display: flex;
+  align-items: center;
+  gap: 28px;
+  z-index: 2;
+  flex: 1;
+}
+
+.db-hero__ring {
+  position: relative;
+  width: 110px; height: 110px;
+  flex-shrink: 0;
+  cursor: pointer;
+  transition: transform .45s cubic-bezier(.25,1,.5,1);
+}
+.db-hero__ring:hover { transform: scale(1.04); }
+.db-hero__ring svg { transform: rotate(-90deg); width: 110px; height: 110px; }
+.db-ring-bg { fill: transparent; stroke: rgba(255, 255, 255, 0.03); stroke-width: 5; }
+.db-ring-fg {
+  fill: transparent; stroke-width: 5; stroke-linecap: round;
+  transition: stroke-dashoffset .8s cubic-bezier(.4,0,.2,1);
+}
+.db-ring-label {
+  position: absolute; inset: 0;
+  display: flex; flex-direction: column;
+  justify-content: center; align-items: center;
+}
+.db-ring-pct { font-size: 1.55rem; font-weight: 800; color: var(--text-primary); line-height: 1; font-family: var(--font-mono); }
+.db-ring-sub { font-size: .58rem; color: var(--text-muted); margin-top: 2px; letter-spacing: .08em; font-weight: 700; }
+
+.db-hero__text { z-index: 2; flex: 1; max-width: 500px; }
+.db-hero__title {
+  font-size: 2.8rem;
+  font-weight: 800;
+  letter-spacing: -0.04em;
+  margin: 0 0 12px;
+  color: #ffffff;
+}
+
+.academic-milestone-wrap {
+  background: rgba(255, 255, 255, 0.015);
+  border: 1px solid rgba(255, 255, 255, 0.03);
+  padding: 12px 18px;
+  border-radius: 8px;
+  width: 100%;
+}
+.academic-milestone-info {
+  display: flex; justify-content: space-between; font-size: 0.82rem; font-weight: 500;
+  margin-bottom: 6px; color: var(--text-secondary);
+}
+.academic-milestone-label { font-weight: 700; }
+.academic-milestone-target { color: var(--text-muted); }
+.academic-milestone-bar {
+  width: 100%; height: 8px; background: rgba(255,255,255,0.04); border-radius: 4px; overflow: hidden;
+}
+.academic-milestone-fill {
+  height: 100%; background: linear-gradient(90deg, var(--accent), var(--green)); border-radius: 4px;
+}
+.academic-milestone-footer {
+  display: flex; justify-content: space-between; font-size: 0.75rem; color: var(--text-muted);
+  margin-top: 6px;
+}
+.academic-milestone-pct { font-weight: 700; color: var(--text-primary); }
+
+.db-hero__right { z-index: 2; flex-shrink: 0; display: flex; flex-direction: column; align-items: flex-end; gap: 8px; }
+
+/* 緊湊型 CTA 按鈕 */
+/* 精緻並排大按鈕組 */
+.db-hero-btn-group {
+  display: flex;
+  gap: 16px;
+  align-items: center;
+}
+
+.db-hero-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  padding: 16px 36px;
+  height: 68px;
+  border-radius: 14px;
+  font-size: 1.15rem;
+  font-weight: 700;
+  text-decoration: none;
+  transition: all 0.28s cubic-bezier(0.16, 1, 0.3, 1);
+  border: 1px solid transparent;
+  white-space: nowrap;
+  position: relative;
+  cursor: pointer;
+  letter-spacing: 0.02em;
+}
+
+/* 按鈕內像素圖案 */
+.db-hero-btn__pixel-icon {
+  width: 28px;
+  height: 28px;
+  image-rendering: pixelated;
+  flex-shrink: 0;
+  vertical-align: middle;
+  transition: transform 0.25s ease;
+}
+
+/* 寶箱圖示專屬包裹器 */
+.db-hero-btn__icon-wrapper {
+  position: relative;
+  width: 28px;
+  height: 28px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.db-hero-btn__pixel-icon--closed {
+  transition: opacity 0.15s ease, visibility 0.15s ease;
+}
+
+.db-hero-btn__pixel-icon--open {
+  position: absolute;
+  top: 0;
+  left: 0;
+  transition: opacity 0.15s ease, visibility 0.15s ease;
+}
+
+/* Hover 切換寶箱開關狀態 */
+.db-hero-btn:hover .db-hero-btn__pixel-icon--closed {
+  display: none !important;
+  opacity: 0;
+  visibility: hidden;
+}
+.db-hero-btn:hover .db-hero-btn__pixel-icon--open {
+  display: inline-block !important;
+  opacity: 1 !important;
+  visibility: visible !important;
+}
+
+/* 圓環中央像素圖案 */
+.db-hero-pixel-badge {
+  width: 36px;
+  height: 36px;
+  image-rendering: pixelated;
+  margin-bottom: 2px;
+  animation: pixel-float 2s ease-in-out infinite alternate;
+  filter: drop-shadow(0 2px 4px rgba(0,0,0,0.45));
+}
+
+@keyframes pixel-float {
+  0% { transform: translateY(0); }
+  100% { transform: translateY(-4px); }
+}
+
+/* Primary 按鈕：每日複習（綠色系） */
+.db-hero-btn--primary {
+  background: linear-gradient(135deg, rgba(76,175,130,0.22) 0%, rgba(76,175,130,0.08) 100%);
+  border: 1px solid rgba(76,175,130,0.45);
+  color: #fff;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.12), 0 4px 15px rgba(76,175,130,0.12);
+}
+.db-hero-btn--primary:hover {
+  transform: translateY(-2px);
+  border-color: rgba(76,175,130,0.65);
+  background: linear-gradient(135deg, rgba(76,175,130,0.3) 0%, rgba(76,175,130,0.12) 100%);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.2), 0 8px 25px rgba(76,175,130,0.25);
+}
+.db-hero-btn--primary:hover .db-hero-btn__pixel-icon {
+  animation: pixel-book-bounce 0.8s ease infinite alternate;
+}
+@keyframes pixel-book-bounce {
+  0%   { transform: translateY(0); }
+  100% { transform: translateY(-4px); }
+}
+
+/* Secondary 按鈕：基本樣式 */
+.db-hero-btn--secondary {
+  background: linear-gradient(180deg, rgba(255,255,255,0.02) 0%, rgba(255,255,255,0.01) 100%);
+  border: 1px solid rgba(255,255,255,0.08);
+  color: var(--text-secondary);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.05);
+}
+.db-hero-btn--secondary:hover {
+  transform: translateY(-2px);
+  background: rgba(255, 255, 255, 0.05);
+  color: var(--text-primary);
+}
+
+/* 挑戰按鈕：特別的黃色系 hover */
+.db-hero-btn--challenge:hover {
+  border-color: rgba(232, 184, 75, 0.45);
+  background: rgba(232, 184, 75, 0.06);
+  color: var(--yellow);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.08), 0 8px 25px rgba(232, 184, 75, 0.18);
+}
+.db-hero-btn--challenge:hover .db-hero-btn__pixel-icon {
+  animation: pixel-lightning-shiver 0.25s linear infinite;
+}
+@keyframes pixel-lightning-shiver {
+  0%, 100% { transform: translate(0, 0); }
+  25% { transform: translate(-1.5px, 1px); }
+  50% { transform: translate(1px, -1px); }
+  75% { transform: translate(-1px, -1px); }
+}
+
+/* 數字徽章 */
+.db-hero-btn__badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, var(--green) 0%, #22a275 100%);
+  color: #0c1b14;
+  font-size: 0.85rem;
+  font-weight: 800;
+  height: 22px;
+  padding: 0 8px;
+  border-radius: 11px;
+  margin-left: 4px;
+  font-family: var(--font-mono);
+  border: 1px solid rgba(255,255,255,0.22);
+  box-shadow: 0 2px 6px rgba(76,175,130,0.4);
+}
+
+/* Disabled 按鈕 (例如已完成複習) */
+.db-hero-btn--disabled {
+  background: rgba(255, 255, 255, 0.01);
+  border: 1px dashed rgba(255,255,255,0.05);
+  color: var(--text-muted);
+  cursor: default;
+  box-shadow: none;
+}
+
+/* Glow Blobs */
+.db-hero__glow {
+  position: absolute; border-radius: 50%;
+  pointer-events: none; filter: blur(60px);
+}
+.db-hero__glow--1 { width: 200px; height: 200px; top: -50px; left: -50px; background: rgba(108,99,255,0.04); }
+.db-hero__glow--2 { width: 180px; height: 180px; bottom: -60px; right: -40px; background: rgba(76,175,130,0.03); }
+
+/* ─── 雙欄控制台佈局 (GRID SYSTEM FOR SCROLL ELIMINATION) ─── */
+.db-main-layout {
+  display: grid;
+  grid-template-columns: 1.55fr 1fr;
+  gap: 28px;
+  align-items: start;
+}
+
+.db-layout-left {
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+  min-width: 0;
+}
+
+.db-layout-right {
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+  min-width: 0;
+}
+
+/* ─── 左側：一體化每日詞卡 (Super Compact Daily Card) ─── */
+.db-daily-card {
+  position: relative;
+  padding: 24px 32px;
+  border-radius: 16px;
+  background: linear-gradient(180deg, rgba(22,22,26,0.8) 0%, rgba(18,18,22,0.95) 100%);
+  border: 1px solid rgba(255,255,255,0.05);
+  box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+  overflow: hidden;
+}
+.db-daily-card__glow {
+  position: absolute; top: -100px; right: -100px;
+  width: 250px; height: 250px; background: radial-gradient(circle, rgba(108,99,255,0.15) 0%, rgba(108,99,255,0) 70%);
+  border-radius: 50%; pointer-events: none;
+}
+.db-daily-card:hover {
+  transform: translateY(-2px);
+  border-color: rgba(255, 255, 255, 0.15);
+}
+
+.db-daily-card__header {
+  display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;
+}
+.db-daily-explore-link {
+  background: none; border: none; color: var(--accent); font-size: 0.85rem; font-weight: 700; cursor: pointer; padding: 0;
+  opacity: 0.8; transition: opacity 0.2s;
+}
+.db-daily-explore-link:hover { opacity: 1; text-decoration: underline; }
+
+.db-daily-card__body {
+  display: flex; gap: 24px;
+}
+.db-daily-card__word-section { flex: 1; min-width: 0; }
+.db-daily-card__word {
+  font-size: 2.4rem; font-weight: 800; color: #fff; margin: 0; cursor: pointer;
+  transition: color .2s; letter-spacing: -0.02em;
+}
+.db-daily-card__word:hover { color: var(--accent); }
+.db-daily-card__phonetics {
+  display: flex; align-items: center; gap: 8px; margin-top: 4px; margin-bottom: 12px;
+}
+.db-daily-card__phonetics-text {
+  font-family: var(--font-mono); font-size: 0.95rem; color: var(--text-secondary); margin-right: 6px;
+}
+.db-daily-card__audio-btn {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  color: var(--text-secondary);
+  font-size: 0.68rem;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.25s cubic-bezier(0.25, 0.8, 0.25, 1);
+  box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.1);
+  padding: 0;
+}
+.db-daily-card__audio-btn:hover {
+  background: rgba(108, 99, 255, 0.15);
+  border-color: rgba(108, 99, 255, 0.4);
+  color: #fff;
+  box-shadow: 0 0 8px rgba(108, 99, 255, 0.3);
+  transform: scale(1.08);
+}
+.db-daily-card__pos {
+  font-family: var(--font-mono); font-size: 0.82rem; font-weight: 700; color: var(--accent);
+  background: rgba(108,99,255,0.06); padding: 2px 6px; border-radius: 4px; font-style: italic;
+}
+.db-daily-card__translation {
+  font-size: 1.2rem; font-weight: 700; color: var(--text-primary);
+}
+.db-daily-card__definition {
+  font-size: 0.88rem; color: var(--text-secondary); line-height: 1.45; margin: 0;
+}
+
+/* 主動召回毛玻璃模糊 */
+.active-recall-blur {
+  filter: blur(5px);
+  opacity: 0.35;
+  cursor: pointer;
+  transition: filter 0.3s cubic-bezier(0.25, 0.8, 0.25, 1), opacity 0.3s ease;
+  user-select: none;
+  background: rgba(255, 255, 255, 0.02);
+  padding: 2px 6px;
+  border-radius: 4px;
+  display: inline-block;
+}
+.active-recall-blur:hover {
+  filter: blur(2px);
+  opacity: 0.7;
+  background: rgba(255, 255, 255, 0.04);
+}
+.active-recall-blur.revealed {
+  filter: blur(0) !important;
+  opacity: 1 !important;
+  user-select: text;
+  cursor: default;
+  background: transparent !important;
+  padding: 0 !important;
+}
+.active-recall-hint {
+  font-size: 0.65rem;
+  color: var(--text-muted);
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  margin-left: 8px;
+  opacity: 0.7;
+  cursor: pointer;
+  transition: opacity 0.2s;
+}
+.active-recall-hint:hover {
+  opacity: 1;
+  color: var(--accent);
+}
+.db-daily-card__example-box {
+  background: rgba(255, 255, 255, 0.015);
+  border: 1px solid rgba(255, 255, 255, 0.03);
+  border-radius: 10px;
+  padding: 16px 20px;
+  margin-top: 8px;
+  position: relative;
+  box-shadow: inset 0 1px 1px rgba(255,255,255,0.02);
+}
+.db-daily-card__divider-v {
+  width: 1px; background: linear-gradient(180deg, transparent, rgba(255,255,255,0.04) 20%, rgba(255,255,255,0.04) 80%, transparent);
+}
+.db-daily-card__example-section { flex: 1; min-width: 0; display: flex; flex-direction: column; justify-content: center; }
+.db-daily-card__example-title {
+  font-size: 0.78rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 6px;
+}
+.db-daily-card__example-sentence {
+  font-size: 1.15rem; font-weight: 500; color: var(--text-primary); line-height: 1.5; margin: 0 0 8px; font-style: italic;
+}
+.db-daily-card__example-translation {
+  font-size: 0.95rem; color: var(--text-secondary); margin: 0;
+}
+
+/* ─── 左側：記憶保留狀態光譜 (Quantum Peaks - 緊湊高度) ─── */
+.db-stats-card {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 16px 20px;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.015);
+  border: 1px solid rgba(255, 255, 255, 0.03);
+  box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+  transition: all .2s;
+}
+.db-stats-card:hover {
+  background: rgba(255, 255, 255, 0.02);
+  transform: translateY(-2px);
+}
+.db-stats-card--due:hover {
+  border-color: rgba(255, 0, 127, 0.3) !important;
+  box-shadow: 0 4px 20px rgba(255, 0, 127, 0.08);
+}
+.db-stats-card--vocab:hover {
+  border-color: rgba(74, 158, 255, 0.3) !important;
+  box-shadow: 0 4px 20px rgba(74, 158, 255, 0.08);
+}
+.db-stats-card--streak:hover {
+  border-color: rgba(232, 184, 75, 0.3) !important;
+  box-shadow: 0 4px 20px rgba(232, 184, 75, 0.08);
+}
+.db-stats-card--mastered:hover {
+  border-color: rgba(76, 175, 130, 0.3) !important;
+  box-shadow: 0 4px 20px rgba(76, 175, 130, 0.08);
+}
+.db-stats-card__main {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+.db-stats-card__meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 8px;
+  padding-top: 10px;
+  border-top: 1px solid rgba(255,255,255,0.03);
+}
+.db-stats-badge {
+  font-size: 0.65rem;
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: 4px;
+  white-space: nowrap;
+}
+.db-stats-badge--due {
+  background: rgba(255, 0, 127, 0.08);
+  color: var(--accent);
+  border: 1px solid rgba(255, 0, 127, 0.2);
+}
+.db-stats-badge--cleared {
+  background: rgba(76, 175, 130, 0.08);
+  color: var(--green);
+  border: 1px solid rgba(76, 175, 130, 0.2);
+}
+.db-stats-badge--vocab {
+  background: rgba(74, 158, 255, 0.08);
+  color: var(--blue);
+  border: 1px solid rgba(74, 158, 255, 0.2);
+}
+.db-stats-badge--active {
+  background: rgba(76, 175, 130, 0.08);
+  color: var(--green);
+  border: 1px solid rgba(76, 175, 130, 0.2);
+}
+.db-stats-badge--pending-day {
+  background: rgba(232, 184, 75, 0.08);
+  color: var(--yellow);
+  border: 1px solid rgba(232, 184, 75, 0.2);
+}
+.db-stats-badge--green {
+  background: rgba(76, 175, 130, 0.08);
+  color: var(--green);
+  border: 1px solid rgba(76, 175, 130, 0.2);
+}
+.db-stats-hint {
+  font-size: 0.7rem;
+  color: var(--text-muted);
+  margin: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 70%;
+}
+.db-stats-card__icon-wrap {
+  width: 42px; height: 42px; border-radius: 8px; display: flex; align-items: center; justify-content: center;
+  background: rgba(255, 255, 255, 0.01); border: 1px solid rgba(255,255,255,0.03);
+}
+.db-stats-card__icon-wrap svg { width: 20px; height: 20px; }
+.db-svg-icon { stroke-width: 1.5; }
+.db-stats-card__body { display: flex; flex-direction: column; }
+.db-stats-card__value {
+  font-size: 1.75rem; font-weight: 800; line-height: 1.1; color: var(--text-primary); font-family: var(--font-mono);
+}
+.db-stats-card__label {
+  font-size: 0.78rem; color: var(--text-muted); font-weight: 600; text-transform: uppercase; letter-spacing: 0.02em; margin-top: 3px;
+}
+
+.db-landscape {
+  padding: 24px 30px 0; background: rgba(255,255,255,0.005); border: 1px solid rgba(255,255,255,0.015);
+  border-radius: 12px; overflow: hidden;
+}
+.db-landscape__header {
+  display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px;
+}
+.db-mastery-bar {
+  display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 16px;
+}
+.db-mastery-item {
+  display: flex; flex-direction: column; align-items: center; padding: 10px 8px; border-radius: 8px;
+  background: rgba(255,255,255,0.005); border: 1px solid rgba(255,255,255,0.015); cursor: pointer;
+  transition: all .2s;
+}
+.db-mastery-item:hover, .db-mastery-item.active {
+  background: rgba(255,255,255,0.02); border-color: rgba(255,255,255,0.06);
+}
+.db-mastery-count { font-size: 1.5rem; font-weight: 700; line-height: 1; }
+.db-mastery-label { font-size: .78rem; color: var(--text-secondary); margin-top: 4px; font-weight: 600; }
+
+.db-peaks { position: relative; width: calc(100% + 40px); margin-left: -20px; height: 160px; }
+.db-peaks__svg { width: 100%; height: 100%; display: block; }
+.mountain-path {
+  cursor: pointer; opacity: .22;
+  transition: opacity 0.35s ease, stroke-width 0.35s ease, filter 0.35s ease;
+}
+.mountain-path:hover, .mountain-path.active {
+  opacity: .88 !important; stroke-width: 2.2px !important;
+}
+/* 各山脈極光 hover 專屬色 */
+.mountain-path[data-index="0"]:hover, .mountain-path[data-index="0"].active {
+  stroke: #ff007f !important;
+  filter: drop-shadow(0 0 10px rgba(255, 0, 127, 0.75));
+}
+.mountain-path[data-index="1"]:hover, .mountain-path[data-index="1"].active {
+  stroke: #ffb703 !important;
+  filter: drop-shadow(0 0 10px rgba(255, 183, 3, 0.75));
+}
+.mountain-path[data-index="2"]:hover, .mountain-path[data-index="2"].active {
+  stroke: #00f5d4 !important;
+  filter: drop-shadow(0 0 10px rgba(0, 245, 212, 0.75));
+}
+.mountain-path[data-index="3"]:hover, .mountain-path[data-index="3"].active {
+  stroke: #2ec4b6 !important;
+  filter: drop-shadow(0 0 10px rgba(46, 196, 182, 0.75));
+}
+
+.db-peak-dot {
+  position: absolute; width: 5px; height: 5px; border-radius: 50%;
+  background: rgba(var(--dot-color), 0.7); box-shadow: 0 0 8px rgba(var(--dot-color), 0.85);
+  pointer-events: none; animation: dot-float 2.5s ease-in-out infinite;
+}
+@keyframes dot-float {
+  0%, 100% { transform: translateY(0) scale(1); opacity: .4; }
+  50%      { transform: translateY(-3px) scale(1.2); opacity: 1; }
+}
+
+.db-stats-grid {
+  display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px;
+}
+
+.db-stats-card__icon-wrap {
+  width: 32px; height: 32px; border-radius: 8px; display: flex; align-items: center; justify-content: center;
+  background: rgba(255, 255, 255, 0.01); border: 1px solid rgba(255,255,255,0.03);
+  color: var(--text-muted);
+}
+.db-stats-card__icon-wrap svg { width: 20px; height: 20px; }
+.db-svg-icon { stroke-width: 1.5; }
+.db-stats-card__body { display: flex; flex-direction: column; }
+.db-stats-card__value {
+  font-size: 1.75rem; font-weight: 800; line-height: 1.1; color: var(--text-primary); font-family: var(--font-mono);
+}
+.db-stats-card__label {
+  font-size: 0.78rem; color: var(--text-muted); font-weight: 600; text-transform: uppercase; letter-spacing: 0.02em; margin-top: 3px;
+}
+
+/* ─── 右側：學習規律性分析 ─── */
+.db-weekly {
+  padding: 20px 24px; background: rgba(255,255,255,0.008); border: 1px solid rgba(255,255,255,0.02); border-radius: 10px;
+}
+.db-weekly__header { margin-bottom: 16px; }
+.db-weekly__badges {
+  display: flex; gap: 8px; justify-content: space-between; align-items: center;
+}
+.db-badge-col {
+  display: flex; flex-direction: column; align-items: center; gap: 6px; flex: 1; position: relative;
+}
+.db-badge--done + .db-badge--done::before {
+  content: ''; position: absolute; top: 21px; right: calc(50% + 21px);
+  width: calc(100% - 42px + 8px); height: 1.5px;
+  background: linear-gradient(90deg, rgba(76,175,130,0.1), var(--green), rgba(76,175,130,0.1));
+  box-shadow: 0 0 4px var(--green);
+  z-index: 1;
+}
+
+.db-badge-circle {
+  width: 42px; height: 42px; border-radius: 50%; display: flex; align-items: center; justify-content: center;
+  font-size: 0.9rem; font-weight: 700; transition: all .2s; cursor: pointer; position: relative; z-index: 5;
+  background: rgba(255,255,255,0.005); border: 1px solid rgba(255,255,255,0.03); color: var(--text-muted);
+}
+.db-badge--reviewed {
+  background: rgba(76,175,130,0.06) !important; border-color: rgba(76,175,130,0.25) !important; color: #81c784 !important;
+}
+.db-badge--today {
+  border-color: var(--accent) !important;
+  box-shadow: 0 0 0 2px rgba(108,99,255,0.1);
+}
+.db-badge-dot {
+  position: absolute; bottom: -2px; width: 3px; height: 3px; border-radius: 50%;
+  background: #81c784;
+}
+.db-badge-date { font-size: .72rem; color: var(--text-muted); z-index: 5; }
+.db-badge-date--today { color: var(--accent) !important; font-weight: 700; }
+
+/* ─── 右側：里程碑指標卡 ─── */
+.db-next-goal {
+  display: flex; align-items: center; gap: 16px; padding: 20px 24px;
+  background: rgba(255, 255, 255, 0.005); border: 1px dashed rgba(108,99,255,0.12); border-radius: 10px;
+}
+.db-next-goal__icon-wrap {
+  width: 44px; height: 44px; flex-shrink: 0; background: rgba(108,99,255,0.03); border: 1px solid rgba(108,99,255,0.12);
+  border-radius: 50%; display: flex; align-items: center; justify-content: center;
+}
+.db-next-goal__icon-wrap svg { width: 22px; height: 22px; }
+.db-next-goal__body { flex: 1; min-width: 0; }
+.db-next-goal__top { display: flex; align-items: center; gap: 8px; margin-bottom: 4px; }
+.db-next-goal__tag {
+  font-size: .72rem; font-weight: 700; color: #a8a4ff; text-transform: uppercase;
+}
+.db-next-goal__name { font-size: 0.98rem; font-weight: 700; color: var(--text-primary); margin: 0 0 4px; }
+.db-next-goal__desc { font-size: .78rem; color: var(--text-secondary); margin: 0 0 8px; line-height: 1.25; }
+.db-next-goal__bar-wrap { display: flex; align-items: center; gap: 8px; }
+.db-next-goal__bar { flex: 1; height: 6px; background: rgba(255,255,255,0.03); border-radius: 3px; overflow: hidden; }
+.db-next-goal__bar-fill {
+  height: 100%; border-radius: 3px; background: linear-gradient(90deg, var(--accent), var(--green));
+}
+.db-next-goal__progress-text { font-size: .72rem; color: var(--text-muted); }
+.db-next-goal__link {
+  font-size: 0.78rem; font-weight: 700; color: var(--accent); border: 1px solid rgba(108, 99, 255, 0.15);
+  padding: 4px 10px; border-radius: 6px; background: rgba(108,99,255,0.02);
+  line-height: 1; text-decoration: none; transition: all 0.2s;
+}
+.db-next-goal__link:hover {
+  background: rgba(108,99,255,0.06); border-color: rgba(108,99,255,0.3);
+}
+
+/* ─── ONBOARDING ─── */
+.db-onboarding {
+  position: relative; margin: 0 0 20px; padding: 18px 22px;
+  border: 1px solid rgba(108,99,255,0.15); border-radius: 10px;
+  background: rgba(22,22,26,0.9);
+}
+.db-onboarding__close {
+  position: absolute; top: 12px; right: 16px; background: transparent; border: none; color: var(--text-muted); cursor: pointer;
+}
+.db-onboarding__header h3 { font-size: 0.95rem; font-weight: 700; color: #a8a4ff; margin: 0; }
+.db-onboarding__steps {
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 10px; margin: 10px 0;
+}
+.db-onboarding__step {
+  background: rgba(255,255,255,0.01); border: 1px solid rgba(255,255,255,0.02); border-radius: 6px; padding: 10px;
+}
+.db-onboarding__step-title { font-size: .8rem; font-weight: 700; margin-bottom: 2px; }
+.db-onboarding__step p { font-size: .7rem; color: var(--text-muted); line-height: 1.35; margin: 0; }
+.db-onboarding__actions { display: flex; gap: 8px; align-items: center; }
+
+/* ─── RESPONSIVE ─── */
+@media (max-width: 1024px) {
+  .db-main-layout { grid-template-columns: 1fr; }
+}
+@media (max-width: 600px) {
+  .db-hero {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  padding: 20px 32px;
+  margin: -20px 0 16px;
+  border-radius: 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  background: transparent;
+}
+
+/* 遺忘沙漏霓虹旋轉特效 */
+@keyframes hourglass-flip {
+  0%   { transform: rotate(0deg); }
+  12%  { transform: rotate(180deg); }
+  50%  { transform: rotate(180deg); }
+  62%  { transform: rotate(360deg); }
+  100% { transform: rotate(360deg); }
+}
+.hourglass-neon {
+  display: inline-block;
+  margin-left: 6px;
+  vertical-align: middle;
+  animation: hourglass-flip 6s infinite cubic-bezier(0.77, 0, 0.175, 1);
+  color: var(--yellow) !important;
+  filter: drop-shadow(0 0 3px rgba(232, 184, 75, 0.85));
+}
+</style>
+
 {% endblock %}
 
 {% block extra_scripts %}
 <script>
   document.addEventListener('turbo:load', function() {
-    // 1. 說明 Modal 控制
+    // 1. Info Modal
     const modal = document.getElementById('info-modal');
     const openBtn = document.getElementById('open-info-btn');
     const closeBtn = document.getElementById('close-info-btn');
-
-    function openModal() {
-      if (modal) {
-        modal.style.display = 'flex';
-        document.body.style.overflow = 'hidden';
-      }
-    }
-
-    function closeModal() {
-      if (modal) {
-        modal.style.display = 'none';
-        document.body.style.overflow = '';
-      }
-    }
-
+    function openModal() { if (modal) { modal.style.display='flex'; document.body.style.overflow='hidden'; } }
+    function closeModal() { if (modal) { modal.style.display='none'; document.body.style.overflow=''; } }
     if (openBtn) openBtn.addEventListener('click', openModal);
     if (closeBtn) closeBtn.addEventListener('click', closeModal);
+    if (modal) modal.addEventListener('click', e => { if (e.target === modal) closeModal(); });
+    document.addEventListener('keydown', e => { if (e.key === 'Escape' && modal && modal.style.display === 'flex') closeModal(); });
 
-    if (modal) {
-      modal.addEventListener('click', function(e) {
-        if (e.target === modal) {
-          closeModal();
-        }
-      });
-    }
-
-    document.addEventListener('keydown', function(e) {
-      if (e.key === 'Escape' && modal && modal.style.display === 'flex') {
-        closeModal();
-      }
-    });
-
-    // 2. 新手 Onboarding 卡片控制
+    // 2. Onboarding
     const onboardingCard = document.getElementById('onboarding-card');
-    const dismissBtn = document.getElementById('dismiss-onboarding');
-    const dismissBtn2 = document.getElementById('dismiss-onboarding-btn');
-    
+    const dismiss1 = document.getElementById('dismiss-onboarding');
+    const dismiss2 = document.getElementById('dismiss-onboarding-btn');
     if (onboardingCard) {
-      if (!localStorage.getItem('lexis_onboarding_dismissed')) {
-        onboardingCard.style.display = 'block';
-      }
-      
-      const dismiss = () => {
-        onboardingCard.style.display = 'none';
-        localStorage.setItem('lexis_onboarding_dismissed', 'true');
-      };
-      
-      if (dismissBtn) dismissBtn.addEventListener('click', dismiss);
-      if (dismissBtn2) dismissBtn2.addEventListener('click', dismiss);
+      if (!localStorage.getItem('lexis_onboarding_dismissed')) onboardingCard.style.display = 'block';
+      const dismiss = () => { onboardingCard.style.display='none'; localStorage.setItem('lexis_onboarding_dismissed','true'); };
+      if (dismiss1) dismiss1.addEventListener('click', dismiss);
+      if (dismiss2) dismiss2.addEventListener('click', dismiss);
     }
 
-    // 3. 3D 物理傾斜卡片與高光跟隨
-    const cards = document.querySelectorAll('.tilt-card');
-    cards.forEach(card => {
-      card.addEventListener('mousemove', e => {
-        const rect = card.getBoundingClientRect();
-        const x = e.clientX - rect.left;
-        const y = e.clientY - rect.top;
-        
-        const centerX = rect.width / 2;
-        const centerY = rect.height / 2;
-        const rotateX = -(y - centerY) / centerY * 8; // 最大傾斜度
-        const rotateY = (x - centerX) / centerX * 8;
-        
-        card.style.setProperty('--mouse-x', `${x}px`);
-        card.style.setProperty('--mouse-y', `${y}px`);
-        card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) translateY(-4px)`;
-        card.style.transition = 'transform 0.08s ease-out';
-      });
-      
-      card.addEventListener('mouseleave', () => {
-        card.style.transform = 'perspective(1000px) rotateX(0deg) rotateY(0deg) translateY(0px)';
-        card.style.transition = 'transform 0.5s cubic-bezier(0.25, 1, 0.5, 1)';
-      });
-    });
-
-    // 4. 記憶山脈 (Memory Peaks) 雙向互動與焦點發光
-    const barItems = document.querySelectorAll('.mastery-bar-item-interactive');
+    // 3. Memory Landscape ↔ Mastery Bar bidirectional hover
+    const barItems = document.querySelectorAll('.db-mastery-item');
     const mountainPaths = document.querySelectorAll('.mountain-path');
 
-    barItems.forEach(item => {
-      item.addEventListener('mouseenter', () => {
-        const idx = item.getAttribute('data-index');
-        const path = document.querySelector(`.mountain-path[data-index="${idx}"]`);
-        if (path) path.classList.add('active');
-        item.classList.add('active');
-        
-        mountainPaths.forEach(p => {
-          if (p !== path) p.style.opacity = '0.12';
-        });
-      });
+    function highlightPeak(idx) {
+      const path = document.querySelector(`.mountain-path[data-index="${idx}"]`);
+      const item = document.querySelector(`.db-mastery-item[data-index="${idx}"]`);
+      if (path) path.classList.add('active');
+      if (item) item.classList.add('active');
+      mountainPaths.forEach(p => { if (p.getAttribute('data-index') !== idx) p.style.opacity = '0.08'; });
+    }
+    function clearHighlight() {
+      mountainPaths.forEach(p => { p.classList.remove('active'); p.style.opacity = ''; });
+      barItems.forEach(i => i.classList.remove('active'));
+    }
 
-      item.addEventListener('mouseleave', () => {
-        const idx = item.getAttribute('data-index');
-        const path = document.querySelector(`.mountain-path[data-index="${idx}"]`);
-        if (path) path.classList.remove('active');
-        item.classList.remove('active');
-        
-        mountainPaths.forEach(p => {
-          p.style.opacity = '';
-        });
-      });
+    barItems.forEach(item => {
+      item.addEventListener('mouseenter', () => highlightPeak(item.getAttribute('data-index')));
+      item.addEventListener('mouseleave', clearHighlight);
+    });
+    mountainPaths.forEach(path => {
+      path.addEventListener('mouseenter', () => highlightPeak(path.getAttribute('data-index')));
+      path.addEventListener('mouseleave', clearHighlight);
     });
 
-    mountainPaths.forEach(path => {
-      path.addEventListener('mouseenter', () => {
-        const idx = path.getAttribute('data-index');
-        const item = document.querySelector(`.mastery-bar-item-interactive[data-index="${idx}"]`);
-        if (item) item.classList.add('active');
-        path.classList.add('active');
-        
-        mountainPaths.forEach(p => {
-          if (p !== path) p.style.opacity = '0.12';
-        });
+    // 4. Mouse-follow glow on Hero section
+    const hero = document.querySelector('.db-hero');
+    if (hero) {
+      hero.addEventListener('mousemove', e => {
+        const rect = hero.getBoundingClientRect();
+        hero.style.setProperty('--hero-mx', `${e.clientX - rect.left}px`);
+        hero.style.setProperty('--hero-my', `${e.clientY - rect.top}px`);
       });
+    }
 
-      path.addEventListener('mouseleave', () => {
-        const idx = path.getAttribute('data-index');
-        const item = document.querySelector(`.mastery-bar-item-interactive[data-index="${idx}"]`);
-        if (item) item.classList.remove('active');
-        path.classList.remove('active');
-        
-        mountainPaths.forEach(p => {
-          p.style.opacity = '';
-        });
+    // 5. Active Recall Blur reveal
+    const blurEls = document.querySelectorAll('.active-recall-blur');
+    blurEls.forEach(el => {
+      el.addEventListener('click', function(e) {
+        e.stopPropagation();
+        this.classList.add('revealed');
+        const hint = this.parentElement.querySelector('.active-recall-hint');
+        if (hint) hint.style.display = 'none';
+      });
+    });
+    const hintEls = document.querySelectorAll('.active-recall-hint');
+    hintEls.forEach(hint => {
+      hint.addEventListener('click', function(e) {
+        e.stopPropagation();
+        const blurEl = this.parentElement.querySelector('.active-recall-blur');
+        if (blurEl) {
+          blurEl.classList.add('revealed');
+          this.style.display = 'none';
+        }
       });
     });
   });

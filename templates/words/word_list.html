@@ -13,72 +13,80 @@
 <form method="get" class="search-bar">
   <input type="text" name="q" class="form-control" placeholder="搜尋單字或中文..."
          value="{{ query }}" id="search-input" />
-  <select name="difficulty" class="form-control" style="max-width:130px;">
-    <option value="">所有難度</option>
-    <option value="1" {% if difficulty == '1' %}selected{% endif %}>⬤ 入門</option>
-    <option value="2" {% if difficulty == '2' %}selected{% endif %}>⬤ 基礎</option>
-    <option value="3" {% if difficulty == '3' %}selected{% endif %}>⬤ 進階</option>
-    <option value="4" {% if difficulty == '4' %}selected{% endif %}>⬤ 困難</option>
-  </select>
   <button type="submit" class="btn btn-primary">搜尋</button>
-  {% if query or difficulty %}
+  {% if query %}
   <a href="{% url 'words:list' %}" class="btn btn-ghost">清除</a>
   {% endif %}
 </form>
 
-{% if words %}
+{% if page_obj %}
 <div class="word-grid">
-  {% for word in words %}
-  <div class="word-card">
-    <!-- 已加入標記 -->
-    {% if word.id in user_word_ids %}
-    <div style="position:absolute;top:14px;right:14px;">
-      <span style="font-size:0.7rem;color:var(--green);font-weight:600;">✓ 已加入</span>
+  {% for word in page_obj %}
+  <div class="word-card" style="cursor: pointer;" data-word-id="{{ word.id }}" onclick="openWordModal('{{ word.id }}')">
+    <div class="word-card-badge-container" style="position:absolute;top:14px;right:14px;"></div>
+
+    <div style="display:flex; align-items:baseline; flex-wrap:wrap; gap:4px 8px; margin-bottom: 2px;">
+      <div class="word-card-text" style="margin-bottom:0;">{{ word.text }}</div>
+      {% if word.phonetic_display %}
+      <span style="font-family:var(--font-mono); font-size:0.85rem; color:var(--text-secondary); white-space:nowrap;">/{{ word.phonetic_display }}/</span>
+      {% endif %}
+    </div>
+
+    {% if word.senses.all %}
+    <div style="margin-top:6px;">
+      {% for sense in word.senses.all|slice:":2" %}
+      <div style="display:flex; align-items:center; gap:4px; margin-bottom:3px; overflow:hidden;">
+        {% if sense.part_of_speech != 'unknown' %}
+        <span class="pos-badge pos-{{ sense.pos_class }}">{{ sense.pos_display }}</span>
+        {% endif %}
+        <span style="font-size:0.8rem; color:var(--text-secondary); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; flex:1; min-width:0;">{{ sense.translation }}</span>
+      </div>
+      {% endfor %}
+    </div>
+    {% else %}
+    <div style="margin-top: 4px;">
+      <span style="font-size:0.75rem; color:var(--text-muted); font-style:italic; opacity:0.6;">⏳ 定義載入中…</span>
     </div>
     {% endif %}
 
-    <div class="word-card-text">{{ word.text }}</div>
-
-    {% with p=word.phonetics.first %}
-    {% if p %}<div class="word-card-phonetic">/{{ p.notation }}/</div>{% endif %}
-    {% endwith %}
-
-    <!-- 難度 -->
-    <span class="difficulty-badge diff-{{ word.difficulty }}">
-      {% if word.difficulty == 1 %}入門
-      {% elif word.difficulty == 2 %}基礎
-      {% elif word.difficulty == 3 %}進階
-      {% elif word.difficulty == 4 %}困難
-      {% else %}專家{% endif %}
-    </span>
-
-    {% if word.senses.all %}
-    <span class="word-card-pos">{{ word.senses.first.get_part_of_speech_display }}</span>
-    <div class="word-card-translation">{{ word.senses.first.translation }}</div>
-    {% endif %}
-
-    <div class="word-card-actions">
-      <a href="{% url 'words:detail' word.id %}" class="btn btn-ghost btn-sm">詳情</a>
-      {% if word.id not in user_word_ids %}
-      <form method="post" action="{% url 'vocab:add_to_vocab' word.id %}" style="margin:0">
-        {% csrf_token %}
-        <input type="hidden" name="next_url" value="/words/" />
-        <button type="submit" class="btn btn-primary btn-sm">＋ 加入</button>
-      </form>
+    <div class="word-card-actions" style="justify-content: flex-end;" onclick="event.stopPropagation();">
+      {% if word.id in user_word_ids %}
+      <span style="font-size: 0.82rem; color: var(--green); font-weight: 600; padding: 4px 0; cursor: default;">✓ 已加入</span>
       {% else %}
-      <span class="btn btn-ghost btn-sm" style="opacity:0.5;cursor:default;">已在字庫</span>
+      <button type="button" class="btn btn-primary btn-sm" onclick="ajaxAddToVocab('{{ word.id }}', this, true)">＋ 加入</button>
       {% endif %}
     </div>
   </div>
   {% endfor %}
 </div>
 
+<!-- 分頁導覽組件 -->
+{% if page_obj.has_other_pages %}
+<div style="display: flex; justify-content: center; margin-top: 30px; gap: 10px; margin-bottom: 20px;">
+  {% if page_obj.has_previous %}
+    <a href="?page={{ page_obj.previous_page_number }}{% if query %}&q={{ query }}{% endif %}" class="btn btn-ghost btn-sm">上一頁</a>
+  {% endif %}
+  <span style="color: var(--text-secondary); line-height: 32px; font-size: 0.9rem;">第 {{ page_obj.number }} / {{ page_obj.paginator.num_pages }} 頁</span>
+  {% if page_obj.has_next %}
+    <a href="?page={{ page_obj.next_page_number }}{% if query %}&q={{ query }}{% endif %}" class="btn btn-ghost btn-sm">下一頁</a>
+  {% endif %}
+</div>
+{% endif %}
+
 {% else %}
 <div class="empty-state">
   <div class="empty-state-icon">🔍</div>
-  <div class="empty-state-title">沒有找到符合的單字</div>
-  <div class="empty-state-text">試試其他關鍵字，或<a href="{% url 'vocab:add_custom_word' %}">自行新增</a>。</div>
+  <div class="empty-state-title">字典裡沒有這個字</div>
+  <div class="empty-state-text">
+    {% if query %}
+      找不到「{{ query }}」，請確認拼字是否正確。
+    {% else %}
+      試試其他關鍵字。
+    {% endif %}
+  </div>
 </div>
 {% endif %}
 
 {% endblock %}
+
+

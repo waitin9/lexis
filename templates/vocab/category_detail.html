@@ -1,0 +1,127 @@
+{% extends 'base.html' %}
+{% block title %}{{ category.name }} - 字庫大廳{% endblock %}
+
+{% block content %}
+<div class="page-header" style="display: flex; justify-content: space-between; align-items: flex-end;">
+  <div>
+    <a href="{% url 'vocab:library' %}" style="color: var(--text-muted); text-decoration: none; font-size: 0.9rem; margin-bottom: 8px; display: inline-block;">← 返回大廳</a>
+    <h1 class="page-title" style="color: {{ category.color }};">{{ category.name }}</h1>
+    <p class="page-subtitle">{{ category.description }}</p>
+    <div style="font-size: 0.9rem; color: var(--text-secondary); margin-top: 8px;">
+      共 {{ total_count }} 個單字 | 已加入 {{ added_count }} 個
+    </div>
+  </div>
+  
+  <div>
+    {% if remaining_count == 0 %}
+    <button class="btn btn-ghost" disabled style="color: var(--green); border-color: var(--green); opacity: 0.85; font-size: 0.9rem; padding: 6px 14px; border-radius: 8px;">
+      ✅ 已全數加入字庫
+    </button>
+    {% endif %}
+  </div>
+</div>
+
+<style>
+
+.sense-row {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  margin-bottom: 3px;
+  overflow: hidden;
+}
+.sense-translation {
+  font-size: 0.82rem;
+  color: var(--text-secondary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  flex: 1;
+  min-width: 0;
+}
+.no-sense-hint {
+  font-size: 0.78rem;
+  color: var(--text-muted);
+  font-style: italic;
+  opacity: 0.6;
+}
+.word-row-card {
+  margin-bottom: 10px;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 12px;
+  border-left: 3px solid var(--border);
+  padding: 12px 16px;
+  transition: border-color 0.2s, background 0.2s;
+}
+.word-row-card.added {
+  border-left-color: var(--green);
+}
+.word-row-card:hover {
+  background: rgba(255,255,255,0.015);
+}
+.word-action {
+  flex-shrink: 0;
+  display: flex;
+  align-items: flex-start;
+  padding-top: 2px;
+  gap: 8px;
+}
+</style>
+
+<div class="vocab-list" style="margin-top: 30px;">
+  {% for word in page_obj %}
+  <div class="card-sm word-row-card {% if word.id in user_word_ids %}added{% endif %}" style="cursor: pointer;" data-word-id="{{ word.id }}" onclick="openWordModal('{{ word.id }}')">
+    <div style="flex: 1; min-width: 0;">
+      <!-- 單字標題 -->
+      <div style="display:flex; align-items:baseline; flex-wrap:wrap; gap:4px 8px; margin-bottom: 6px;">
+        <div style="font-size: 1.15rem; font-weight: 700; color: var(--text-primary);">{{ word.text }}</div>
+        {% if word.phonetic_display %}
+        <span style="font-family:var(--font-mono); font-size:0.85rem; color:var(--text-secondary); white-space:nowrap;">/{{ word.phonetic_display }}/</span>
+        {% endif %}
+      </div>
+
+
+      <!-- 全部 Senses（最多 2） -->
+      {% if word.senses.all %}
+        {% for sense in word.senses.all|slice:":2" %}
+        <div class="sense-row">
+          <span class="pos-badge pos-{{ sense.pos_class }}">{{ sense.pos_display }}</span>
+          <span class="sense-translation">{{ sense.translation }}</span>
+        </div>
+        {% endfor %}
+      {% else %}
+        <span class="no-sense-hint">⏳ 定義載入中，請稍後…</span>
+      {% endif %}
+    </div>
+
+    <div class="word-action" onclick="event.stopPropagation();">
+      {% if word.id in user_word_ids %}
+      <span style="color: var(--green); font-size: 0.82rem; background: rgba(76, 175, 130, 0.1); padding: 4px 10px; border-radius: var(--radius-sm); white-space: nowrap;">✓ 已加入</span>
+      {% else %}
+      <button type="button" class="btn btn-ghost btn-sm" onclick="ajaxAddToVocab('{{ word.id }}', this, true)">+ 加入</button>
+      {% endif %}
+    </div>
+  </div>
+  {% empty %}
+  <div style="text-align: center; padding: 40px; color: var(--text-muted);">
+    這個分類目前還沒有單字。
+  </div>
+  {% endfor %}
+</div>
+
+<!-- 分頁導覽 -->
+{% if page_obj.has_other_pages %}
+<div style="display: flex; justify-content: center; margin-top: 30px; gap: 10px;">
+  {% if page_obj.has_previous %}
+    <a href="?page={{ page_obj.previous_page_number }}" class="btn btn-ghost btn-sm">上一頁</a>
+  {% endif %}
+  <span style="color: var(--text-secondary); line-height: 32px;">第 {{ page_obj.number }} / {{ page_obj.paginator.num_pages }} 頁</span>
+  {% if page_obj.has_next %}
+    <a href="?page={{ page_obj.next_page_number }}" class="btn btn-ghost btn-sm">下一頁</a>
+  {% endif %}
+</div>
+{% endif %}
+
+{% endblock %}

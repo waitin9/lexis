@@ -8,28 +8,39 @@
     <p class="page-subtitle">共 {{ total_count }} 個單字</p>
   </div>
   <div style="display:flex;gap:10px;">
-    <a href="{% url 'vocab:add_custom_word' %}" class="btn btn-primary">＋ 新增單字</a>
+    <a href="{% url 'vocab:library' %}" class="btn btn-primary">📚 前往字庫大廳</a>
     <a href="{% url 'words:list' %}" class="btn btn-ghost">瀏覽官方字庫</a>
   </div>
 </div>
 
+<!-- 搜尋 -->
+<form method="get" class="search-bar" style="margin-bottom: 20px;">
+  <input type="hidden" name="mastery" value="{{ mastery_filter }}" />
+  <input type="text" name="q" class="form-control" placeholder="🔍 在我的字庫中搜尋單字或釋義..."
+         value="{{ query }}" id="search-input" />
+  <button type="submit" class="btn btn-primary">搜尋</button>
+  {% if query %}
+  <a href="?mastery={{ mastery_filter }}" class="btn btn-ghost">清除</a>
+  {% endif %}
+</form>
+
 <!-- 掌握度篩選 -->
 <div class="filter-tabs">
-  <a href="{% url 'vocab:my_vocab' %}"
+  <a href="?q={{ query|urlencode }}"
      class="filter-tab {% if mastery_filter == '' %}active{% endif %}">全部</a>
-  <a href="?mastery=0" class="filter-tab {% if mastery_filter == '0' %}active{% endif %}"
+  <a href="?mastery=0&q={{ query|urlencode }}" class="filter-tab {% if mastery_filter == '0' %}active{% endif %}"
      style="{% if mastery_filter == '0' %}border-color:var(--mastery-0);color:var(--mastery-0);{% endif %}">
     生疏
   </a>
-  <a href="?mastery=1" class="filter-tab {% if mastery_filter == '1' %}active{% endif %}"
+  <a href="?mastery=1&q={{ query|urlencode }}" class="filter-tab {% if mastery_filter == '1' %}active{% endif %}"
      style="{% if mastery_filter == '1' %}border-color:var(--yellow);color:var(--yellow);{% endif %}">
     學習中
   </a>
-  <a href="?mastery=2" class="filter-tab {% if mastery_filter == '2' %}active{% endif %}"
+  <a href="?mastery=2&q={{ query|urlencode }}" class="filter-tab {% if mastery_filter == '2' %}active{% endif %}"
      style="{% if mastery_filter == '2' %}border-color:var(--blue);color:var(--blue);{% endif %}">
     熟悉
   </a>
-  <a href="?mastery=3" class="filter-tab {% if mastery_filter == '3' %}active{% endif %}"
+  <a href="?mastery=3&q={{ query|urlencode }}" class="filter-tab {% if mastery_filter == '3' %}active{% endif %}"
      style="{% if mastery_filter == '3' %}border-color:var(--green);color:var(--green);{% endif %}">
     精通
   </a>
@@ -38,49 +49,89 @@
 {% if vocab_entries %}
 <div class="word-grid">
   {% for entry in vocab_entries %}
-  <div class="word-card">
-    <!-- 掌握度 -->
-    {% if entry.srs_card %}
-    <div style="position:absolute;top:14px;right:14px;">
-      <span class="mastery-badge mastery-{{ entry.srs_card.mastery_level }}">
-        {% if entry.srs_card.mastery_level == 0 %}生疏
-        {% elif entry.srs_card.mastery_level == 1 %}學習中
-        {% elif entry.srs_card.mastery_level == 2 %}熟悉
-        {% else %}精通{% endif %}
-      </span>
-    </div>
-    {% endif %}
+  <div class="word-card" style="cursor: pointer;"
+       data-vocab-id="{{ entry.id }}"
+       data-word-text="{{ entry.display_text|escape }}"
+       data-word-phonetic="{{ entry.custom_phonetic|default:''|escape }}"
+       data-word-pos="{{ entry.custom_part_of_speech|default:''|escape }}"
+       data-word-translation="{{ entry.display_translation|default:''|escape }}"
+       data-word-definition="{{ entry.display_definition|default:''|escape }}"
+       data-word-example="{{ entry.display_example|default:''|escape }}"
+       data-word-note="{{ entry.note|default:''|escape }}"
+       {% if entry.word %}
+         data-is-official="true"
+         data-word-id="{{ entry.word.id }}"
+       {% else %}
+         data-is-official="false"
+       {% endif %}
+       onclick="handleCardClick(this)">
+    <!-- 頂部排版 (Flex 佈局，防止掌握度與音標重疊) -->
+    <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; margin-bottom: 6px;">
+      <div style="flex: 1; min-width: 0;">
+        <!-- 單字大字（獨佔一行）-->
+        <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
+          <div class="word-card-text" style="margin-bottom: 0;">{{ entry.display_text }}</div>
+          {% if entry.is_custom %}
+          <span style="font-size: 0.65rem; font-weight: 500; color: #a8a4ff; border: 1px solid rgba(168, 164, 255, 0.22); border-radius: 4px; padding: 1px 5px; background: rgba(168, 164, 255, 0.04); cursor: default; white-space:nowrap;" title="您自己新增的單字">
+            自建
+          </span>
+          {% endif %}
+        </div>
+        <!-- 音標：獨立換行，永遠在單字下方 -->
+        <div style="margin-top: 3px; display: block;">
+          {% if entry.word %}
+            {% if entry.word.phonetic_display %}
+              <span style="display: block; font-family:var(--font-mono); font-size:0.82rem; color:var(--text-secondary);">/{{ entry.word.phonetic_display }}/</span>
+            {% endif %}
+          {% else %}
+            {% if entry.phonetic_display %}
+              <span style="display: block; font-family:var(--font-mono); font-size:0.82rem; color:var(--text-secondary);">/{{ entry.phonetic_display }}/</span>
+            {% endif %}
+          {% endif %}
+        </div>
+      </div>
 
-    <div style="display:flex; align-items:center; gap:8px; margin-bottom: 2px;">
-      <div class="word-card-text">{{ entry.display_text }}</div>
-      {% if entry.is_custom %}
-      <span style="font-size: 0.65rem; font-weight: 500; color: #a8a4ff; border: 1px solid rgba(168, 164, 255, 0.22); border-radius: 4px; padding: 1px 5px; background: rgba(168, 164, 255, 0.04); cursor: default;" title="您自己新增的單字">
-        自建
-      </span>
+      {% if entry.srs_card %}
+      <div style="flex-shrink: 0; padding-top: 2px;">
+        <span class="mastery-badge mastery-{{ entry.srs_card.mastery_level }}">
+          {% if entry.srs_card.mastery_level == 0 %}生疏
+          {% elif entry.srs_card.mastery_level == 1 %}學習中
+          {% elif entry.srs_card.mastery_level == 2 %}熟悉
+          {% else %}精通{% endif %}
+        </span>
+      </div>
       {% endif %}
     </div>
 
-    <!-- 音標 -->
+
+
+
+    <!-- 詞性 + 翻譯（最多顯示 2 個 sense） -->
+    <div style="margin-top:7px;">
     {% if entry.word %}
-      {% with p=entry.word.phonetics.first %}
-        {% if p %}<div class="word-card-phonetic">/{{ p.notation }}/</div>{% endif %}
-      {% endwith %}
-    {% elif entry.custom_phonetic %}
-      <div class="word-card-phonetic">
-        {% if entry.custom_phonetic|slice:":1" == "/" %}{{ entry.custom_phonetic }}{% else %}/{{ entry.custom_phonetic }}/{% endif %}
+      {% if entry.word.senses.all %}
+        {% for sense in entry.word.senses.all|slice:":2" %}
+        <div style="display:flex; align-items:center; gap:4px; margin-bottom:3px; overflow:hidden;">
+          {% if sense.part_of_speech != 'unknown' %}
+          <span class="pos-badge pos-{{ sense.pos_class }}">{{ sense.pos_display }}</span>
+          {% endif %}
+          <span style="font-size:0.8rem; color:var(--text-secondary); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; flex:1; min-width:0;">{{ sense.translation }}</span>
+        </div>
+        {% endfor %}
+      {% else %}
+        <span style="font-size:0.72rem; color:var(--text-muted); font-style:italic; opacity:0.6;">&#8987; 載入中…</span>
+      {% endif %}
+    {% else %}
+      {% if entry.custom_part_of_speech and entry.custom_part_of_speech != 'unknown' %}
+      <div style="display:flex; align-items:center; gap:4px; overflow:hidden;">
+        <span class="pos-badge pos-phrase">{{ entry.custom_part_of_speech }}</span>
+        <span style="font-size:0.8rem; color:var(--text-secondary); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; flex:1; min-width:0;">{{ entry.display_translation }}</span>
       </div>
+      {% else %}
+        <span style="font-size:0.8rem; color:var(--text-secondary); display:block; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">{{ entry.display_translation }}</span>
+      {% endif %}
     {% endif %}
-
-    <!-- 詞性 -->
-    {% if entry.word %}
-      {% for sense in entry.word.senses.all|slice:":2" %}
-        <span class="word-card-pos">{{ sense.get_part_of_speech_display }}</span>
-      {% endfor %}
-    {% elif entry.custom_part_of_speech %}
-      <span class="word-card-pos">{{ entry.custom_part_of_speech }}</span>
-    {% endif %}
-
-    <div class="word-card-translation" style="margin-top: 4px;">{{ entry.display_translation }}</div>
+    </div>
 
     <!-- 到期時間 -->
     {% if entry.srs_card %}
@@ -94,21 +145,11 @@
     <div class="text-sm mt-1" style="color:var(--accent);">💡 {{ entry.note }}</div>
     {% endif %}
 
-    <div class="word-card-actions">
-      {% if entry.word %}
-      <a href="{% url 'words:detail' entry.word.id %}" class="btn btn-ghost btn-sm">詳情</a>
-      {% else %}
-      <button type="button" class="btn btn-ghost btn-sm" onclick="showCustomDetail('{{ entry.id }}', '{{ entry.display_text|escapejs }}', '{{ entry.custom_phonetic|escapejs }}', '{{ entry.custom_part_of_speech|escapejs }}', '{{ entry.display_translation|escapejs }}', '{{ entry.display_definition|escapejs }}', '{{ entry.display_example|escapejs }}', '{{ entry.note|escapejs }}', this.closest('.word-card'))">
-        詳情
+    <div class="word-card-actions" onclick="event.stopPropagation();">
+      <button type="button" class="btn btn-danger btn-sm"
+              onclick="window.showConfirm('確定要從字庫移除「{{ entry.display_text|escapejs }}」？', () => { ajaxRemoveFromVocab('{{ entry.id }}', '{{ entry.word.id }}'); })">
+        移除
       </button>
-      {% endif %}
-      <form method="post" action="{% url 'vocab:remove_from_vocab' entry.id %}" style="margin:0">
-        {% csrf_token %}
-        <button type="submit" class="btn btn-danger btn-sm"
-                onclick="return confirm('確定要從字庫移除「{{ entry.display_text }}」？')">
-          移除
-        </button>
-      </form>
     </div>
   </div>
   {% endfor %}
@@ -157,7 +198,7 @@
       <div style="text-align: center; margin-bottom: 20px;">
         <h2 id="modal-word-text" style="font-size: 2.2rem; font-weight: 700; color: var(--text-primary); margin-bottom: 4px;"></h2>
         <div id="modal-word-phonetic" class="word-card-phonetic" style="font-size: 1rem; margin-bottom: 8px;"></div>
-        <span id="modal-word-pos" class="word-card-pos" style="font-size: 0.78rem; padding: 3px 10px;"></span>
+        <span id="modal-word-pos" class="pos-badge pos-phrase" style="font-size: 0.78rem; padding: 3px 10px;"></span>
       </div>
 
       <div style="border-top: 1px solid var(--border); padding-top: 16px;">
@@ -220,20 +261,23 @@
 </div>
 
 <script>
+  const phoneticPref = "{{ profile.phonetic_pref }}";
   let currentEditingVocabId = null;
   let currentCardElement = null;
 
-  function showCustomDetail(vocabId, word, phonetic, pos, translation, definition, example, note, cardEl) {
+  window.showCustomDetail = function(vocabId, word, phonetic, pos, translation, definition, example, note, cardEl) {
     currentEditingVocabId = vocabId;
     currentCardElement = cardEl;
 
     // 填入資料
     document.getElementById('modal-word-text').innerText = word;
-    document.getElementById('modal-word-phonetic').innerText = phonetic ? (phonetic.startsWith('/') ? phonetic : '/' + phonetic + '/') : '';
+    const displayPhonetic = (phoneticPref !== 'hide') ? phonetic : '';
+    document.getElementById('modal-word-phonetic').innerText = displayPhonetic ? (displayPhonetic.startsWith('/') ? displayPhonetic : '/' + displayPhonetic + '/') : '';
     
     const posSpan = document.getElementById('modal-word-pos');
     if (pos) {
       posSpan.innerText = pos;
+      posSpan.className = 'pos-badge pos-phrase';
       posSpan.style.display = 'inline-block';
     } else {
       posSpan.style.display = 'none';
@@ -388,39 +432,33 @@
     }
   }
 
-  document.addEventListener('turbo:load', function() {
+  (function() {
     const modal = document.getElementById('custom-detail-modal');
     const closeBtn = document.getElementById('close-detail-btn');
     const closeEditBtn = document.getElementById('close-edit-btn');
     const editBtn = document.getElementById('edit-modal-btn');
     const cancelBtn = document.getElementById('edit-cancel-btn');
     
-    function closeModal() {
+    window.closeCustomModal = function() {
       if (modal) {
         modal.style.display = 'none';
         document.body.style.overflow = '';
       }
-    }
+    };
 
-    if (closeBtn) closeBtn.addEventListener('click', closeModal);
-    if (closeEditBtn) closeEditBtn.addEventListener('click', closeModal);
-    if (editBtn) editBtn.addEventListener('click', switchToEditMode);
-    if (cancelBtn) cancelBtn.addEventListener('click', switchToViewMode);
+    if (closeBtn) closeBtn.onclick = window.closeCustomModal;
+    if (closeEditBtn) closeEditBtn.onclick = window.closeCustomModal;
+    if (editBtn) editBtn.onclick = switchToEditMode;
+    if (cancelBtn) cancelBtn.onclick = switchToViewMode;
 
     if (modal) {
-      modal.addEventListener('click', function(e) {
+      modal.onclick = function(e) {
         if (e.target === modal) {
-          closeModal();
+          window.closeCustomModal();
         }
-      });
+      };
     }
-
-    document.addEventListener('keydown', function(e) {
-      if (e.key === 'Escape' && modal && modal.style.display === 'flex') {
-        closeModal();
-      }
-    });
-  });
+  })();
 </script>
 
 {% endblock %}

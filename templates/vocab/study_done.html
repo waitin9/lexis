@@ -14,10 +14,102 @@
   {% else %}
   <div style="margin-bottom:32px;"></div>
   {% endif %}
+
+  <!-- 60s 限時生存挑戰引導卡片 -->
+  <style>
+    @keyframes pulseGlow {
+      0%, 100% { border-color: rgba(108, 99, 255, 0.25); box-shadow: 0 12px 30px rgba(108, 99, 255, 0.1); }
+      50% { border-color: rgba(224, 92, 92, 0.45); box-shadow: 0 12px 35px rgba(224, 92, 92, 0.25); }
+    }
+  
+    .challenge-intro-btn:hover .btn-play-icon {
+      transform: translateX(3px) !important;
+    }
+  </style>
+  <div style="
+    background: linear-gradient(135deg, rgba(108, 99, 255, 0.08) 0%, rgba(224, 92, 92, 0.08) 100%);
+    border: 1px solid rgba(108, 99, 255, 0.25);
+    border-radius: var(--radius-lg, 16px);
+    padding: 22px 24px;
+    margin: 32px 0;
+    box-shadow: 0 12px 30px rgba(108, 99, 255, 0.15);
+    animation: pulseGlow 3s infinite ease-in-out;
+  ">
+    <h3 style="font-size:1.1rem; font-weight:700; color:#fff; margin-bottom:8px; display:flex; align-items:center; justify-content:center; gap:6px;">
+      ⚡ 今日溫故特訓已解鎖 ⚡
+    </h3>
+    <p style="font-size:0.82rem; color:var(--text-secondary); line-height:1.5; margin-bottom:18px;">
+      系統已根據您今日所複習的單字，量身生成了專屬特訓。<br>專攻今日複習單字，無時間壓力，答錯將退回隊伍末尾，直到全部答對通關！
+    </p>
+    <a href="{% url 'vocab:study_challenge' %}?mode=today" class="btn btn-primary btn-sm challenge-intro-btn" style="
+      background: linear-gradient(135deg, var(--accent) 0%, #e05c5c 100%);
+      border: none;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      padding: 8px 24px;
+      border-radius: var(--radius, 8px);
+      box-shadow: 0 4px 15px rgba(224, 92, 92, 0.3);
+      transition: all 0.2s ease;
+      display: inline-block;
+      text-decoration: none;
+      color: #fff;
+    " onmouseover="this.style.transform='translateY(-2px) scale(1.02)'; this.style.boxShadow='0 6px 20px rgba(224, 92, 92, 0.45)';" onmouseout="this.style.transform='none'; this.style.boxShadow='0 4px 15px rgba(224, 92, 92, 0.3)';">
+      🧠 開始今日溫故特訓 <svg class="btn-play-icon" viewBox="0 0 24 24" style="width: 10px; height: 10px; fill: currentColor; display: inline-block; transition: transform 0.2s ease; margin-left: 4px;"><polygon points="6 3 20 12 6 21 6 3"/></svg>
+    </a>
+  </div>
+
   <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;">
     <a href="{% url 'vocab:dashboard' %}" class="btn btn-primary">回主頁</a>
     <a href="{% url 'vocab:discover_session' %}" class="btn btn-ghost" style="color: var(--accent); border-color: rgba(108, 99, 255, 0.2);">探索新詞 ✦</a>
     <a href="{% url 'vocab:my_vocab' %}" class="btn btn-ghost">查看字庫</a>
   </div>
 </div>
+
+<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+<script>
+  (function() {
+    function fireConfetti() {
+      if (typeof confetti === 'function') {
+        var duration = 2.5 * 1000;
+        var end = Date.now() + duration;
+
+        (function frame() {
+          confetti({
+            particleCount: 3,
+            angle: 60,
+            spread: 55,
+            origin: { x: 0, y: 0.85 },
+            zIndex: 99999
+          });
+          confetti({
+            particleCount: 3,
+            angle: 120,
+            spread: 55,
+            origin: { x: 1, y: 0.85 },
+            zIndex: 99999
+          });
+
+          if (Date.now() < end) {
+            requestAnimationFrame(frame);
+          }
+        }());
+      }
+    }
+
+    // 支援 Turbo 的加載事件
+    document.addEventListener('turbo:load', function onLoad() {
+      // 確保只在 study_done 頁面觸發
+      if (window.location.pathname.includes('/study/done/')) {
+        fireConfetti();
+      }
+    });
+
+    // 備用的傳統加載事件
+    if (document.readyState === 'complete' || document.readyState === 'interactive') {
+      fireConfetti();
+    } else {
+      document.addEventListener('DOMContentLoaded', fireConfetti);
+    }
+  })();
+</script>
 {% endblock %}

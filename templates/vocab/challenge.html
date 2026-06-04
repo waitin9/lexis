@@ -1,0 +1,2016 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}特訓與挑戰 — Lexis{% endblock %}
+
+{% block extra_head %}
+<style>
+  /* 金幣彈出動畫 */
+  @keyframes coinPopFloatUp {
+    0% { transform: translate(-50%, 0) scale(0.6); opacity: 0; }
+    15% { transform: translate(-50%, -30px) scale(1.1); opacity: 1; }
+    30% { transform: translate(-50%, -40px) scale(1.0); opacity: 1; }
+    100% { transform: translate(-50%, -100px) scale(1.0); opacity: 0; }
+  }
+
+  .challenge-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: calc(100vh - 120px);
+    position: relative;
+    padding: 20px;
+  }
+
+  /* 倒數計時條 / 進度條 */
+  .timer-track {
+    width: 100%;
+    max-width: 640px;
+    height: 8px;
+    background: rgba(255, 255, 255, 0.08);
+    border-radius: 4px;
+    margin-bottom: 24px;
+    overflow: hidden;
+    position: relative;
+    box-shadow: inset 0 1px 3px rgba(0,0,0,0.2);
+  }
+
+  .timer-bar {
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, var(--accent) 0%, #e05c5c 100%);
+    box-shadow: 0 0 8px var(--accent-glow-color, rgba(108, 99, 255, 0.5));
+    border-radius: 4px;
+    transition: width 0.1s linear;
+  }
+
+  /* 答題卡片 */
+  .challenge-card {
+    background: rgba(14, 14, 20, 0.72);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(255,255,255,0.03);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-radius: 24px;
+    width: 100%;
+    max-width: 640px;
+    padding: 40px;
+    min-height: 420px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    position: relative;
+    transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+  }
+
+  /* 答錯抖動動畫 */
+  .challenge-card.shake {
+    animation: cardShake 0.4s cubic-bezier(.36,.07,.19,.97) both;
+    border-color: #f25f5f;
+    box-shadow: 0 0 35px rgba(242,95,95,0.35);
+  }
+
+  @keyframes cardShake {
+    10%, 90% { transform: translate3d(-2px, 0, 0); }
+    20%, 80% { transform: translate3d(4px, 0, 0); }
+    30%, 50%, 70% { transform: translate3d(-6px, 0, 0); }
+    40%, 60% { transform: translate3d(6px, 0, 0); }
+  }
+
+  .question-badge {
+    padding: 4px 14px;
+    border-radius: 20px;
+    font-size: 0.72rem;
+    font-weight: 800;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    border: 1px solid;
+    display: inline-block;
+  }
+
+  .badge-collocation {
+    background: rgba(108, 99, 255, 0.08);
+    color: #a8a4ff;
+    border-color: rgba(108, 99, 255, 0.25);
+    box-shadow: 0 0 10px rgba(108, 99, 255, 0.1);
+  }
+
+  .badge-confusable {
+    background: rgba(242, 95, 95, 0.08);
+    color: #f25f5f;
+    border-color: rgba(242, 95, 95, 0.25);
+    box-shadow: 0 0 10px rgba(242, 95, 95, 0.1);
+  }
+
+  .badge-definition {
+    background: rgba(62, 207, 142, 0.08);
+    color: #3ecf8e;
+    border-color: rgba(62, 207, 142, 0.25);
+    box-shadow: 0 0 10px rgba(62, 207, 142, 0.1);
+  }
+
+  .question-body {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    margin-bottom: 24px;
+  }
+
+  /* 結構化題幹與目標單字 */
+  .question-target-container {
+    text-align: center;
+    padding: 10px 0 20px;
+  }
+  
+  .question-target-word {
+    font-size: 2.5rem;
+    font-weight: 800;
+    letter-spacing: -0.03em;
+    color: #fff;
+    text-shadow: 0 2px 10px rgba(0,0,0,0.5);
+    margin-bottom: 4px;
+  }
+
+  .kk-badge {
+    font-family: var(--font-mono);
+    font-size: 1.05rem;
+    color: var(--text-secondary);
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    padding: 3px 12px;
+    border-radius: 20px;
+    display: inline-block;
+  }
+
+  /* 語境展示盒 */
+  .context-box {
+    background: rgba(255, 255, 255, 0.015);
+    border: 1px solid rgba(255, 255, 255, 0.04);
+    border-radius: 14px;
+    padding: 18px 20px;
+    margin-bottom: 20px;
+    position: relative;
+    box-shadow: inset 0 1px 3px rgba(0,0,0,0.2);
+  }
+
+  .context-label {
+    position: absolute;
+    top: -9px;
+    left: 20px;
+    font-size: 0.65rem;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    color: var(--accent);
+    background: #111116;
+    padding: 1px 8px;
+    border-radius: 4px;
+    border: 1px solid rgba(255, 255, 255, 0.04);
+  }
+
+  .context-sentence {
+    font-size: 1.05rem;
+    line-height: 1.5;
+    color: rgba(255, 255, 255, 0.95);
+    font-style: italic;
+    text-align: center;
+  }
+
+  .question-action-prompt {
+    font-size: 0.82rem;
+    font-weight: 700;
+    color: var(--text-muted);
+    text-align: center;
+    margin-bottom: 12px;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+  }
+
+  /* 選項按鈕組 */
+  .options-group {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    width: 100%;
+  }
+
+  .option-btn {
+    width: 100%;
+    padding: 16px 24px;
+    border-radius: var(--radius);
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    color: var(--text-secondary);
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    text-align: left;
+    transition: all 0.22s cubic-bezier(0.25, 0.8, 0.25, 1);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.01);
+  }
+
+  .option-btn:hover:not(:disabled) {
+    background: rgba(255, 255, 255, 0.05);
+    border-color: var(--accent);
+    color: #fff;
+    transform: translateX(4px);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.25), 0 0 10px var(--accent-glow);
+  }
+
+  .option-btn:active:not(:disabled) {
+    transform: translateX(2px);
+  }
+
+  .option-btn:disabled {
+    cursor: not-allowed;
+    opacity: 0.8;
+  }
+
+  /* 答題回饋狀態 */
+  .option-btn.correct-ans {
+    background: rgba(62, 207, 142, 0.1) !important;
+    border-color: var(--green) !important;
+    color: var(--green) !important;
+    box-shadow: 0 0 20px rgba(62, 207, 142, 0.15), inset 0 1px 0 rgba(255,255,255,0.02) !important;
+    transform: scale(1.01) !important;
+  }
+
+  .option-btn.wrong-ans {
+    background: rgba(242, 95, 95, 0.1) !important;
+    border-color: var(--red) !important;
+    color: var(--red) !important;
+    box-shadow: 0 0 20px rgba(242, 95, 95, 0.15), inset 0 1px 0 rgba(255,255,255,0.02) !important;
+  }
+
+  .option-shortcut-badge {
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    padding: 2px 8px;
+    border-radius: 6px;
+    color: var(--text-muted);
+    line-height: 1;
+    transition: all 0.22s ease;
+  }
+
+  .option-btn:hover:not(:disabled) .option-shortcut-badge {
+    background: var(--accent-glow);
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+
+  .option-indicator {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    font-size: 0.85rem;
+    font-weight: 800;
+    border: 1.5px solid transparent;
+    transition: all 0.22s ease;
+  }
+
+  .option-btn.correct-ans .option-indicator {
+    border-color: var(--green);
+    background: rgba(62, 207, 142, 0.1);
+  }
+
+  .option-btn.wrong-ans .option-indicator {
+    border-color: var(--red);
+    background: rgba(242, 95, 95, 0.1);
+  }
+
+  /* 結算畫面 */
+  .results-card {
+    text-align: center;
+    padding: 36px 30px;
+    width: 100%;
+    max-width: 640px;
+    background: var(--card-face-bg, rgba(22, 22, 26, 0.75));
+    border: 1px solid var(--card-border, var(--border));
+    border-radius: var(--radius-lg, 18px);
+    box-shadow: var(--card-shadow);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    animation: wqvIn 0.35s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+  }
+
+  /* 結算畫面 Tabs 分頁 */
+  .result-tabs {
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+    margin-bottom: 24px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+    padding-bottom: 12px;
+  }
+
+  /* --- 像素寶箱與 Combo 特效新 CSS --- */
+  .sunburst-glow {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 320px;
+    height: 320px;
+    background: radial-gradient(circle, rgba(255, 215, 0, 0.22) 0%, rgba(255, 193, 7, 0.05) 50%, transparent 70%);
+    border-radius: 50%;
+    z-index: 1;
+    pointer-events: none;
+    animation: rotateGlow 12s linear infinite;
+  }
+  @keyframes rotateGlow {
+    from { transform: translate(-50%, -50%) rotate(0deg); }
+    to { transform: translate(-50%, -50%) rotate(360deg); }
+  }
+
+  .pixel-chest-sprite {
+    transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    filter: drop-shadow(0 8px 16px rgba(0, 0, 0, 0.5));
+  }
+  .pixel-chest-sprite:hover {
+    transform: scale(1.1) translateY(-4px);
+  }
+  .pixel-chest-sprite:active {
+    transform: scale(0.9) translateY(4px);
+  }
+  
+  .pixel-chest-open-anim {
+    animation: chestOpenBounce 0.65s cubic-bezier(0.175, 0.885, 0.32, 1.5) forwards;
+  }
+  @keyframes chestOpenBounce {
+    0% { transform: scale(1); }
+    25% { transform: scale(1.25, 0.75); }
+    50% { transform: scale(0.8, 1.2); }
+    75% { transform: scale(1.1, 0.9); }
+    100% { transform: scale(1.05); }
+  }
+  
+  .animate-bounce-slow {
+    animation: chestBounce 2.5s ease-in-out infinite;
+  }
+  @keyframes chestBounce {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-8px); }
+  }
+
+  .combo-badge-popup {
+    position: absolute;
+    font-size: 1.4rem;
+    font-weight: 900;
+    color: #FFDF00;
+    text-shadow: 2px 2px 0px #000;
+    animation: comboFloatUp 0.65s cubic-bezier(0.175, 0.885, 0.32, 1.35) forwards;
+    pointer-events: none;
+    white-space: nowrap;
+  }
+  @keyframes comboFloatUp {
+    0% { transform: translateY(20px) scale(0.5); opacity: 0; }
+    25% { transform: translateY(-12px) scale(1.3); opacity: 1; }
+    100% { transform: translateY(-45px) scale(1); opacity: 0; }
+  }
+  
+  .result-tab {
+    padding: 8px 16px;
+    border-radius: 8px;
+    font-size: 0.85rem;
+    font-weight: 700;
+    cursor: pointer;
+    background: transparent;
+    border: 1px solid transparent;
+    color: var(--text-secondary);
+    transition: all 0.2s ease;
+  }
+  
+  .result-tab.active {
+    background: rgba(108, 99, 255, 0.1);
+    border-color: var(--accent);
+    color: #fff;
+    box-shadow: 0 0 10px rgba(108, 99, 255, 0.25);
+  }
+  
+  .result-tab:hover:not(.active) {
+    color: #fff;
+    background: rgba(255, 255, 255, 0.04);
+  }
+
+  /* 愛心生命值容器 */
+  .hearts-wrap {
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+    margin-bottom: 20px;
+  }
+  
+  .heart-svg {
+    width: 28px;
+    height: 28px;
+    fill: #ff4a4a;
+    filter: drop-shadow(0 0 6px rgba(255, 74, 74, 0.6));
+    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  }
+  
+  .heart-svg.lost {
+    fill: rgba(255, 255, 255, 0.12);
+    filter: none;
+    transform: scale(0.8);
+  }
+
+  /* Accordion 折疊面板 */
+  .review-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    text-align: left;
+    max-height: 280px;
+    overflow-y: auto;
+    padding-right: 6px;
+    margin-bottom: 24px;
+  }
+
+  /* 客製化精美滾動條 */
+  .review-list::-webkit-scrollbar {
+    width: 6px;
+  }
+  .review-list::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.01);
+    border-radius: 3px;
+  }
+  .review-list::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.12);
+    border-radius: 3px;
+    transition: background 0.2s ease;
+  }
+  .review-list::-webkit-scrollbar-thumb:hover {
+    background: rgba(255, 255, 255, 0.24);
+  }
+  
+  .review-item {
+    flex-shrink: 0; /* 防止 Flex 容器高度限制導致項目被擠扁 */
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid rgba(255, 255, 255, 0.04);
+    border-radius: 12px;
+    overflow: hidden;
+    transition: all 0.2s ease;
+  }
+  
+  .review-item:hover {
+    background: rgba(255, 255, 255, 0.03);
+    border-color: rgba(255, 255, 255, 0.08);
+  }
+  
+  .review-header {
+    padding: 14px 18px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: pointer;
+    user-select: none;
+  }
+  
+  .review-word-info {
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
+    min-width: 0;
+    flex: 1;
+  }
+  
+  .review-word {
+    font-size: 1.1rem;
+    font-weight: 800;
+    color: #fff;
+  }
+  
+  .review-kk {
+    font-family: var(--font-mono);
+    font-size: 0.8rem;
+    color: var(--text-muted);
+  }
+  
+  .review-trans {
+    font-size: 0.88rem;
+    color: var(--text-secondary);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    margin-left: 6px;
+    flex: 1;
+  }
+
+  .review-item.open .review-trans {
+    display: none; /* 展開時隱藏標頭內被截斷的中文，避免與下方詳細內容重複且視覺雜亂 */
+  }
+  
+  .review-content {
+    padding: 0 18px;
+    max-height: 0;
+    overflow: hidden;
+    transition: all 0.25s cubic-bezier(0.165, 0.84, 0.44, 1);
+    font-size: 0.88rem;
+    line-height: 1.5;
+    border-top: 1px solid transparent;
+  }
+  
+  .review-item.open .review-content {
+    padding: 14px 18px;
+    max-height: 450px; /* 增加最大高度以容納中文翻譯、英文釋義與例句 */
+    border-top-color: rgba(255, 255, 255, 0.04);
+  }
+  
+  .arrow-icon {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    transition: transform 0.25s ease;
+  }
+  
+  .review-item.open .arrow-icon {
+    transform: rotate(180deg);
+  }
+
+  /* 檢討小按鈕 */
+  .review-btn-accent {
+    padding: 4px 10px;
+    font-size: 0.72rem;
+    font-weight: 700;
+    border-radius: 6px;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    background: transparent;
+    color: var(--text-secondary);
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+  }
+  
+  .review-btn-accent:hover {
+    background: rgba(255, 255, 255, 0.06);
+    color: #fff;
+    border-color: rgba(255, 255, 255, 0.2);
+  }
+
+  .review-btn-accent.added {
+    color: var(--green);
+    border-color: rgba(76, 175, 130, 0.3);
+    background: rgba(76, 175, 130, 0.08);
+  }
+
+  .review-btn-accent.added:hover {
+    background: rgba(76, 175, 130, 0.15);
+    color: var(--green);
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="challenge-container">
+  <!-- 特效 Canvas -->
+  <canvas id="challenge-fx-canvas" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 50;"></canvas>
+
+  <!-- 倒數計時條 / 進度條 -->
+  <div class="timer-track" id="timer-track-container">
+    <div class="timer-bar" id="timer-progressbar"></div>
+  </div>
+
+  <!-- 生命值生命條 (隨機生存戰模式專用，預設隱藏) -->
+  <div class="hearts-wrap" id="hearts-container" style="display: none;">
+    <svg class="heart-svg" id="heart-0" viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
+    <svg class="heart-svg" id="heart-1" viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
+    <svg class="heart-svg" id="heart-2" viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
+    <svg class="heart-svg" id="heart-3" viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
+    <svg class="heart-svg" id="heart-4" viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
+  </div>
+
+  <!-- 頂部資訊 -->
+  <div style="width:100%; max-width:640px; display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;" id="header-container">
+    <span class="text-muted text-sm" style="font-weight: 700; color: var(--text-primary);" id="challenge-mode-title">⚡ {{ mode_display }}</span>
+    <div style="display: flex; gap: 16px;">
+      <span class="text-muted text-sm" id="question-progress">已答題: 0</span>
+      <span class="text-muted text-sm" id="score-counter" style="color: var(--green); font-weight: 700;">得分: 0</span>
+    </div>
+  </div>
+
+  <!-- 答題卡片 -->
+  <div class="challenge-card {% if user_profile and user_profile.card_border_style == 'platinum' %}card-border-platinum{% endif %}" id="challenge-card">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; width: 100%;">
+      <div class="question-badge" id="question-badge-type">...</div>
+      <div id="question-kk-badge" class="kk-badge" style="display: none;"></div>
+    </div>
+    
+    <div class="question-body" style="width: 100%;">
+      <!-- 核心題幹 -->
+      <div class="question-target-container">
+        <div class="question-target-word" id="question-target">載入中...</div>
+      </div>
+      
+      <!-- 例句語境展示盒 -->
+      <div id="question-context-box" class="context-box" style="display: none;">
+        <span class="context-label">CONTEXT 語境</span>
+        <div class="context-sentence" id="question-context-sentence"></div>
+      </div>
+      
+      <!-- 指引提示 -->
+      <div class="question-action-prompt" id="question-action-prompt"></div>
+    </div>
+
+    <div class="options-group" id="options-container" style="width: 100%;">
+      <!-- JS 動態生成按鈕 -->
+    </div>
+  </div>
+
+  <!-- 結算卡片 (預設隱藏) -->
+  <div class="results-card {% if user_profile and user_profile.card_border_style == 'platinum' %}card-border-platinum{% endif %}" id="results-card" style="display: none; position: relative; overflow: hidden;">
+    
+    <!-- 像素寶箱互動開啟區域 -->
+    <div id="chest-opening-area" style="display: none; opacity: 0; transition: opacity 0.4s ease; text-align: center; padding: 30px 0; position: relative; z-index: 5;">
+      <div class="sunburst-glow"></div>
+      <div style="position: relative; z-index: 10; display: inline-block;">
+        <img id="pixel-chest" src="{% static 'images/pixel_chest_closed.png' %}" class="pixel-chest-sprite animate-bounce-slow" style="width: 128px; height: 128px; image-rendering: pixelated; cursor: pointer;" />
+      </div>
+      <div id="chest-hint-text" style="font-size: 1.05rem; font-weight: 700; color: #fff; margin-top: 20px; z-index: 10; position: relative; text-shadow: 0 2px 8px rgba(0,0,0,0.5);">
+        恭喜完成挑戰！點擊寶箱領取獎勵 🎁
+      </div>
+      
+      <!-- 金幣明細結算清單 (預設隱藏) -->
+      <div id="reward-breakdown-box" style="display: none; opacity: 0; max-width: 380px; margin: 24px auto 0; padding: 20px; background: rgba(255, 255, 255, 0.02); border: 1px solid rgba(255, 255, 255, 0.05); border-radius: 16px; text-align: left; box-shadow: inset 0 1px 3px rgba(0,0,0,0.2); transition: all 0.4s ease;">
+        <h4 style="color: #ffd700; text-align: center; margin-bottom: 14px; font-size: 1.1rem; font-weight: 800; letter-spacing: 0.5px; text-shadow: 0 0 8px rgba(255, 215, 0, 0.2);">💎 挑戰獎勵明細 💎</h4>
+        <div style="display: flex; flex-direction: column; gap: 10px; font-size: 0.9rem;">
+          <div style="display: flex; justify-content: space-between; color: var(--text-secondary);">
+            <span>寶箱基礎獎勵 (<span id="reward-chest-name">---</span>):</span>
+            <span style="font-weight: 700; color: #fff;">+🪙 <span id="reward-base-coins">0</span></span>
+          </div>
+          <div style="display: flex; justify-content: space-between; color: var(--text-secondary);">
+            <span>作答精準度加成 (<span id="reward-accuracy">0</span>%):</span>
+            <span style="font-weight: 700; color: #fff;">+🪙 <span id="reward-acc-bonus">0</span></span>
+          </div>
+          <div id="reward-hearts-row" style="display: none; justify-content: space-between; color: var(--text-secondary);">
+            <span>生存心心剩餘加成 (<span id="reward-hearts-count">0</span>顆心):</span>
+            <span style="font-weight: 700; color: #fff;">+🪙 <span id="reward-hearts-bonus">0</span></span>
+          </div>
+          <div style="height: 1px; background: rgba(255, 255, 255, 0.06); margin: 6px 0;"></div>
+          <div style="display: flex; justify-content: space-between; align-items: baseline; font-size: 1.15rem; font-weight: 800;">
+            <span style="color: #ffd700;">總計獲得金幣:</span>
+            <span style="color: #ffd700; text-shadow: 0 0 10px rgba(255, 215, 0, 0.35); font-size: 1.3rem;">🪙 <span id="reward-total-earned">0</span></span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 實際結算內容 (包裹起來以便批次隱藏) -->
+    <div id="actual-results-wrap" style="transition: opacity 0.4s ease;">
+      <div style="font-size: 3.2rem; margin-bottom: 12px;">🏆</div>
+      <h2 class="page-title" style="margin-bottom: 4px; font-size: 1.7rem;">挑戰結束！</h2>
+      <p class="text-muted" style="font-size: 0.85rem; margin-bottom: 20px;">模式：{{ mode_display }}</p>
+
+      <!-- Tabs 分頁切換選單 -->
+      <div class="result-tabs">
+        <button type="button" class="result-tab active" id="tab-btn-summary" onclick="switchResultTab('summary')">📊 挑戰總結</button>
+        <button type="button" class="result-tab" id="tab-btn-all" onclick="switchResultTab('all')">📚 本次題庫</button>
+        <button type="button" class="result-tab" id="tab-btn-incorrect" onclick="switchResultTab('incorrect')">⚠️ 錯題檢討</button>
+      </div>
+
+    <!-- 分頁一：成績總結 -->
+    <div id="result-content-summary">
+      <!-- 分數統計欄位 -->
+      <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-bottom: 24px; background: rgba(255,255,255,0.02); border: 1px solid var(--border); border-radius: 12px; padding: 16px;">
+        <div>
+          <div style="font-size: 1.8rem; font-weight: 800; color: var(--green);" id="result-correct-count">0</div>
+          <div style="font-size: 0.72rem; color: var(--text-muted); text-transform: uppercase; margin-top: 4px;">答對題數</div>
+        </div>
+        <div style="border-left: 1px solid var(--border); border-right: 1px solid var(--border);">
+          <div style="font-size: 1.8rem; font-weight: 800; color: var(--text-primary);" id="result-total-count">0</div>
+          <div style="font-size: 0.72rem; color: var(--text-muted); text-transform: uppercase; margin-top: 4px;">作答總數</div>
+        </div>
+        <div>
+          <div style="font-size: 1.8rem; font-weight: 800; color: var(--accent);" id="result-accuracy-text">0%</div>
+          <div style="font-size: 0.72rem; color: var(--text-muted); text-transform: uppercase; margin-top: 4px;">精準率</div>
+        </div>
+      </div>
+
+      <div style="margin-bottom: 30px; font-size: 0.88rem; color: var(--text-secondary); line-height: 1.5; padding: 0 10px;" id="result-feedback">
+        做得好！
+      </div>
+    </div>
+
+    <!-- 分頁二：題庫總覽 (Accordion 面板) -->
+    <div id="result-content-all" style="display: none;">
+      <div class="review-list" id="all-words-list">
+        <!-- JS 動態渲染 -->
+      </div>
+    </div>
+
+    <!-- 分頁三：錯題檢討 (Accordion 面板) -->
+    <div id="result-content-incorrect" style="display: none;">
+      <div class="review-list" id="incorrect-words-list">
+        <!-- JS 動態渲染 -->
+      </div>
+    </div>
+
+    <!-- 按鈕區 -->
+    <form id="challenge-submit-form" onsubmit="postChallengeResults(event)" style="margin:0">
+      {% csrf_token %}
+      <div style="display: flex; gap: 12px; justify-content: center; width: 100%;">
+        <a href="{% url 'vocab:study_challenge' %}?mode={{ mode_code }}" class="btn btn-ghost" style="flex: 1; padding: 12px; font-weight: 700; font-size: 0.88rem; text-align: center; border-color: rgba(255,255,255,0.15);" data-turbo="false">
+          ↺ 再次挑戰
+        </a>
+        <button type="submit" class="btn btn-primary" style="flex: 1.5; padding: 12px; font-weight: 700; font-size: 0.88rem;" id="result-submit-btn">
+          儲存並退出
+        </button>
+        <a href="{% url 'vocab:challenge_select' %}" class="btn btn-ghost" style="padding: 12px; font-size: 0.88rem; border-color: rgba(255,255,255,0.15);">
+          ← 挑戰中心
+        </a>
+      </div>
+    </form>
+    </div>
+  </div>
+
+</div>
+
+<!-- 粒子特效庫 -->
+<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
+<script>
+(function() {
+  // 從後端獲取的動態題目
+  const rawQuestions = {{ questions_json|safe }};
+  const modeCode = "{{ mode_code }}"; // 'today', 'starred', or 'random'
+  
+  // 特效畫布與粒子引擎
+  const fxCanvas = document.getElementById('challenge-fx-canvas');
+  const fxCtx = fxCanvas ? fxCanvas.getContext('2d') : null;
+  let fxParticles = [];
+  let fxLightning = null;
+  let fxFlashAlpha = 0;
+  let fxAnimationFrameId = null;
+
+  function resizeFxCanvas() {
+    if (!fxCanvas) return;
+    const container = document.querySelector('.challenge-container');
+    if (container) {
+      fxCanvas.width = container.clientWidth;
+      fxCanvas.height = container.clientHeight;
+    }
+  }
+
+  // 16-bit 像素粒子類別
+  class PixelParticle {
+    constructor(x, y, color) {
+      this.x = x;
+      this.y = y;
+      this.vx = (Math.random() - 0.5) * 10;
+      this.vy = (Math.random() - 0.7) * 14 - 4; // 呈向上噴泉狀
+      this.gravity = 0.28;
+      this.friction = 0.97;
+      this.size = Math.floor(Math.random() * 4) + 4; // 4-7px
+      this.color = color;
+      this.alpha = 1;
+      this.decay = Math.random() * 0.02 + 0.015;
+    }
+
+    update() {
+      this.vx *= this.friction;
+      this.vy *= this.friction;
+      this.vy += this.gravity;
+      this.x += this.vx;
+      this.y += this.vy;
+      this.alpha -= this.decay;
+    }
+
+    draw(ctx) {
+      ctx.save();
+      ctx.globalAlpha = Math.max(0, this.alpha);
+      ctx.fillStyle = this.color;
+      ctx.fillRect(Math.round(this.x - this.size / 2), Math.round(this.y - this.size / 2), this.size, this.size);
+      ctx.restore();
+    }
+  }
+
+  // 16-bit 像素金幣粒子
+  class CoinPixelParticle {
+    constructor(x, y) {
+      this.x = x;
+      this.y = y;
+      this.vx = (Math.random() - 0.5) * 12;
+      this.vy = (Math.random() - 0.75) * 18 - 6; // 噴泉拋物線
+      this.gravity = 0.32;
+      this.friction = 0.98;
+      this.size = Math.random() * 0.8 + 1.2; // 縮放係數
+      this.alpha = 1;
+      this.decay = Math.random() * 0.015 + 0.01;
+      this.spinSpeed = Math.random() * 0.2 + 0.1;
+      this.spinPhase = Math.random() * Math.PI;
+    }
+
+    update() {
+      this.vx *= this.friction;
+      this.vy *= this.friction;
+      this.vy += this.gravity;
+      this.x += this.vx;
+      this.y += this.vy;
+      this.alpha -= this.decay;
+      this.spinPhase += this.spinSpeed;
+    }
+
+    draw(ctx) {
+      ctx.save();
+      ctx.globalAlpha = Math.max(0, this.alpha);
+      ctx.translate(this.x, this.y);
+      const scaleX = Math.sin(this.spinPhase);
+      ctx.scale(scaleX, 1);
+      
+      const size = this.size;
+      const coinPixels = [
+        [0,0,1,1,1,1,0,0],
+        [0,1,1,2,2,1,1,0],
+        [1,1,2,2,2,2,1,1],
+        [1,2,2,2,2,2,2,1],
+        [1,2,2,2,2,2,2,1],
+        [1,1,2,2,2,2,1,1],
+        [0,1,1,2,2,1,1,0],
+        [0,0,1,1,1,1,0,0]
+      ];
+      
+      for(let r=0; r<8; r++) {
+        for(let c=0; c<8; c++) {
+          const val = coinPixels[r][c];
+          if (val === 1) {
+            ctx.fillStyle = '#B8860B';
+            ctx.fillRect(Math.round((c - 4) * size), Math.round((r - 4) * size), Math.ceil(size), Math.ceil(size));
+          } else if (val === 2) {
+            ctx.fillStyle = '#FFD700';
+            ctx.fillRect(Math.round((c - 4) * size), Math.round((r - 4) * size), Math.ceil(size), Math.ceil(size));
+          }
+        }
+      }
+      ctx.restore();
+    }
+  }
+
+  // 16-bit 像素星星粒子
+  class StarPixelParticle {
+    constructor(x, y) {
+      this.x = x;
+      this.y = y;
+      this.vx = (Math.random() - 0.5) * 10;
+      this.vy = (Math.random() - 0.7) * 16 - 5;
+      this.gravity = 0.28;
+      this.friction = 0.98;
+      this.size = Math.random() * 0.6 + 1.0;
+      this.alpha = 1;
+      this.decay = Math.random() * 0.02 + 0.01;
+      this.angle = Math.random() * Math.PI * 2;
+      this.spin = (Math.random() - 0.5) * 0.3;
+    }
+
+    update() {
+      this.vx *= this.friction;
+      this.vy *= this.friction;
+      this.vy += this.gravity;
+      this.x += this.vx;
+      this.y += this.vy;
+      this.alpha -= this.decay;
+      this.angle += this.spin;
+    }
+
+    draw(ctx) {
+      ctx.save();
+      ctx.globalAlpha = Math.max(0, this.alpha);
+      ctx.translate(this.x, this.y);
+      ctx.rotate(this.angle);
+      
+      const size = this.size;
+      const starPixels = [
+        [0,0,0,1,1,0,0,0],
+        [0,0,1,2,2,1,0,0],
+        [0,1,2,2,2,2,1,0],
+        [1,2,2,2,2,2,2,1],
+        [1,2,2,2,2,2,2,1],
+        [0,1,2,2,2,2,1,0],
+        [0,0,1,2,2,1,0,0],
+        [0,0,0,1,1,0,0,0]
+      ];
+      
+      for(let r=0; r<8; r++) {
+        for(let c=0; c<8; c++) {
+          const val = starPixels[r][c];
+          if (val === 1) {
+            ctx.fillStyle = '#FFA500';
+            ctx.fillRect(Math.round((c - 4) * size), Math.round((r - 4) * size), Math.ceil(size), Math.ceil(size));
+          } else if (val === 2) {
+            ctx.fillStyle = '#FFF59D';
+            ctx.fillRect(Math.round((c - 4) * size), Math.round((r - 4) * size), Math.ceil(size), Math.ceil(size));
+          }
+        }
+      }
+      ctx.restore();
+    }
+  }
+
+  const FXEngine = {
+    init() {
+      if (!fxCanvas) return;
+      window.addEventListener('resize', resizeFxCanvas);
+      resizeFxCanvas();
+      this.startLoop();
+    },
+
+    startLoop() {
+      if (fxAnimationFrameId) cancelAnimationFrame(fxAnimationFrameId);
+      const tick = () => {
+        this.update();
+        this.draw();
+        fxAnimationFrameId = requestAnimationFrame(tick);
+      };
+      fxAnimationFrameId = requestAnimationFrame(tick);
+    },
+
+    update() {
+      for (let i = fxParticles.length - 1; i >= 0; i--) {
+        const p = fxParticles[i];
+        p.update();
+        if (p.alpha <= 0) {
+          fxParticles.splice(i, 1);
+        }
+      }
+
+      if (fxFlashAlpha > 0) {
+        fxFlashAlpha -= 0.05;
+      }
+
+      if (fxLightning) {
+        fxLightning.duration -= 16.7;
+        if (fxLightning.duration <= 0) {
+          fxLightning = null;
+        } else {
+          fxLightning.shakeX = (Math.random() - 0.5) * 8;
+        }
+      }
+    },
+
+    draw() {
+      if (!fxCtx || !fxCanvas) return;
+      fxCtx.clearRect(0, 0, fxCanvas.width, fxCanvas.height);
+
+      fxParticles.forEach(p => p.draw(fxCtx));
+
+      if (fxLightning) {
+        const drawLightningPath = (pts, width, color, blur) => {
+          fxCtx.save();
+          fxCtx.strokeStyle = color;
+          fxCtx.lineWidth = width;
+          fxCtx.lineCap = 'square';
+          fxCtx.lineJoin = 'miter';
+          if (blur) {
+            fxCtx.shadowColor = '#FFD700';
+            fxCtx.shadowBlur = blur;
+          }
+          fxCtx.beginPath();
+          fxCtx.moveTo(pts[0].x + fxLightning.shakeX, pts[0].y);
+          for (let i = 1; i < pts.length; i++) {
+            fxCtx.lineTo(pts[i].x + fxLightning.shakeX, pts[i].y);
+          }
+          fxCtx.stroke();
+          fxCtx.restore();
+        };
+
+        // 1. 底層發光層 (最粗)
+        drawLightningPath(fxLightning.main, 14, 'rgba(255, 215, 0, 0.35)', 20);
+        fxLightning.branches.forEach(br => {
+          drawLightningPath(br, 8, 'rgba(255, 215, 0, 0.35)', 12);
+        });
+
+        // 2. 中間橙色外框層
+        drawLightningPath(fxLightning.main, 8, '#FFA500');
+        fxLightning.branches.forEach(br => {
+          drawLightningPath(br, 4, '#FFA500');
+        });
+
+        // 3. 頂層白色高溫芯 (最細)
+        drawLightningPath(fxLightning.main, 3, '#FFFFFF');
+        fxLightning.branches.forEach(br => {
+          drawLightningPath(br, 1.5, '#FFFFFF');
+        });
+      }
+
+      if (fxFlashAlpha > 0) {
+        fxCtx.save();
+        fxCtx.globalAlpha = Math.max(0, Math.min(0.35, fxFlashAlpha));
+        fxCtx.fillStyle = '#FFDF00';
+        fxCtx.fillRect(0, 0, fxCanvas.width, fxCanvas.height);
+        fxCtx.restore();
+      }
+    },
+
+    spawnPixelBurst(x, y, isFever) {
+      const colors = isFever 
+        ? ['#FFD700', '#FFA500', '#FFDF00', '#FFF59D', '#FFFFFF'] 
+        : ['#FF007F', '#00FFE0', '#FFEB3B', '#4CAF50', '#9C27B0', '#FF5722'];
+      
+      const count = isFever ? 30 : 20;
+      for (let i = 0; i < count; i++) {
+        const color = colors[Math.floor(Math.random() * colors.length)];
+        fxParticles.push(new PixelParticle(x, y, color));
+      }
+    },
+
+    triggerLightning() {
+      if (!fxCanvas) return;
+      fxFlashAlpha = 0.55;
+
+      const mainPoints = [];
+      const steps = 6;
+      const startX = Math.random() * fxCanvas.width;
+      const cardEl = document.getElementById('challenge-card');
+      let targetX = fxCanvas.width / 2;
+      let targetY = fxCanvas.height / 2;
+      if (cardEl) {
+        const r = cardEl.getBoundingClientRect();
+        const containerR = document.querySelector('.challenge-container').getBoundingClientRect();
+        targetX = r.left - containerR.left + r.width / 2 + (Math.random() - 0.5) * 80;
+        targetY = r.top - containerR.top + 20;
+      }
+
+      const segmentHeight = targetY / steps;
+      mainPoints.push({ x: startX, y: 0 });
+
+      // 生成主幹折線
+      for (let i = 1; i < steps; i++) {
+        const curY = i * segmentHeight;
+        const ratio = i / steps;
+        const baseX = startX + (targetX - startX) * ratio;
+        const offset = (Math.random() - 0.5) * 70;
+        mainPoints.push({ x: baseX + offset, y: curY });
+      }
+      mainPoints.push({ x: targetX, y: targetY });
+
+      // 生成分枝折線
+      const branches = [];
+      const branchCount = Math.floor(Math.random() * 2) + 1; // 1-2 條分枝
+      for (let b = 0; b < branchCount; b++) {
+        const startNodeIdx = Math.floor(Math.random() * 3) + 2; 
+        if (startNodeIdx < mainPoints.length) {
+          const bPoints = [mainPoints[startNodeIdx]];
+          const bSteps = 3;
+          let curX = mainPoints[startNodeIdx].x;
+          let curY = mainPoints[startNodeIdx].y;
+          const dir = Math.random() < 0.5 ? -1 : 1; 
+          const bSegHeight = (fxCanvas.height - curY) / 6;
+
+          for (let k = 1; k <= bSteps; k++) {
+            curY += bSegHeight;
+            curX += dir * (Math.random() * 50 + 30);
+            bPoints.push({ x: curX, y: curY });
+          }
+          branches.push(bPoints);
+        }
+      }
+
+      fxLightning = {
+        main: mainPoints,
+        branches: branches,
+        duration: 220,
+        shakeX: 0
+      };
+
+      // 觸發挑戰卡片螢幕震動 (Screen Shake) 特效
+      if (cardEl) {
+        let shakeTime = 220;
+        const shakeInterval = setInterval(() => {
+          if (shakeTime <= 0) {
+            clearInterval(shakeInterval);
+            cardEl.style.transform = '';
+          } else {
+            const sx = (Math.random() - 0.5) * 14;
+            const sy = (Math.random() - 0.5) * 14;
+            cardEl.style.transform = `translate(${sx}px, ${sy}px)`;
+            shakeTime -= 15;
+          }
+        }, 15);
+      }
+    }
+  };
+
+  function showComboPopup(combo) {
+    const cardEl = document.getElementById('challenge-card');
+    if (!cardEl) return;
+
+    const popup = document.createElement('div');
+    popup.className = 'combo-badge-popup';
+    popup.innerText = `+${combo} Combo!`;
+    
+    if (combo >= 5) {
+      popup.style.fontSize = '1.8rem';
+      popup.style.color = '#FFF';
+      popup.style.textShadow = '0 0 10px #FFDF00, 2px 2px 0 #000';
+    }
+
+    const rotate = (Math.random() - 0.5) * 20;
+    popup.style.transform = `rotate(${rotate}deg)`;
+    popup.style.left = '50%';
+    popup.style.top = '-10px';
+    popup.style.transform += ' translateX(-50%)';
+
+    cardEl.appendChild(popup);
+
+    setTimeout(() => {
+      popup.remove();
+    }, 700);
+  }
+
+  let queue = [];
+  let currentIdx = 0; // 生存模式索引
+  let score = 0;
+  let totalAnswered = 0;
+  let isAnswered = false;
+  
+  // 佇列特訓模式專用變數
+  let totalWordsCount = 0;
+  let clearedCount = 0;
+  const incorrectWordIds = new Set();
+  
+  // 生存挑戰模式專用變數
+  let hearts = 5;
+  let combo = 0;
+  let remainingTimeMs = 6000;
+  let timerInterval = null;
+  const TIME_LIMIT_MS = 6000;
+  
+  // 收錄與錯題紀錄 Maps
+  const allWordsMap = new Map();
+  const wrongWordsMap = new Map();
+
+  const progressBar = document.getElementById('timer-progressbar');
+  const card = document.getElementById('challenge-card');
+  const progressText = document.getElementById('question-progress');
+  const scoreText = document.getElementById('score-counter');
+  const badgeType = document.getElementById('question-badge-type');
+  const questionTarget = document.getElementById('question-target');
+  const questionKkBadge = document.getElementById('question-kk-badge');
+  const questionContextBox = document.getElementById('question-context-box');
+  const questionContextSentence = document.getElementById('question-context-sentence');
+  const questionActionPrompt = document.getElementById('question-action-prompt');
+  const optionsContainer = document.getElementById('options-container');
+  const resultsCard = document.getElementById('results-card');
+  const heartsContainer = document.getElementById('hearts-container');
+
+  // 洗牌演算法
+  function shuffleArray(array) {
+    for (let i = array.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [array[i], array[j]] = [array[j], array[i]];
+    }
+  }
+
+  // Web Audio API 音效產生器，免除下載外部音訊檔案
+  let audioCtx = null;
+  function playSound(type) {
+    try {
+      if (!audioCtx) {
+        audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      }
+      if (audioCtx.state === 'suspended') {
+        audioCtx.resume();
+      }
+      const osc = audioCtx.createOscillator();
+      const gain = audioCtx.createGain();
+      osc.connect(gain);
+      gain.connect(audioCtx.destination);
+
+      if (type === 'correct') {
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(523.25, audioCtx.currentTime); // C5
+        osc.frequency.setValueAtTime(783.99, audioCtx.currentTime + 0.08); // G5
+        gain.gain.setValueAtTime(0, audioCtx.currentTime);
+        gain.gain.linearRampToValueAtTime(0.12, audioCtx.currentTime + 0.04);
+        gain.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + 0.35);
+        osc.start(audioCtx.currentTime);
+        osc.stop(audioCtx.currentTime + 0.35);
+      } else if (type === 'wrong') {
+        osc.type = 'triangle';
+        osc.frequency.setValueAtTime(140, audioCtx.currentTime);
+        osc.frequency.linearRampToValueAtTime(80, audioCtx.currentTime + 0.22);
+        gain.gain.setValueAtTime(0, audioCtx.currentTime);
+        gain.gain.linearRampToValueAtTime(0.18, audioCtx.currentTime + 0.04);
+        gain.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + 0.3);
+        osc.start(audioCtx.currentTime);
+        osc.stop(audioCtx.currentTime + 0.3);
+      }
+    } catch(e) {}
+  }
+
+  // 初始化遊戲
+  function initGame() {
+    FXEngine.init();
+    if (rawQuestions.length === 0) {
+      questionTarget.innerText = "本模式暫無足夠單字";
+      questionActionPrompt.innerText = "您的星標庫或複習庫單字數量不足，請先去探索新詞或背單字！";
+      progressBar.style.width = '0%';
+      return;
+    }
+
+    if (modeCode === 'random') {
+      // 生存戰模式：預設 5 顆心，限時 6 秒
+      heartsContainer.style.display = 'flex';
+      progressBar.style.transition = 'none';
+      updateHeartsDisplay();
+      shuffleArray(rawQuestions);
+      renderSurvivalQuestion();
+    } else {
+      // 溫故/星標特訓模式：非限時佇列通關制，進度條顯示通關比率
+      queue = [...rawQuestions];
+      shuffleArray(queue);
+      totalWordsCount = queue.length;
+      heartsContainer.style.display = 'none';
+      progressBar.style.transition = 'width 0.3s cubic-bezier(0.4, 0, 0.2, 1)';
+      progressBar.style.width = '0%';
+      renderQueueQuestion();
+    }
+  }
+
+  function updateHeartsDisplay() {
+    for (let i = 0; i < 5; i++) {
+      const heartSvg = document.getElementById(`heart-${i}`);
+      if (heartSvg) {
+        if (i < hearts) {
+          heartSvg.classList.remove('lost');
+        } else {
+          heartSvg.classList.add('lost');
+        }
+      }
+    }
+  }
+
+  // 佇列特訓模式渲染
+  function renderQueueQuestion() {
+    if (queue.length === 0) {
+      endChallenge();
+      return;
+    }
+    isAnswered = false;
+    const q = queue[0];
+
+    // 將單字寫入本次題庫
+    addWordToMap(allWordsMap, q);
+
+    // 更新頂部文字與進度條
+    progressText.innerText = `已通關: ${clearedCount}/${totalWordsCount}`;
+    scoreText.innerText = `得分: ${score}`;
+    const pct = (clearedCount / totalWordsCount) * 100;
+    progressBar.style.width = pct + '%';
+
+    renderCardContent(q);
+  }
+
+  // 生存挑戰模式渲染
+  function renderSurvivalQuestion() {
+    if (hearts <= 0 || currentIdx >= rawQuestions.length) {
+      endChallenge();
+      return;
+    }
+    isAnswered = false;
+    const q = rawQuestions[currentIdx];
+
+    // 將單字寫入本次題庫
+    addWordToMap(allWordsMap, q);
+
+    // 更新頂部文字
+    progressText.innerText = `已答題: ${totalAnswered}`;
+    scoreText.innerText = `得分: ${score}`;
+
+    renderCardContent(q);
+
+    // 啟動 6s 限時倒數
+    startSurvivalTimer();
+  }
+
+  function addWordToMap(map, q) {
+    if (q && q.word_id && !map.has(q.word_id)) {
+      map.set(q.word_id, {
+        word_id: q.word_id,
+        word: q.word,
+        kk: q.kk,
+        translation: q.translation,
+        definition: q.definition,
+        example_sentence: q.example_sentence,
+        example_translation: q.example_translation,
+        is_added: q.is_added
+      });
+    }
+  }
+
+  function renderCardContent(q) {
+    // 重置 KK 音標與語境例句盒
+    questionKkBadge.style.display = 'none';
+    questionKkBadge.innerText = '';
+    questionContextBox.style.display = 'none';
+    questionContextSentence.innerHTML = '';
+
+    if (q.type === 'collocation') {
+      badgeType.innerText = '必考搭配詞 🔗';
+      badgeType.className = 'question-badge badge-collocation';
+      
+      // 題幹大字
+      questionTarget.innerHTML = q.question_text.replace('_______', `<span style="border-bottom: 2px dashed var(--accent); color: var(--accent); padding: 0 8px;">_______</span>`);
+      
+      // 提示
+      questionContextBox.style.display = 'block';
+      questionContextSentence.innerHTML = `<span style="font-style: normal; color: var(--text-secondary); font-size: 0.95rem;">${q.hint}</span>`;
+      
+      questionActionPrompt.innerText = '請選出最適合填入空格的搭配詞';
+    } 
+    else if (q.type === 'confusable') {
+      badgeType.innerText = '天敵混淆字 ⚠️';
+      badgeType.className = 'question-badge badge-confusable';
+      
+      // 題幹大字
+      questionTarget.innerHTML = q.question_text.replace('_______', `<span style="border-bottom: 2px dashed #f25f5f; color: #f25f5f; padding: 0 8px;">_______</span>`);
+      
+      // 提示
+      questionContextBox.style.display = 'block';
+      questionContextSentence.innerHTML = `<span style="font-style: normal; color: var(--text-secondary); font-size: 0.95rem;">${q.hint}</span>`;
+      
+      questionActionPrompt.innerText = '請選出最適合填入空格的單字';
+    } 
+    else if (q.type === 'zh_to_en') {
+      badgeType.innerText = '中文選英 📝';
+      badgeType.className = 'question-badge badge-definition';
+      
+      // 中文翻譯題幹
+      questionTarget.innerText = q.question_text;
+      
+      questionActionPrompt.innerText = '請選出對應的英文單字';
+    } 
+    else { // definition (英文選中)
+      badgeType.innerText = '單字釋義 📝';
+      badgeType.className = 'question-badge badge-definition';
+      
+      // 英文單字大字題幹
+      questionTarget.innerText = q.word;
+      
+      // 顯示 KK 音標
+      if (q.kk) {
+        questionKkBadge.style.display = 'inline-block';
+        questionKkBadge.innerText = `[ ${q.kk} ]`;
+      }
+      
+      // 顯示語境句
+      if (q.example_sentence) {
+        questionContextBox.style.display = 'block';
+        questionContextSentence.innerHTML = q.question_text || q.example_sentence;
+      }
+      
+      questionActionPrompt.innerText = '請選出此單字的正確中文釋義';
+    }
+
+    optionsContainer.innerHTML = '';
+    q.options.forEach((opt, idx) => {
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'option-btn';
+      btn.innerHTML = `
+        <div style="display:flex; align-items:center; gap:12px; min-width:0; flex:1;">
+          <span class="option-shortcut-badge">${idx+1}</span>
+          <span class="option-text" style="white-space: normal; text-align: left; line-height: 1.3;">${opt}</span>
+        </div>
+        <span class="option-indicator" id="ind-${idx}"></span>
+      `;
+      btn.onclick = () => selectOption(btn, opt, idx);
+      optionsContainer.appendChild(btn);
+    });
+
+    // 淡入切換動畫
+    card.style.opacity = '0';
+    card.style.transform = 'scale(0.97)';
+    setTimeout(() => {
+      card.style.opacity = '1';
+      card.style.transform = 'scale(1)';
+    }, 50);
+  }
+
+  // 6 秒倒數計時器
+  function startSurvivalTimer() {
+    if (timerInterval) clearInterval(timerInterval);
+    remainingTimeMs = TIME_LIMIT_MS;
+    progressBar.style.transition = 'none';
+    progressBar.style.width = '100%';
+
+    const tickMs = 50;
+    timerInterval = setInterval(() => {
+      remainingTimeMs -= tickMs;
+      if (remainingTimeMs <= 0) {
+        remainingTimeMs = 0;
+        clearInterval(timerInterval);
+        handleSurvivalTimeout();
+      }
+      const pct = (remainingTimeMs / TIME_LIMIT_MS) * 100;
+      progressBar.style.width = pct + '%';
+    }, tickMs);
+  }
+
+  // 超時處理
+  function handleSurvivalTimeout() {
+    if (isAnswered) return;
+    isAnswered = true;
+    totalAnswered++;
+
+    const q = rawQuestions[currentIdx];
+    
+    // 扣除生命
+    hearts--;
+    combo = 0;
+    window.isFeverMode = false;
+    const cardEl = document.getElementById('challenge-card');
+    if (cardEl) cardEl.classList.remove('fever-active');
+    updateHeartsDisplay();
+    playSound('wrong');
+    card.classList.add('shake');
+    setTimeout(() => card.classList.remove('shake'), 400);
+
+    // 紀錄錯題
+    addWordToMap(wrongWordsMap, q);
+
+    // 顯示正確答案
+    const allBtns = optionsContainer.querySelectorAll('.option-btn');
+    allBtns.forEach((btn, bIdx) => {
+      btn.disabled = true;
+      const spanText = btn.querySelector('.option-text').innerText;
+      if (spanText.trim() === q.correct.trim()) {
+        btn.classList.add('correct-ans');
+        document.getElementById(`ind-${bIdx}`).innerText = '✓';
+      }
+    });
+
+    if (hearts <= 0) {
+      setTimeout(endChallenge, 1200);
+    } else {
+      setTimeout(() => {
+        currentIdx++;
+        renderSurvivalQuestion();
+      }, 1200);
+    }
+  }
+
+  // 作答選項選取
+  function selectOption(buttonEl, optVal, idx) {
+    if (isAnswered) return;
+    isAnswered = true;
+
+    if (timerInterval) clearInterval(timerInterval);
+    totalAnswered++;
+
+    const isSurvival = (modeCode === 'random');
+    const q = isSurvival ? rawQuestions[currentIdx] : queue[0];
+    const isCorrect = (optVal.trim() === q.correct.trim());
+
+    const allBtns = optionsContainer.querySelectorAll('.option-btn');
+    allBtns.forEach(btn => btn.disabled = true);
+
+    if (isCorrect) {
+      playSound('correct');
+      buttonEl.classList.add('correct-ans');
+      document.getElementById(`ind-${idx}`).innerText = '✓';
+
+      // 答對飛濺粒子
+      const rect = buttonEl.getBoundingClientRect();
+      const container = document.querySelector('.challenge-container');
+      if (container) {
+        const containerRect = container.getBoundingClientRect();
+        const burstX = rect.left - containerRect.left + rect.width / 2;
+        const burstY = rect.top - containerRect.top + rect.height / 2;
+        FXEngine.spawnPixelBurst(burstX, burstY, window.isFeverMode);
+      }
+
+      if (isSurvival) {
+        score++;
+        combo++;
+        
+        // 答對連擊特效
+        if (combo >= 2) {
+          showComboPopup(combo);
+        }
+
+        // Fever 狀態控制
+        if (combo >= 5) {
+          if (!window.isFeverMode) {
+            window.isFeverMode = true;
+            const cardEl = document.getElementById('challenge-card');
+            if (cardEl) cardEl.classList.add('fever-active');
+            if (window.showToast) {
+              window.showToast('🔥 FEVER MODE 啟動！粒子加速！', 'success');
+            }
+          }
+          // 高連擊閃電特效 (5 的倍數必劈，或 35% 機率)
+          if (combo % 5 === 0 || Math.random() < 0.35) {
+            FXEngine.triggerLightning();
+          }
+        }
+
+        // 連擊加血 (每 5 連擊且生命未滿時回復)
+        if (combo > 0 && combo % 5 === 0) {
+          if (hearts < 5) {
+            hearts++;
+            updateHeartsDisplay();
+            if (window.showToast) {
+              window.showToast(`連續答對 ${combo} 題，回復 1 點生命值！❤️`, 'success');
+            }
+          }
+        }
+
+        setTimeout(() => {
+          currentIdx++;
+          renderSurvivalQuestion();
+        }, 450);
+      } else {
+        // 佇列特訓模式：答對
+        // 第一次就答對才記入總得分
+        if (!incorrectWordIds.has(q.word_id)) {
+          score++;
+        }
+        clearedCount++;
+        
+        // 答對即可移除佇列
+        queue.shift();
+
+        setTimeout(renderQueueQuestion, 450);
+      }
+    } else {
+      playSound('wrong');
+      buttonEl.classList.add('wrong-ans');
+      document.getElementById(`ind-${idx}`).innerText = '✕';
+
+      allBtns.forEach((btn, bIdx) => {
+        const spanText = btn.querySelector('.option-text').innerText;
+        if (spanText.trim() === q.correct.trim()) {
+          btn.classList.add('correct-ans');
+          document.getElementById(`ind-${bIdx}`).innerText = '✓';
+        }
+      });
+
+      card.classList.add('shake');
+      setTimeout(() => card.classList.remove('shake'), 400);
+
+      // 紀錄錯題
+      addWordToMap(wrongWordsMap, q);
+
+      if (isSurvival) {
+        hearts--;
+        combo = 0;
+        window.isFeverMode = false;
+        const cardEl = document.getElementById('challenge-card');
+        if (cardEl) cardEl.classList.remove('fever-active');
+        updateHeartsDisplay();
+
+        if (hearts <= 0) {
+          setTimeout(endChallenge, 950);
+        } else {
+          setTimeout(() => {
+            currentIdx++;
+            renderSurvivalQuestion();
+          }, 950);
+        }
+      } else {
+        // 佇列特訓模式：答錯
+        // 標記該字此局答錯過，之後答對不重複計入 score
+        incorrectWordIds.add(q.word_id);
+
+        // 移至佇列末尾重新特訓
+        const wrongQ = queue.shift();
+        queue.push(wrongQ);
+
+        setTimeout(renderQueueQuestion, 950);
+      }
+    }
+  }
+
+  // 結束挑戰並渲染詳細檢討
+  function endChallenge() {
+    if (timerInterval) clearInterval(timerInterval);
+    
+    // 關閉 Fever 狀態
+    window.isFeverMode = false;
+    const cardEl = document.getElementById('challenge-card');
+    if (cardEl) cardEl.classList.remove('fever-active');
+
+    // 隱藏答題區域
+    document.getElementById('timer-track-container').style.display = 'none';
+    document.getElementById('header-container').style.display = 'none';
+    card.style.display = 'none';
+    if (heartsContainer) heartsContainer.style.display = 'none';
+    
+    // 顯示結算卡片
+    resultsCard.style.display = 'block';
+    
+    document.getElementById('result-correct-count').innerText = score;
+    document.getElementById('result-total-count').innerText = totalAnswered;
+    
+    const rate = totalAnswered > 0 ? Math.round((score / totalAnswered) * 100) : 0;
+    document.getElementById('result-accuracy-text').innerText = `${rate}%`;
+    
+    const feedbackEl = document.getElementById('result-feedback');
+    
+    if (modeCode === 'random') {
+      if (hearts <= 0) {
+        feedbackEl.innerHTML = `<strong>生命值歸零，挑戰結束！💀</strong><br>您總共答對了 ${score} 題。生存戰考驗極速反應，再接再厲！`;
+      } else {
+        feedbackEl.innerHTML = `<strong>恭喜挑戰通關！🏆</strong><br>您成功完成了全數的隨機字庫生存挑戰！這份毅力與實力無可挑剔。`;
+      }
+    } else {
+      if (rate >= 90) {
+        feedbackEl.innerHTML = `<strong>太完美了！簡真是多益滿分王！🏆</strong><br>您對單字的直覺反應非常靈敏！請繼續保持這鋼鐵一般的實力。`;
+      } else if (rate >= 70) {
+        feedbackEl.innerHTML = `<strong>做得真棒！非常有實戰實力。👏</strong><br>已具備極高的單字辨識力，再接再厲，徹底消滅所有記憶死角！`;
+      } else if (rate >= 40) {
+        feedbackEl.innerHTML = `<strong>特訓通關！已踏出扎實的一步。👍</strong><br>有些字形與介系詞仍然有點模糊，多看幾次必能克服。`;
+      } else {
+        feedbackEl.innerHTML = `<strong>特訓通關！再接再厲。💪</strong><br>大腦正在藉由特訓重新建立神經記憶鏈結，做得好，繼續努力！`;
+      }
+    }
+
+    // 渲染本次題庫 Accordions
+    const allWordsList = document.getElementById('all-words-list');
+    allWordsList.innerHTML = '';
+    if (allWordsMap.size > 0) {
+      allWordsMap.forEach(w => {
+        allWordsList.appendChild(createAccordionItem(w));
+      });
+    } else {
+      allWordsList.innerHTML = '<div class="text-muted text-center py-4">本次挑戰無單字記錄</div>';
+    }
+
+    // 渲染錯題檢討 Accordions
+    const incorrectWordsList = document.getElementById('incorrect-words-list');
+    incorrectWordsList.innerHTML = '';
+    if (wrongWordsMap.size > 0) {
+      wrongWordsMap.forEach(w => {
+        incorrectWordsList.appendChild(createAccordionItem(w));
+      });
+    } else {
+      incorrectWordsList.innerHTML = '<div class="text-muted text-center py-4" style="color: var(--green); font-weight: 700;">太棒了！本次特訓零錯題，滿分過關！🎉</div>';
+    }
+
+    // --- 像素寶箱互動開啟儀式 ---
+    const chestArea = document.getElementById('chest-opening-area');
+    const resultsWrap = document.getElementById('actual-results-wrap');
+    const pixelChest = document.getElementById('pixel-chest');
+    const chestHintText = document.getElementById('chest-hint-text');
+
+    if (chestArea && resultsWrap && pixelChest) {
+      resultsWrap.style.display = 'none';
+      resultsWrap.style.opacity = '0';
+      chestArea.style.display = 'block';
+      
+      // 強制 reflow
+      chestArea.offsetHeight;
+      chestArea.style.opacity = '1';
+
+      pixelChest.src = "/static/images/pixel_chest_closed.png";
+      pixelChest.className = 'pixel-chest-sprite animate-bounce-slow';
+      chestHintText.innerText = '恭喜完成挑戰！點擊寶箱領取獎勵 🎁';
+
+      pixelChest.onclick = async function() {
+        if (pixelChest.dataset.claimed === 'true') return;
+        pixelChest.dataset.claimed = 'true';
+
+        // 播放開啟動畫
+        pixelChest.classList.remove('animate-bounce-slow');
+        pixelChest.classList.add('pixel-chest-open-anim');
+        
+        playSound('correct');
+
+        setTimeout(() => {
+          pixelChest.src = "/static/images/pixel_chest_open.png";
+        }, 150);
+
+        // 向伺服器請求領取金幣
+        const csrfToken = document.querySelector('#challenge-submit-form [name=csrfmiddlewaretoken]').value;
+        const fd = new FormData();
+        fd.append('correct_count', score);
+        fd.append('total_count', totalAnswered);
+        fd.append('hearts', hearts);
+        fd.append('mode', modeCode);
+
+        try {
+          const resp = await fetch('{% url "vocab:claim_chest" %}', {
+            method: 'POST',
+            headers: { 'X-CSRFToken': csrfToken },
+            body: fd
+          });
+          const d = await resp.json();
+          if (d.success) {
+            chestHintText.innerHTML = `開啟了 <strong style="color:#ffd700;">${d.chest_name}</strong>！`;
+            
+            // 填充明細表
+            document.getElementById('reward-chest-name').innerText = d.chest_name.replace(/👑|💎|📦/g, '').trim();
+            document.getElementById('reward-base-coins').innerText = d.base_coins;
+            document.getElementById('reward-accuracy').innerText = d.accuracy;
+            document.getElementById('reward-acc-bonus').innerText = d.acc_bonus;
+            
+            const heartsRow = document.getElementById('reward-hearts-row');
+            if (modeCode === 'random') {
+              heartsRow.style.display = 'flex';
+              document.getElementById('reward-hearts-count').innerText = hearts;
+              document.getElementById('reward-hearts-bonus').innerText = d.hearts_bonus;
+            } else {
+              heartsRow.style.display = 'none';
+            }
+            
+            // 顯示明細盒並漸變淡入
+            const breakdownBox = document.getElementById('reward-breakdown-box');
+            breakdownBox.style.display = 'block';
+            setTimeout(() => {
+              breakdownBox.style.opacity = '1';
+            }, 50);
+            
+            // 呼叫數字計數滾動上漲動畫
+            const animateCountUp = (targetId, endVal, dur = 1000) => {
+              const el = document.getElementById(targetId);
+              if (!el) return;
+              let start = null;
+              const step = (ts) => {
+                if (!start) start = ts;
+                const progress = Math.min((ts - start) / dur, 1);
+                el.innerText = Math.floor(progress * endVal);
+                if (progress < 1) {
+                  window.requestAnimationFrame(step);
+                } else {
+                  el.innerText = endVal;
+                }
+              };
+              window.requestAnimationFrame(step);
+            };
+            
+            animateCountUp('reward-total-earned', d.earned_coins, 1200);
+
+            // 即時更新全域金幣顯示 (如果有)
+            const settingsCoins = document.getElementById('settings-user-coins');
+            if (settingsCoins) settingsCoins.innerText = d.total_coins;
+            const topbarCoins = document.getElementById('topbar-user-coins');
+            if (topbarCoins) topbarCoins.innerText = d.total_coins;
+          } else {
+            chestHintText.innerText = d.message || '獲得本次挑戰獎勵！✨';
+          }
+        } catch(err) {
+          console.error(err);
+          chestHintText.innerText = '獲得本次挑戰獎勵！✨';
+        }
+
+        // 噴射金幣星星
+        if (typeof confetti === 'function') {
+          confetti({
+            particleCount: 120,
+            spread: 80,
+            origin: { y: 0.65 },
+            colors: ['#FFD700', '#FFA500', '#FFDF00', '#FFF59D', '#FFFFFF'],
+            ticks: 200
+          });
+        }
+
+        // FX Canvas 噴粒子
+        if (fxCanvas) {
+          const rect = pixelChest.getBoundingClientRect();
+          const containerRect = document.querySelector('.challenge-container').getBoundingClientRect();
+          const cx = rect.left - containerRect.left + rect.width / 2;
+          const cy = rect.top - containerRect.top + rect.height / 2;
+          FXEngine.spawnPixelBurst(cx, cy, true);
+          FXEngine.spawnPixelBurst(cx, cy, true);
+        }
+        
+        // 評分高時釋放額外全螢幕撒花
+        const isExcellent = (modeCode === 'random' && hearts > 0) || (modeCode !== 'random' && rate >= 70);
+        if (isExcellent) {
+          setTimeout(() => {
+            fireEndConfetti();
+          }, 300);
+        }
+
+        // 5.0 秒後漸變淡出寶箱與明細，淡入結果內容
+        setTimeout(() => {
+          chestArea.style.opacity = '0';
+          setTimeout(() => {
+            chestArea.style.display = 'none';
+            resultsWrap.style.display = 'block';
+            resultsWrap.offsetHeight;
+            resultsWrap.style.opacity = '1';
+          }, 400);
+        }, 5000);
+      };
+    } else {
+      if (resultsWrap) {
+        resultsWrap.style.display = 'block';
+        resultsWrap.style.opacity = '1';
+      }
+      
+      const isExcellent = (modeCode === 'random' && hearts > 0) || (modeCode !== 'random' && rate >= 70);
+      if (isExcellent) {
+        fireEndConfetti();
+      }
+    }
+  }
+
+  function createAccordionItem(w) {
+    const item = document.createElement('div');
+    item.className = 'review-item';
+    item.id = `review-item-${w.word_id}`;
+    
+    const kkHtml = w.kk ? `<span class="review-kk">[${w.kk}]</span>` : '';
+    const favClass = w.is_added ? 'review-btn-accent added' : 'review-btn-accent';
+    const favText = w.is_added ? '✓ 已收錄' : '＋ 收藏';
+    
+    item.innerHTML = `
+      <div class="review-header" onclick="toggleAccordion(this)">
+        <div class="review-word-info">
+          <span class="review-word">${w.word}</span>
+          ${kkHtml}
+          <span class="review-trans">${w.translation}</span>
+        </div>
+        <div style="display: flex; align-items: center; gap: 8px;">
+          <button type="button" class="review-btn-accent" onclick="event.stopPropagation(); speakWord('${w.word}', 'US')">美音 🔊</button>
+          <button type="button" class="review-btn-accent" onclick="event.stopPropagation(); speakWord('${w.word}', 'UK')">英音 🔊</button>
+          <button type="button" class="${favClass}" id="fav-btn-${w.word_id}" onclick="event.stopPropagation(); toggleFavorite(${w.word_id}, this)">
+            ${favText}
+          </button>
+          <span class="arrow-icon">▼</span>
+        </div>
+      </div>
+      <div class="review-content">
+        <div style="margin-bottom: 8px;">
+          <strong style="color: var(--accent); font-weight: 700;">中文翻譯：</strong>
+          <span style="color: #fff; font-weight: 600;">${w.translation || '暫無'}</span>
+        </div>
+        <div style="margin-bottom: 8px;">
+          <strong style="color: var(--accent); font-weight: 700;">英文釋義：</strong>
+          <span style="color: #fff;">${w.definition || '暫無釋義'}</span>
+        </div>
+        ${w.example_sentence ? `
+        <div>
+          <strong style="color: var(--green); font-weight: 700;">實用例句：</strong>
+          <div style="color: #fff; margin-top: 4px; font-style: italic; font-family: var(--font-mono);">${w.example_sentence}</div>
+          <div style="color: var(--text-muted); margin-top: 2px;">${w.example_translation}</div>
+        </div>
+        ` : ''}
+      </div>
+    `;
+    return item;
+  }
+
+  function fireEndConfetti() {
+    if (typeof confetti === 'function') {
+      confetti({ particleCount: 80, spread: 60, origin: { y: 0.6 } });
+    }
+  }
+
+  // 摺疊面板切換
+  window.toggleAccordion = function(headerEl) {
+    const item = headerEl.parentElement;
+    const isOpen = item.classList.contains('open');
+    
+    const allItems = item.parentElement.querySelectorAll('.review-item');
+    allItems.forEach(i => {
+      if (i !== item) {
+        i.classList.remove('open');
+      }
+    });
+
+    if (isOpen) {
+      item.classList.remove('open');
+    } else {
+      item.classList.add('open');
+    }
+  };
+
+  // 網頁語音合成播音 (美式/英式)
+  window.speakWord = function(text, accent) {
+    if (!window.speechSynthesis) {
+      if (window.showToast) window.showToast('瀏覽器不支援語音合成功能', 'error');
+      return;
+    }
+    window.speechSynthesis.cancel();
+    const utterance = new SpeechSynthesisUtterance(text);
+    utterance.lang = accent === 'US' ? 'en-US' : 'en-GB';
+    
+    const voices = window.speechSynthesis.getVoices();
+    const matchStr = accent === 'US' ? 'en-US' : 'en-GB';
+    const voice = voices.find(v => v.lang.toLowerCase().replace('_', '-') === matchStr.toLowerCase() || v.lang.toLowerCase().replace('_', '-').startsWith(matchStr.toLowerCase()));
+    if (voice) {
+      utterance.voice = voice;
+    }
+    window.speechSynthesis.speak(utterance);
+  };
+
+  // 收藏/收錄單字 (AJAX)
+  window.toggleFavorite = async function(wordId, buttonEl) {
+    if (buttonEl.classList.contains('added')) return;
+    
+    buttonEl.disabled = true;
+    buttonEl.innerHTML = '...';
+    
+    const csrfToken = document.querySelector('#challenge-submit-form [name=csrfmiddlewaretoken]').value;
+    try {
+      const resp = await fetch(`/add/word/${wordId}/?ajax=1`, {
+        method: 'POST',
+        headers: { 
+          'X-CSRFToken': csrfToken,
+          'X-Requested-With': 'XMLHttpRequest'
+        }
+      });
+      const d = await resp.json();
+      if (d.success) {
+        // 同步更新 UI 中所有該單字的收藏狀態
+        const buttons = document.querySelectorAll(`[id^="fav-btn-${wordId}"]`);
+        buttons.forEach(btn => {
+          btn.innerText = '✓ 已收錄';
+          btn.className = 'review-btn-accent added';
+        });
+        
+        if (allWordsMap.has(wordId)) allWordsMap.get(wordId).is_added = true;
+        if (wrongWordsMap.has(wordId)) wrongWordsMap.get(wordId).is_added = true;
+        
+        if (window.showToast) window.showToast(d.message, 'success');
+      } else {
+        buttonEl.disabled = false;
+        buttonEl.innerText = '＋ 收藏';
+        if (window.showToast) window.showToast(d.message || '收錄失敗', 'error');
+      }
+    } catch(e) {
+      buttonEl.disabled = false;
+      buttonEl.innerText = '＋ 收藏';
+      if (window.showToast) window.showToast('網路錯誤，請重試。', 'error');
+    }
+  };
+
+  // 分頁切換
+  window.switchResultTab = function(tabName) {
+    const tabs = ['summary', 'all', 'incorrect'];
+    tabs.forEach(t => {
+      const btn = document.getElementById(`tab-btn-${t}`);
+      const content = document.getElementById(`result-content-${t}`);
+      if (t === tabName) {
+        btn.classList.add('active');
+        content.style.display = 'block';
+      } else {
+        btn.classList.remove('active');
+        content.style.display = 'none';
+      }
+    });
+  };
+
+  // 儲存結果並退出
+  window.postChallengeResults = async function(event) {
+    event.preventDefault();
+    const btn = document.getElementById('result-submit-btn');
+    btn.disabled = true;
+    btn.innerText = '儲存中...';
+    
+    const csrfToken = document.querySelector('#challenge-submit-form [name=csrfmiddlewaretoken]').value;
+    const fd = new FormData();
+    fd.append('correct_count', score);
+    fd.append('total_count', totalAnswered);
+    
+    try {
+      await fetch('{% url "vocab:submit_challenge_score" %}', {
+        method: 'POST',
+        headers: { 'X-CSRFToken': csrfToken },
+        body: fd
+      });
+    } catch(e) {}
+    
+    window.location.href = "{% url 'vocab:challenge_select' %}";
+  };
+
+  // 鍵盤快捷鍵 1-4 選取選項
+  document.addEventListener('keydown', (e) => {
+    if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
+    
+    if (!isAnswered && resultsCard.style.display === 'none') {
+      const key = e.key;
+      if (key === '1' || key === '2' || key === '3' || key === '4') {
+        const idx = parseInt(key) - 1;
+        const btns = optionsContainer.querySelectorAll('.option-btn');
+        if (btns[idx]) {
+          btns[idx].click();
+        }
+      }
+    }
+  });
+
+  // 監聽 Turbo 快取事件，銷毀畫布迴圈與事件，避免記憶體洩漏與背景殘留
+  document.addEventListener('turbo:before-cache', () => {
+    if (fxAnimationFrameId) {
+      cancelAnimationFrame(fxAnimationFrameId);
+      fxAnimationFrameId = null;
+    }
+    window.removeEventListener('resize', resizeFxCanvas);
+  });
+
+  // 啟動初始化
+  initGame();
+})();
+</script>
+{% endblock %}

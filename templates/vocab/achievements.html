@@ -1,0 +1,712 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}里程碑與成就{% endblock %}
+
+{% block extra_head %}
+<style>
+  /* 炫酷 RPG 遊戲個人成就看板 */
+  .achievements-header {
+    background: linear-gradient(135deg, rgba(30, 30, 40, 0.8) 0%, rgba(15, 15, 20, 0.9) 100%);
+    border: 1px solid rgba(108, 99, 255, 0.25);
+    border-radius: 20px;
+    padding: 28px 32px;
+    margin-bottom: 32px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.4), inset 0 1px 2px rgba(255, 255, 255, 0.05);
+    position: relative;
+    overflow: hidden;
+    gap: 24px;
+  }
+
+  /* 霓虹流光背景效果 */
+  .achievements-header::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -20%;
+    width: 60%;
+    height: 200%;
+    background: radial-gradient(circle, rgba(108, 99, 255, 0.15) 0%, transparent 70%);
+    pointer-events: none;
+    transform: rotate(-15deg);
+  }
+
+  .header-left-wrap {
+    display: flex;
+    align-items: center;
+    gap: 22px;
+    flex: 1;
+    min-width: 0;
+  }
+
+  /* 勳章插槽 */
+  .trophy-badge-slot {
+    width: 72px;
+    height: 72px;
+    border-radius: 16px;
+    background: linear-gradient(135deg, rgba(255, 215, 0, 0.08) 0%, rgba(108, 99, 255, 0.05) 100%);
+    border: 1.5px solid rgba(255, 215, 0, 0.2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.3), inset 0 1px 2px rgba(255, 215, 0, 0.15);
+    position: relative;
+    animation: trophy-float 3.5s infinite ease-in-out;
+  }
+
+  @keyframes trophy-float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-4px); }
+  }
+
+  .trophy-img {
+    width: 44px;
+    height: 44px;
+    image-rendering: pixelated;
+    filter: drop-shadow(0 0 8px rgba(255, 215, 0, 0.4));
+  }
+
+  .header-details-content {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .pre-title-rank {
+    font-size: 0.72rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    margin-bottom: 5px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  /* 動態階級顏色 */
+  .rank-legendary { color: #ffd700; text-shadow: 0 0 10px rgba(255, 215, 0, 0.3); }
+  .rank-epic { color: #a8a4ff; text-shadow: 0 0 10px rgba(168, 164, 255, 0.3); }
+  .rank-rare { color: #00f2fe; text-shadow: 0 0 10px rgba(0, 242, 254, 0.3); }
+  .rank-common { color: #b0bec5; }
+
+  .header-main-title {
+    font-size: 1.38rem;
+    font-weight: 800;
+    color: #fff;
+    letter-spacing: -0.01em;
+    margin: 0 0 10px 0;
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
+  }
+
+  .header-main-title span.small-total {
+    font-size: 0.92rem;
+    color: var(--text-secondary);
+    font-weight: 500;
+  }
+
+  /* 全新的發光進度條 */
+  .header-progress-track {
+    width: 100%;
+    max-width: 400px;
+    height: 6px;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 4px;
+    overflow: hidden;
+    margin-bottom: 15px;
+    border: 0.5px solid rgba(255, 255, 255, 0.02);
+  }
+
+  .header-progress-bar {
+    height: 100%;
+    background: linear-gradient(90deg, var(--accent) 0%, #00f2fe 100%);
+    box-shadow: 0 0 8px var(--accent);
+    border-radius: 4px;
+    transition: width 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  /* 屬性小晶片欄位 */
+  .header-stat-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+
+  .stat-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 12px;
+    border-radius: 10px;
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    font-size: 0.78rem;
+    color: var(--text-secondary);
+    font-weight: 600;
+    box-shadow: inset 0 1px 1px rgba(255,255,255,0.02);
+    transition: all 0.2s ease;
+  }
+
+  .stat-chip:hover {
+    background: rgba(255, 255, 255, 0.04);
+    border-color: rgba(255, 255, 255, 0.08);
+    transform: translateY(-1px);
+  }
+
+  .stat-chip strong {
+    color: #fff;
+  }
+
+  /* 右側的殿堂大標誌 */
+  .header-right-seal {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    flex-shrink: 0;
+    text-align: right;
+  }
+
+  .seal-text {
+    font-size: 1.85rem;
+    font-weight: 900;
+    letter-spacing: -0.04em;
+    background: linear-gradient(135deg, #fff 30%, rgba(255,255,255,0.6) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    text-shadow: 0 10px 20px rgba(0,0,0,0.5);
+    line-height: 1.1;
+  }
+
+  .seal-subtitle {
+    font-size: 0.65rem;
+    font-weight: 700;
+    color: var(--accent);
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    margin-top: 4px;
+    text-shadow: 0 0 10px var(--accent-glow);
+  }
+
+  .achievement-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 24px;
+    margin-bottom: 40px;
+  }
+
+  .achievement-card {
+    background: rgba(22, 22, 26, 0.7);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 24px;
+    display: flex;
+    gap: 16px;
+    position: relative;
+    overflow: hidden;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    transition: transform 0.22s ease, border-color 0.22s ease, box-shadow 0.22s ease;
+  }
+
+  .achievement-card:hover {
+    transform: translateY(-4px);
+    border-color: rgba(108, 99, 255, 0.35);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+  }
+
+  .achievement-card.locked {
+    opacity: 0.65;
+    border-color: rgba(255, 255, 255, 0.03);
+    background: rgba(18, 18, 22, 0.5);
+  }
+
+  .achievement-card.locked:hover {
+    border-color: rgba(255, 255, 255, 0.1);
+  }
+
+  .achievement-icon-wrap {
+    width: 52px;
+    height: 52px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.6rem;
+    flex-shrink: 0;
+    box-shadow: inset 0 2px 5px rgba(255, 255, 255, 0.05);
+    transition: all var(--transition);
+  }
+
+  .achievement-card:not(.locked) .achievement-icon-wrap {
+    background: rgba(108, 99, 255, 0.12);
+    border-color: rgba(108, 99, 255, 0.4);
+    box-shadow: 0 0 15px rgba(108, 99, 255, 0.2);
+    animation: pulse-glow 2.5s infinite alternate;
+  }
+
+  @keyframes pulse-glow {
+    0% { box-shadow: 0 0 8px rgba(108, 99, 255, 0.15); }
+    100% { box-shadow: 0 0 18px rgba(108, 99, 255, 0.35); }
+  }
+
+  .achievement-info {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .achievement-title {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-bottom: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .achievement-card.locked .achievement-title {
+    color: var(--text-secondary);
+  }
+
+  .achievement-desc {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    line-height: 1.45;
+    margin-bottom: 12px;
+  }
+
+  .achievement-reward-tag {
+    font-size: 0.72rem;
+    font-weight: 600;
+    padding: 3px 8px;
+    border-radius: 6px;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+  }
+
+  .achievement-card.locked .achievement-reward-tag {
+    background: rgba(255,255,255,0.03);
+    color: var(--text-muted);
+    border: 1px solid rgba(255,255,255,0.05);
+  }
+
+  .achievement-card:not(.locked) .achievement-reward-tag {
+    background: rgba(76, 175, 130, 0.1);
+    color: var(--green);
+    border: 1px solid rgba(76, 175, 130, 0.25);
+  }
+
+  /* 主題預覽縮圖 */
+  .theme-preview-card {
+    width: 90px;
+    height: 54px;
+    border-radius: var(--radius-sm);
+    border: 1px solid rgba(255,255,255,0.08);
+    position: relative;
+    overflow: hidden;
+    margin-top: 10px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.4);
+    display: block;
+  }
+  
+  .theme-preview-card::before {
+    content: '';
+    position: absolute;
+    width: 46px;
+    height: 46px;
+    border-radius: 50%;
+    filter: blur(10px);
+  }
+
+  .aurora-preview {
+    background: #0d1e13;
+  }
+  .aurora-preview::before {
+    background: #4CAF50;
+    top: -12px; right: -12px;
+  }
+
+  .cherry-preview {
+    background: #1b1618;
+  }
+  .cherry-preview::before {
+    background: #FF8DA1;
+    bottom: -12px; left: -12px;
+  }
+
+  .cyberpunk-preview {
+    background: #18181c;
+  }
+  .cyberpunk-preview::before {
+    background: #FF007F;
+    top: -12px; right: -12px;
+  }
+  .cyberpunk-preview::after {
+    content: '';
+    position: absolute;
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    filter: blur(7px);
+    background: #FFEB3B;
+    bottom: -6px; left: -6px;
+  }
+
+  .zen-preview {
+    background: #111a14;
+  }
+  .zen-preview::before {
+    background: #8BC34A;
+    top: -12px; left: -12px;
+  }
+  .zen-preview::after {
+    content: '';
+    position: absolute;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    filter: blur(8px);
+    background: #CDDC39;
+    bottom: -12px; right: -12px;
+  }
+
+  /* 非主題類的通用預覽樣式 */
+  .preview-generic {
+    background: rgba(255,255,255,0.02);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.1rem;
+    color: rgba(255,255,255,0.15);
+  }
+  
+  .achievement-card:not(.locked) .preview-generic {
+    color: var(--accent);
+    border-color: rgba(108,99,255,0.2);
+  }
+
+  /* 進度條 */
+  .progress-container {
+    width: 100%;
+    background: rgba(255,255,255,0.04);
+    height: 5px;
+    border-radius: 3px;
+    overflow: hidden;
+    margin-top: 8px;
+    margin-bottom: 8px;
+  }
+
+  .progress-bar-fill {
+    height: 100%;
+    background: var(--accent);
+    border-radius: 3px;
+    transition: width 0.3s ease;
+  }
+
+  .achievement-card:not(.locked) .progress-bar-fill {
+    background: var(--green);
+  }
+
+  .progress-numbers {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.72rem;
+    color: var(--text-muted);
+  }
+
+  /* ── Tabs Styling ────────────────────────────────────────── */
+  .achievement-tabs {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 28px;
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 8px;
+    overflow-x: auto;
+  }
+  .tab-btn {
+    background: none;
+    border: none;
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+    font-weight: 500;
+    padding: 8px 16px;
+    cursor: pointer;
+    border-radius: 6px;
+    transition: all 0.2s ease;
+    border: 1px solid transparent;
+    white-space: nowrap;
+  }
+  .tab-btn:hover {
+    color: var(--text-primary);
+    background: var(--bg-hover);
+  }
+  .tab-btn.active {
+    color: var(--accent);
+    background: var(--accent-glow);
+    border-color: rgba(108, 99, 255, 0.2);
+    font-weight: 600;
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- 浮動即時預覽列 -->
+<div id="theme-preview-bar" style="
+  display: none;
+  position: sticky;
+  top: 70px;
+  z-index: 1000;
+  margin-bottom: 20px;
+  background: linear-gradient(90deg, rgba(108, 99, 255, 0.95) 0%, rgba(76, 175, 130, 0.95) 100%);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 12px;
+  padding: 10px 20px;
+  align-items: center;
+  justify-content: space-between;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  color: #fff;
+  font-weight: 600;
+  animation: slideDown-preview 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+">
+  <div style="display: flex; align-items: center; gap: 8px;">
+    <span>正在體驗預覽：<strong id="preview-theme-title" style="text-decoration: underline;">主題名稱</strong> ── 點擊右側可還原。</span>
+  </div>
+  <button id="close-preview-btn" style="
+    background: rgba(255,255,255,0.18);
+    border: 1px solid rgba(255,255,255,0.25);
+    color: #fff;
+    padding: 4px 12px;
+    border-radius: 8px;
+    font-size: 0.8rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  " onmouseover="this.style.background='rgba(255,255,255,0.3)';" onmouseout="this.style.background='rgba(255,255,255,0.18)';">
+    關閉預覽
+  </button>
+</div>
+
+<style>
+@keyframes slideDown-preview {
+  from { transform: translateY(-20px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+</style>
+
+<div class="page-header">
+  <div>
+    <h1 class="page-title creative-glow-title">里程碑與成就</h1>
+    <p class="page-subtitle">挑戰自我，累積學習里程碑，解鎖專屬學術分析與視覺風格！</p>
+  </div>
+</div>
+
+<div class="achievements-header">
+  <div class="header-left-wrap">
+    <!-- 發光獎盃勳章槽 -->
+    <div class="trophy-badge-slot">
+      <img src="{% static 'images/pixel_trophy.png' %}" class="trophy-img" alt="Trophy" />
+    </div>
+    
+    <div class="header-details-content">
+      <!-- 依里程碑完成度賦予的階級頭銜 -->
+      <div class="pre-title-rank">
+        {% with percent=unlocked_count|default:0 %}
+          {% if unlocked_count >= 18 %}
+            <span class="rank-legendary">✦ 特優評級 (DISTINGUISHED)</span>
+          {% elif unlocked_count >= 10 %}
+            <span class="rank-epic">✦ 進階級學習者 (ADVANCED)</span>
+          {% elif unlocked_count >= 5 %}
+            <span class="rank-rare">✦ 中階學習者 (INTERMEDIATE)</span>
+          {% else %}
+            <span class="rank-common">✦ 初階學習者 (BEGINNER)</span>
+          {% endif %}
+        {% endwith %}
+      </div>
+      
+      <h2 class="header-main-title">
+        里程碑達成度 {{ unlocked_count }} <span class="small-total">/ {{ total_count }} 已完成</span>
+      </h2>
+      
+      <!-- 科技漸變進度條 -->
+      <div class="header-progress-track">
+        <div class="header-progress-bar" style="width: {% widthratio unlocked_count total_count 100 %}%;"></div>
+      </div>
+      
+      <!-- 統計數據小晶片 -->
+      <div class="header-stat-row">
+        <div class="stat-chip">
+          <span>📚 累積字庫</span>
+          <strong>{{ vocab_count }}</strong>
+        </div>
+        <div class="stat-chip">
+          <span>🔥 連續學習</span>
+          <strong>{{ profile.streak }} 天</strong>
+        </div>
+        <div class="stat-chip">
+          <span>✨ 已精通</span>
+          <strong>{{ mastered_count }} 字</strong>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 右側殿堂金色鋼印標誌 -->
+  <div class="header-right-seal">
+    <span class="seal-text">MILESTONES</span>
+    <span class="seal-subtitle">學術里程碑</span>
+  </div>
+</div>
+
+<!-- 分頁 Tabs -->
+<div class="achievement-tabs">
+  <button class="tab-btn active" data-tab="all">全部</button>
+  <button class="tab-btn" data-tab="badge">稱號頭銜</button>
+  <button class="tab-btn" data-tab="theme">視覺主題</button>
+  <button class="tab-btn" data-tab="style">卡片邊框</button>
+  <button class="tab-btn" data-tab="effect">背景特效</button>
+</div>
+
+<div class="achievement-grid">
+  {% for a in achievements %}
+  <div class="achievement-card {% if not a.is_unlocked %}locked{% endif %}" data-category="{{ a.reward_type }}">
+    <div class="achievement-icon-wrap">
+      <img src="{% static 'images/achievements/' %}{{ a.icon }}.png?v=7" style="width: 32px; height: 32px; image-rendering: pixelated;" />
+    </div>
+    <div class="achievement-info">
+      <div class="achievement-title">
+        <span>{{ a.name }}</span>
+        {% if a.is_unlocked %}
+        <span style="font-size: 0.75rem; color: var(--green); font-weight: 700;">已達成</span>
+        {% else %}
+        <span style="font-size: 0.75rem; color: var(--text-muted); font-weight: 500;">未解鎖</span>
+        {% endif %}
+      </div>
+      
+      <div class="achievement-desc">{{ a.desc }}</div>
+
+      <!-- 進度條 -->
+      {% if not a.is_unlocked %}
+      <div class="progress-container">
+        <div class="progress-bar-fill" style="width: {{ a.percent }}%;"></div>
+      </div>
+      <div class="progress-numbers">
+        <span>進度</span>
+        <span>{{ a.current }} / {{ a.target }}</span>
+      </div>
+      {% endif %}
+
+      <div style="margin-top: 12px; display: flex; align-items: flex-start; justify-content: space-between; flex-wrap: wrap; gap: 10px;">
+        <div>
+          <div style="font-size: 0.68rem; color: var(--text-muted); margin-bottom: 4px; text-transform: uppercase;">解鎖獎勵</div>
+          <span class="achievement-reward-tag">
+            {{ a.reward }}
+          </span>
+        </div>
+        
+        <!-- 透露主題的長相 preview -->
+        {% if a.reward_type == 'theme' %}
+        <div>
+          {% if a.is_unlocked %}
+            <div style="font-size: 0.68rem; color: var(--text-muted); text-align: right; margin-bottom: 4px; text-transform: uppercase; letter-spacing: 0.05em;">主題縮圖</div>
+            <div class="theme-preview-card preview-{{ a.theme_id }}" title="已解鎖，可至設定頁面套用" style="opacity: 0.8;"></div>
+          {% elif a.is_next_theme %}
+            <div style="font-size: 0.68rem; color: var(--text-muted); text-align: right; margin-bottom: 4px; text-transform: uppercase; letter-spacing: 0.05em; color: var(--accent);">點擊預覽</div>
+            <div class="theme-preview-card preview-{{ a.theme_id }} theme-preview-trigger" data-theme-id="{{ a.theme_id }}" data-theme-name="{{ a.reward|slice:"3:" }}" title="點擊即可即時預覽下一個解鎖主題！" style="cursor: pointer; transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.2s ease;"></div>
+          {% else %}
+            <div style="font-size: 0.68rem; color: var(--text-muted); text-align: right; margin-bottom: 4px; text-transform: uppercase;">預覽未解鎖</div>
+            <div class="theme-preview-card preview-generic" title="請先解鎖前置主題" style="font-size: 0.72rem; font-weight: 700;">LOCKED</div>
+          {% endif %}
+        </div>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+{% endfor %}
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+(function() {
+  const originalTheme = "{{ user_theme|default:'deep-space' }}";
+  const triggers = document.querySelectorAll('.theme-preview-trigger');
+  const previewBar = document.getElementById('theme-preview-bar');
+  const previewTitle = document.getElementById('preview-theme-title');
+  const closeBtn = document.getElementById('close-preview-btn');
+
+  triggers.forEach(t => {
+    // 懸停縮放效果
+    t.addEventListener('mouseenter', function() {
+      t.style.transform = 'scale(1.1) rotate(2deg)';
+      t.style.boxShadow = '0 8px 25px rgba(0,0,0,0.5), 0 0 10px var(--accent)';
+    });
+    t.addEventListener('mouseleave', function() {
+      t.style.transform = 'none';
+      t.style.boxShadow = '';
+    });
+
+    t.addEventListener('click', function() {
+      const themeId = t.getAttribute('data-theme-id');
+      const themeName = t.getAttribute('data-theme-name');
+      
+      // 切換 body 的主題屬性
+      document.body.setAttribute('data-theme', themeId);
+      
+      // 更新預覽列
+      if (previewTitle) previewTitle.textContent = themeName;
+      if (previewBar) {
+        previewBar.style.display = 'flex';
+        // 滾動到頂部讓預覽列被看見
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }
+      
+      window.showToast(`✨ 已切換至「${themeName}」即時預覽體驗！`, 'info');
+    });
+  });
+
+  if (closeBtn) {
+    closeBtn.addEventListener('click', function() {
+      // 還原主題
+      document.body.setAttribute('data-theme', originalTheme);
+      if (previewBar) previewBar.style.display = 'none';
+      window.showToast('已還原為您的設定主題。', 'success');
+    });
+  }
+
+  // ── Tabs 邏輯 ──────────────────────────────────────────
+  const tabButtons = document.querySelectorAll('.tab-btn');
+  const cards = document.querySelectorAll('.achievement-card');
+
+  tabButtons.forEach(btn => {
+    btn.addEventListener('click', () => {
+      // 移除所有 active 狀態
+      tabButtons.forEach(b => {
+        b.classList.remove('active');
+      });
+
+      // 加上 active 到當前按鈕
+      btn.classList.add('active');
+
+      const filter = btn.getAttribute('data-tab');
+      cards.forEach(card => {
+        if (filter === 'all' || card.getAttribute('data-category') === filter) {
+          card.style.display = 'flex';
+        } else {
+          card.style.display = 'none';
+        }
+      });
+    });
+  });
+})();
+</script>
+{% endblock %}
